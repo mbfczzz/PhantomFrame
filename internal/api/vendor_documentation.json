@@ -1,0 +1,5321 @@
+{
+  "verifiedAt": "2026-10-25",
+  "models": {
+    "openvideo": {
+      "SD2.0FAST803": {
+        "kind": "video",
+        "references": {},
+        "sources": [
+          "https://openaivideo.top/",
+          "https://openaivideo.top/v1/models"
+        ],
+        "notes": [
+          "参考视频总时长、参考音频总时长分别不超过 12 秒。",
+          "渠道未公开此模型的参考素材数量上限，提交前请确认。"
+        ],
+        "resolutions": {
+          "values": [
+            "720p",
+            "1080p",
+            "2k"
+          ],
+          "default": "720p"
+        },
+        "ratios": {
+          "values": [
+            "21:9",
+            "16:9",
+            "4:3",
+            "1:1",
+            "9:16"
+          ],
+          "default": "16:9"
+        },
+        "duration": {
+          "max": 12,
+          "min": 4
+        }
+      },
+      "SD2.0FAST813": {
+        "kind": "video",
+        "references": {},
+        "sources": [
+          "https://openaivideo.top/",
+          "https://openaivideo.top/v1/models"
+        ],
+        "notes": [
+          "参考视频总时长、参考音频总时长分别不超过 12 秒。",
+          "渠道未公开此模型的参考素材数量上限，提交前请确认。"
+        ],
+        "resolutions": {
+          "values": [
+            "720p",
+            "1080p",
+            "2k"
+          ],
+          "default": "720p"
+        },
+        "ratios": {
+          "values": [
+            "21:9",
+            "16:9",
+            "4:3",
+            "1:1",
+            "3:4",
+            "9:16"
+          ],
+          "default": "16:9"
+        },
+        "duration": {
+          "max": 12,
+          "min": 4
+        }
+      },
+      "SD2.0MINI503": {
+        "kind": "video",
+        "references": {},
+        "sources": [
+          "https://openaivideo.top/",
+          "https://openaivideo.top/v1/models"
+        ],
+        "notes": [
+          "参考视频总时长、参考音频总时长分别不超过 12 秒。",
+          "渠道未公开此模型的参考素材数量上限，提交前请确认。"
+        ],
+        "resolutions": {
+          "values": [
+            "720p"
+          ],
+          "default": "720p"
+        },
+        "ratios": {
+          "values": [
+            "21:9",
+            "16:9",
+            "4:3",
+            "1:1",
+            "3:4",
+            "9:16"
+          ],
+          "default": "16:9"
+        },
+        "duration": {
+          "max": 12,
+          "min": 4
+        }
+      },
+      "30-10-10": {
+        "kind": "video",
+        "references": {
+          "image": 30,
+          "video": 10,
+          "audio": 10
+        },
+        "sources": [
+          "https://openaivideo.top/",
+          "https://openaivideo.top/v1/models"
+        ],
+        "notes": [
+          "多帧模式使用 2–10 个关键帧。"
+        ],
+        "resolutions": {
+          "values": [
+            "720p",
+            "1080p"
+          ],
+          "default": "720p"
+        },
+        "ratios": {
+          "values": [
+            "21:9",
+            "16:9",
+            "4:3",
+            "1:1",
+            "3:4",
+            "9:16"
+          ],
+          "default": "16:9"
+        },
+        "duration": {
+          "max": 30,
+          "min": 4
+        },
+        "maxTotal": 50
+      }
+    },
+    "suda": {
+      "bf-sdas-2.0": {
+        "kind": "video",
+        "references": {
+          "image": 9,
+          "video": 3,
+          "audio": 3
+        },
+        "sources": [
+          "https://www.sudashuiapi.com/pricing"
+        ],
+        "notes": [],
+        "fixedResolution": "720p"
+      },
+      "bf-sdas-2.0-fast": {
+        "kind": "video",
+        "references": {
+          "image": 9,
+          "video": 3,
+          "audio": 3
+        },
+        "sources": [
+          "https://www.sudashuiapi.com/pricing"
+        ],
+        "notes": [],
+        "fixedResolution": "720p"
+      },
+      "bf-sdas-2.0-fast-real-priority": {
+        "kind": "video",
+        "references": {
+          "image": 9,
+          "video": 3,
+          "audio": 3
+        },
+        "sources": [
+          "https://www.sudashuiapi.com/pricing"
+        ],
+        "notes": [],
+        "fixedResolution": "720p"
+      },
+      "bf-sdas-2.0-real-priority": {
+        "kind": "video",
+        "references": {
+          "image": 9,
+          "video": 3,
+          "audio": 3
+        },
+        "sources": [
+          "https://www.sudashuiapi.com/pricing"
+        ],
+        "notes": [],
+        "fixedResolution": "720p"
+      },
+      "bf-sdas-2.5-480p": {
+        "kind": "video",
+        "references": {
+          "image": 30,
+          "video": 10,
+          "audio": 10
+        },
+        "sources": [
+          "https://www.sudashuiapi.com/pricing"
+        ],
+        "notes": [],
+        "duration": {
+          "min": 4,
+          "max": 30
+        },
+        "ratios": {
+          "values": [
+            "1:1",
+            "3:4",
+            "4:3",
+            "9:16",
+            "16:9",
+            "21:9"
+          ],
+          "default": "16:9"
+        },
+        "fixedResolution": "480p"
+      },
+      "bf-sdas-2.5-720p": {
+        "kind": "video",
+        "references": {
+          "image": 30,
+          "video": 10,
+          "audio": 10
+        },
+        "sources": [
+          "https://www.sudashuiapi.com/pricing"
+        ],
+        "notes": [],
+        "duration": {
+          "min": 4,
+          "max": 30
+        },
+        "ratios": {
+          "values": [
+            "1:1",
+            "3:4",
+            "4:3",
+            "9:16",
+            "16:9",
+            "21:9"
+          ],
+          "default": "16:9"
+        },
+        "fixedResolution": "720p"
+      },
+      "gf8-gpt-image-2": {
+        "kind": "image",
+        "references": {
+          "image": 6
+        },
+        "sources": [
+          "https://www.sudashuiapi.com/pricing"
+        ],
+        "notes": [],
+        "ratios": {
+          "values": [
+            "1:1",
+            "3:2",
+            "2:3",
+            "4:3",
+            "3:4",
+            "5:4",
+            "4:5",
+            "16:9",
+            "9:16",
+            "2:1",
+            "1:2",
+            "21:9",
+            "9:21"
+          ],
+          "default": "16:9"
+        },
+        "resolutions": {
+          "values": [
+            "1k",
+            "2k",
+            "4k"
+          ],
+          "default": "1k"
+        }
+      },
+      "gf8-gpt-image-2.5-flare": {
+        "kind": "image",
+        "references": {
+          "image": 16
+        },
+        "sources": [
+          "https://www.sudashuiapi.com/pricing"
+        ],
+        "notes": [],
+        "ratios": {
+          "values": [
+            "1:1",
+            "3:2",
+            "2:3",
+            "4:3",
+            "3:4",
+            "5:4",
+            "4:5",
+            "16:9",
+            "9:16",
+            "2:1",
+            "1:2",
+            "21:9",
+            "9:21"
+          ],
+          "default": "16:9"
+        },
+        "resolutions": {
+          "values": [
+            "1k",
+            "2k"
+          ],
+          "default": "1k"
+        }
+      },
+      "gf8-gpt-image-2.5-flare-4k": {
+        "kind": "image",
+        "references": {
+          "image": 16
+        },
+        "sources": [
+          "https://www.sudashuiapi.com/pricing"
+        ],
+        "notes": [],
+        "ratios": {
+          "values": [
+            "1:1",
+            "3:2",
+            "2:3",
+            "4:3",
+            "3:4",
+            "5:4",
+            "4:5",
+            "16:9",
+            "9:16",
+            "2:1",
+            "1:2",
+            "21:9",
+            "9:21"
+          ],
+          "default": "16:9"
+        },
+        "resolutions": {
+          "values": [
+            "4k"
+          ],
+          "default": "4k"
+        }
+      },
+      "gf8-gpt-image-2.5-sunburst": {
+        "kind": "image",
+        "references": {
+          "image": 16
+        },
+        "sources": [
+          "https://www.sudashuiapi.com/pricing"
+        ],
+        "notes": [],
+        "ratios": {
+          "values": [
+            "1:1",
+            "3:2",
+            "2:3",
+            "4:3",
+            "3:4",
+            "5:4",
+            "4:5",
+            "16:9",
+            "9:16",
+            "2:1",
+            "1:2",
+            "21:9",
+            "9:21"
+          ],
+          "default": "16:9"
+        },
+        "resolutions": {
+          "values": [
+            "1k",
+            "2k"
+          ],
+          "default": "1k"
+        }
+      },
+      "gf8-gpt-image-2.5-sunburst-4k": {
+        "kind": "image",
+        "references": {
+          "image": 16
+        },
+        "sources": [
+          "https://www.sudashuiapi.com/pricing"
+        ],
+        "notes": [],
+        "ratios": {
+          "values": [
+            "1:1",
+            "3:2",
+            "2:3",
+            "4:3",
+            "3:4",
+            "5:4",
+            "4:5",
+            "16:9",
+            "9:16",
+            "2:1",
+            "1:2",
+            "21:9",
+            "9:21"
+          ],
+          "default": "16:9"
+        },
+        "resolutions": {
+          "values": [
+            "4k"
+          ],
+          "default": "4k"
+        }
+      },
+      "jy-gpt-image-2": {
+        "kind": "image",
+        "references": {
+          "image": 6
+        },
+        "sources": [
+          "https://www.sudashuiapi.com/pricing"
+        ],
+        "notes": [],
+        "ratios": {
+          "values": [
+            "16:9",
+            "9:16",
+            "4:3",
+            "3:4",
+            "1:1",
+            "21:9"
+          ],
+          "default": "16:9"
+        },
+        "resolutions": {
+          "values": [
+            "1k",
+            "2k",
+            "4k"
+          ],
+          "default": "1k"
+        }
+      },
+      "jy-gpt-image-2.5-flare": {
+        "kind": "image",
+        "references": {
+          "image": 16
+        },
+        "sources": [
+          "https://www.sudashuiapi.com/pricing"
+        ],
+        "notes": [],
+        "ratios": {
+          "values": [
+            "16:9",
+            "9:16",
+            "4:3",
+            "3:4",
+            "1:1",
+            "21:9"
+          ],
+          "default": "16:9"
+        },
+        "resolutions": {
+          "values": [
+            "1k",
+            "2k",
+            "4k"
+          ],
+          "default": "1k"
+        }
+      },
+      "jy-gpt-image-2.5-sunburst": {
+        "kind": "image",
+        "references": {
+          "image": 16
+        },
+        "sources": [
+          "https://www.sudashuiapi.com/pricing"
+        ],
+        "notes": [],
+        "ratios": {
+          "values": [
+            "16:9",
+            "9:16",
+            "4:3",
+            "3:4",
+            "1:1",
+            "21:9"
+          ],
+          "default": "16:9"
+        },
+        "resolutions": {
+          "values": [
+            "1k",
+            "2k",
+            "4k"
+          ],
+          "default": "1k"
+        }
+      },
+      "jy-nano-banana-2": {
+        "kind": "image",
+        "references": {
+          "image": 16
+        },
+        "sources": [
+          "https://www.sudashuiapi.com/pricing"
+        ],
+        "notes": [],
+        "ratios": {
+          "values": [
+            "16:9",
+            "9:16",
+            "4:3",
+            "3:4",
+            "1:1",
+            "21:9"
+          ],
+          "default": "16:9"
+        },
+        "resolutions": {
+          "values": [
+            "1k",
+            "2k",
+            "4k"
+          ],
+          "default": "1k"
+        }
+      },
+      "jy-nano-banana-2.1": {
+        "kind": "image",
+        "references": {
+          "image": 14
+        },
+        "sources": [
+          "https://www.sudashuiapi.com/pricing"
+        ],
+        "notes": [],
+        "ratios": {
+          "values": [
+            "16:9",
+            "9:16",
+            "4:3",
+            "3:4",
+            "1:1",
+            "21:9"
+          ],
+          "default": "16:9"
+        },
+        "resolutions": {
+          "values": [
+            "1k",
+            "2k",
+            "4k"
+          ],
+          "default": "1k"
+        }
+      },
+      "jy-nano-banana-pro": {
+        "kind": "image",
+        "references": {
+          "image": 16
+        },
+        "sources": [
+          "https://www.sudashuiapi.com/pricing"
+        ],
+        "notes": [],
+        "ratios": {
+          "values": [
+            "16:9",
+            "9:16",
+            "4:3",
+            "3:4",
+            "1:1",
+            "21:9"
+          ],
+          "default": "16:9"
+        },
+        "resolutions": {
+          "values": [
+            "1k",
+            "2k",
+            "4k"
+          ],
+          "default": "1k"
+        }
+      },
+      "jy-seedream-5-pro": {
+        "kind": "image",
+        "references": {
+          "image": 10
+        },
+        "sources": [
+          "https://www.sudashuiapi.com/pricing"
+        ],
+        "notes": [],
+        "ratios": {
+          "values": [
+            "16:9",
+            "9:16",
+            "4:3",
+            "3:4",
+            "1:1",
+            "21:9"
+          ],
+          "default": "16:9"
+        },
+        "resolutions": {
+          "values": [
+            "1k",
+            "2k"
+          ],
+          "default": "1k"
+        }
+      },
+      "ld-sdas-2-cvk": {
+        "kind": "video",
+        "references": {
+          "image": 9,
+          "video": 3,
+          "audio": 3
+        },
+        "sources": [
+          "https://www.sudashuiapi.com/pricing"
+        ],
+        "notes": [],
+        "duration": {
+          "min": 4,
+          "max": 15
+        },
+        "fixedResolution": "720p"
+      },
+      "ld-sdas-cvk-pro-933-720p": {
+        "kind": "video",
+        "references": {
+          "image": 9,
+          "video": 3,
+          "audio": 3
+        },
+        "sources": [
+          "https://www.sudashuiapi.com/pricing"
+        ],
+        "notes": [],
+        "duration": {
+          "min": 4,
+          "max": 15
+        },
+        "ratios": {
+          "values": [
+            "21:9",
+            "16:9",
+            "4:3",
+            "1:1",
+            "3:4",
+            "9:16"
+          ],
+          "default": "16:9"
+        },
+        "fixedResolution": "720p"
+      },
+      "sdas-gf-seedance-2.0-1080p": {
+        "kind": "video",
+        "references": {
+          "image": 9,
+          "video": 0,
+          "audio": 3
+        },
+        "sources": [
+          "https://www.sudashuiapi.com/pricing"
+        ],
+        "notes": [],
+        "duration": {
+          "min": 4,
+          "max": 15
+        },
+        "fixedResolution": "1080p"
+      },
+      "sdas-gf-seedance-2.0-2k": {
+        "kind": "video",
+        "references": {
+          "image": 9,
+          "video": 0,
+          "audio": 3
+        },
+        "sources": [
+          "https://www.sudashuiapi.com/pricing"
+        ],
+        "notes": [],
+        "duration": {
+          "min": 4,
+          "max": 15
+        },
+        "fixedResolution": "2k"
+      },
+      "sdas-gf-seedance-2.0-4k": {
+        "kind": "video",
+        "references": {
+          "image": 9,
+          "video": 0,
+          "audio": 3
+        },
+        "sources": [
+          "https://www.sudashuiapi.com/pricing"
+        ],
+        "notes": [],
+        "duration": {
+          "min": 4,
+          "max": 15
+        },
+        "fixedResolution": "4k"
+      },
+      "sdas-gf-seedance-2.0-720p": {
+        "kind": "video",
+        "references": {
+          "image": 9,
+          "video": 0,
+          "audio": 3
+        },
+        "sources": [
+          "https://www.sudashuiapi.com/pricing"
+        ],
+        "notes": [],
+        "duration": {
+          "min": 4,
+          "max": 15
+        },
+        "fixedResolution": "720p"
+      },
+      "sdas-gf-seedance-2.0-fast-720p": {
+        "kind": "video",
+        "references": {
+          "image": 9,
+          "video": 0,
+          "audio": 3
+        },
+        "sources": [
+          "https://www.sudashuiapi.com/pricing"
+        ],
+        "notes": [],
+        "duration": {
+          "min": 4,
+          "max": 15
+        },
+        "fixedResolution": "720p"
+      },
+      "sdas-gf3-seedance-2.0-1080p": {
+        "kind": "video",
+        "references": {
+          "image": 9,
+          "video": 0,
+          "audio": 3
+        },
+        "sources": [
+          "https://www.sudashuiapi.com/pricing"
+        ],
+        "notes": [],
+        "duration": {
+          "min": 4,
+          "max": 15
+        },
+        "fixedResolution": "1080p"
+      },
+      "sdas-gf3-seedance-2.0-720p": {
+        "kind": "video",
+        "references": {
+          "image": 9,
+          "video": 0,
+          "audio": 3
+        },
+        "sources": [
+          "https://www.sudashuiapi.com/pricing"
+        ],
+        "notes": [],
+        "duration": {
+          "min": 4,
+          "max": 15
+        },
+        "fixedResolution": "720p"
+      },
+      "sdas-gf3-seedance-2.0-fast-720p": {
+        "kind": "video",
+        "references": {
+          "image": 9,
+          "video": 0,
+          "audio": 3
+        },
+        "sources": [
+          "https://www.sudashuiapi.com/pricing"
+        ],
+        "notes": [],
+        "duration": {
+          "min": 4,
+          "max": 15
+        },
+        "fixedResolution": "720p"
+      },
+      "sdas-gf3-seedance-2.0-mini-720p": {
+        "kind": "video",
+        "references": {
+          "image": 9,
+          "video": 0,
+          "audio": 3
+        },
+        "sources": [
+          "https://www.sudashuiapi.com/pricing"
+        ],
+        "notes": [],
+        "duration": {
+          "min": 4,
+          "max": 15
+        },
+        "fixedResolution": "480p"
+      },
+      "sdas-gf8-seedance-2-480p": {
+        "kind": "video",
+        "references": {
+          "image": 9,
+          "video": 0,
+          "audio": 3
+        },
+        "sources": [
+          "https://www.sudashuiapi.com/pricing"
+        ],
+        "notes": [],
+        "duration": {
+          "min": 4,
+          "max": 15
+        },
+        "ratios": {
+          "values": [
+            "1:1",
+            "3:4",
+            "4:3",
+            "9:16",
+            "16:9",
+            "21:9"
+          ],
+          "default": "16:9"
+        },
+        "fixedResolution": "480p"
+      },
+      "sdas-gf8-seedance-2-5-1080p": {
+        "kind": "video",
+        "references": {
+          "image": 30,
+          "video": 0,
+          "audio": 10
+        },
+        "sources": [
+          "https://www.sudashuiapi.com/pricing"
+        ],
+        "notes": [],
+        "duration": {
+          "min": 4,
+          "max": 30
+        },
+        "ratios": {
+          "values": [
+            "21:9",
+            "16:9",
+            "4:3",
+            "1:1",
+            "3:4",
+            "9:16"
+          ],
+          "default": "16:9"
+        },
+        "fixedResolution": "1080p"
+      },
+      "sdas-gf8-seedance-2-5-480p": {
+        "kind": "video",
+        "references": {
+          "image": 30,
+          "video": 0,
+          "audio": 10
+        },
+        "sources": [
+          "https://www.sudashuiapi.com/pricing"
+        ],
+        "notes": [],
+        "duration": {
+          "min": 4,
+          "max": 30
+        },
+        "ratios": {
+          "values": [
+            "21:9",
+            "16:9",
+            "4:3",
+            "1:1",
+            "3:4",
+            "9:16"
+          ],
+          "default": "16:9"
+        },
+        "fixedResolution": "480p"
+      },
+      "sdas-gf8-seedance-2-5-720p": {
+        "kind": "video",
+        "references": {
+          "image": 30,
+          "video": 0,
+          "audio": 10
+        },
+        "sources": [
+          "https://www.sudashuiapi.com/pricing"
+        ],
+        "notes": [],
+        "duration": {
+          "min": 4,
+          "max": 30
+        },
+        "ratios": {
+          "values": [
+            "21:9",
+            "16:9",
+            "4:3",
+            "1:1",
+            "3:4",
+            "9:16"
+          ],
+          "default": "16:9"
+        },
+        "fixedResolution": "720p"
+      },
+      "sdas-gf8-seedance-2-fast-480p": {
+        "kind": "video",
+        "references": {
+          "image": 9,
+          "video": 0,
+          "audio": 3
+        },
+        "sources": [
+          "https://www.sudashuiapi.com/pricing"
+        ],
+        "notes": [],
+        "duration": {
+          "min": 4,
+          "max": 15
+        },
+        "ratios": {
+          "values": [
+            "1:1",
+            "3:4",
+            "4:3",
+            "9:16",
+            "16:9",
+            "21:9"
+          ],
+          "default": "16:9"
+        },
+        "fixedResolution": "480p"
+      },
+      "sdas-gf8-seedance-2-mini-480p": {
+        "kind": "video",
+        "references": {
+          "image": 9,
+          "video": 0,
+          "audio": 3
+        },
+        "sources": [
+          "https://www.sudashuiapi.com/pricing"
+        ],
+        "notes": [],
+        "duration": {
+          "min": 4,
+          "max": 15
+        },
+        "ratios": {
+          "values": [
+            "1:1",
+            "3:4",
+            "4:3",
+            "9:16",
+            "16:9",
+            "21:9"
+          ],
+          "default": "16:9"
+        },
+        "fixedResolution": "480p"
+      },
+      "sdas-mg-sd2.0-1080p": {
+        "kind": "video",
+        "references": {
+          "image": 9,
+          "video": 3,
+          "audio": 3
+        },
+        "sources": [
+          "https://www.sudashuiapi.com/pricing"
+        ],
+        "notes": [],
+        "duration": {
+          "min": 4,
+          "max": 15
+        },
+        "ratios": {
+          "values": [
+            "21:9",
+            "16:9",
+            "4:3",
+            "1:1",
+            "3:4",
+            "9:16"
+          ],
+          "default": "16:9"
+        },
+        "fixedResolution": "1080p"
+      },
+      "sdas-mg-sd2.0-480p": {
+        "kind": "video",
+        "references": {
+          "image": 9,
+          "video": 3,
+          "audio": 3
+        },
+        "sources": [
+          "https://www.sudashuiapi.com/pricing"
+        ],
+        "notes": [],
+        "duration": {
+          "min": 4,
+          "max": 15
+        },
+        "ratios": {
+          "values": [
+            "21:9",
+            "16:9",
+            "4:3",
+            "1:1",
+            "3:4",
+            "9:16"
+          ],
+          "default": "16:9"
+        },
+        "fixedResolution": "480p"
+      },
+      "sdas-mg-sd2.0-720p": {
+        "kind": "video",
+        "references": {
+          "image": 9,
+          "video": 3,
+          "audio": 3
+        },
+        "sources": [
+          "https://www.sudashuiapi.com/pricing"
+        ],
+        "notes": [],
+        "duration": {
+          "min": 4,
+          "max": 15
+        },
+        "ratios": {
+          "values": [
+            "21:9",
+            "16:9",
+            "4:3",
+            "1:1",
+            "3:4",
+            "9:16"
+          ],
+          "default": "16:9"
+        },
+        "fixedResolution": "720p"
+      },
+      "sdas-mg-sd2.0-fast-480p": {
+        "kind": "video",
+        "references": {
+          "image": 9,
+          "video": 3,
+          "audio": 3
+        },
+        "sources": [
+          "https://www.sudashuiapi.com/pricing"
+        ],
+        "notes": [],
+        "duration": {
+          "min": 4,
+          "max": 15
+        },
+        "ratios": {
+          "values": [
+            "21:9",
+            "16:9",
+            "4:3",
+            "1:1",
+            "3:4",
+            "9:16"
+          ],
+          "default": "16:9"
+        },
+        "fixedResolution": "480p"
+      },
+      "sdas-mg-sd2.0-fast-720p": {
+        "kind": "video",
+        "references": {
+          "image": 9,
+          "video": 3,
+          "audio": 3
+        },
+        "sources": [
+          "https://www.sudashuiapi.com/pricing"
+        ],
+        "notes": [],
+        "duration": {
+          "min": 4,
+          "max": 15
+        },
+        "ratios": {
+          "values": [
+            "21:9",
+            "16:9",
+            "4:3",
+            "1:1",
+            "3:4",
+            "9:16"
+          ],
+          "default": "16:9"
+        },
+        "fixedResolution": "720p"
+      },
+      "sdas-mg-sd2.0-mini-480p": {
+        "kind": "video",
+        "references": {
+          "image": 9,
+          "video": 3,
+          "audio": 3
+        },
+        "sources": [
+          "https://www.sudashuiapi.com/pricing"
+        ],
+        "notes": [],
+        "duration": {
+          "min": 4,
+          "max": 15
+        },
+        "ratios": {
+          "values": [
+            "21:9",
+            "16:9",
+            "4:3",
+            "1:1",
+            "3:4",
+            "9:16"
+          ],
+          "default": "16:9"
+        },
+        "fixedResolution": "480p"
+      },
+      "sdas-mg-sd2.0-mini-720p": {
+        "kind": "video",
+        "references": {
+          "image": 9,
+          "video": 3,
+          "audio": 3
+        },
+        "sources": [
+          "https://www.sudashuiapi.com/pricing"
+        ],
+        "notes": [],
+        "duration": {
+          "min": 4,
+          "max": 15
+        },
+        "ratios": {
+          "values": [
+            "21:9",
+            "16:9",
+            "4:3",
+            "1:1",
+            "3:4",
+            "9:16"
+          ],
+          "default": "16:9"
+        },
+        "fixedResolution": "720p"
+      },
+      "sdas-mg-sd2.5-1080p": {
+        "kind": "video",
+        "references": {
+          "image": 10,
+          "video": 5,
+          "audio": 5
+        },
+        "sources": [
+          "https://www.sudashuiapi.com/pricing"
+        ],
+        "notes": [],
+        "duration": {
+          "min": 4,
+          "max": 30
+        },
+        "ratios": {
+          "values": [
+            "21:9",
+            "16:9",
+            "4:3",
+            "1:1",
+            "3:4",
+            "9:16"
+          ],
+          "default": "16:9"
+        },
+        "fixedResolution": "1080p"
+      },
+      "sdas-mg-sd2.5-480p": {
+        "kind": "video",
+        "references": {
+          "image": 30,
+          "video": 10,
+          "audio": 10
+        },
+        "sources": [
+          "https://www.sudashuiapi.com/pricing"
+        ],
+        "notes": [],
+        "duration": {
+          "min": 4,
+          "max": 30
+        },
+        "ratios": {
+          "values": [
+            "21:9",
+            "16:9",
+            "4:3",
+            "1:1",
+            "3:4",
+            "9:16"
+          ],
+          "default": "16:9"
+        },
+        "fixedResolution": "480p"
+      },
+      "sdas-mg-sd2.5-720p": {
+        "kind": "video",
+        "references": {
+          "image": 30,
+          "video": 10,
+          "audio": 10
+        },
+        "sources": [
+          "https://www.sudashuiapi.com/pricing"
+        ],
+        "notes": [],
+        "duration": {
+          "min": 4,
+          "max": 30
+        },
+        "ratios": {
+          "values": [
+            "21:9",
+            "16:9",
+            "4:3",
+            "1:1",
+            "3:4",
+            "9:16"
+          ],
+          "default": "16:9"
+        },
+        "fixedResolution": "720p"
+      },
+      "sdas-mj-minimax-h3-2k": {
+        "kind": "video",
+        "references": {
+          "image": 9,
+          "video": 0,
+          "audio": 3
+        },
+        "sources": [
+          "https://www.sudashuiapi.com/pricing"
+        ],
+        "notes": [],
+        "duration": {
+          "min": 4,
+          "max": 15
+        },
+        "ratios": {
+          "values": [
+            "1:1",
+            "16:9",
+            "9:16",
+            "3:4",
+            "4:3",
+            "21:9"
+          ],
+          "default": "16:9"
+        },
+        "fixedResolution": "2k"
+      },
+      "sdas-mj-sd2.0-933-720p": {
+        "kind": "video",
+        "references": {
+          "image": 9,
+          "video": 3,
+          "audio": 3
+        },
+        "sources": [
+          "https://www.sudashuiapi.com/pricing"
+        ],
+        "notes": [],
+        "duration": {
+          "min": 4,
+          "max": 15
+        },
+        "ratios": {
+          "values": [
+            "21:9",
+            "16:9",
+            "4:3",
+            "1:1",
+            "3:4",
+            "9:16"
+          ],
+          "default": "16:9"
+        },
+        "fixedResolution": "720p"
+      },
+      "sdas-mj-x-sd2.0-933-720p": {
+        "kind": "video",
+        "references": {
+          "image": 9,
+          "video": 3,
+          "audio": 3
+        },
+        "sources": [
+          "https://www.sudashuiapi.com/pricing"
+        ],
+        "notes": [],
+        "duration": {
+          "min": 4,
+          "max": 15
+        },
+        "ratios": {
+          "values": [
+            "21:9",
+            "16:9",
+            "4:3",
+            "1:1",
+            "3:4",
+            "9:16"
+          ],
+          "default": "16:9"
+        },
+        "fixedResolution": "720p"
+      },
+      "sdas-qd-seedance-2.0-1080p": {
+        "kind": "video",
+        "references": {
+          "image": 9,
+          "video": 3,
+          "audio": 3
+        },
+        "sources": [
+          "https://www.sudashuiapi.com/pricing"
+        ],
+        "notes": [],
+        "duration": {
+          "min": 4,
+          "max": 15
+        },
+        "ratios": {
+          "values": [
+            "1:1",
+            "3:4",
+            "4:3",
+            "9:16",
+            "16:9",
+            "21:9"
+          ],
+          "default": "16:9"
+        },
+        "fixedResolution": "1080p"
+      },
+      "sdas-qd-seedance-2.0-480p": {
+        "kind": "video",
+        "references": {
+          "image": 9,
+          "video": 3,
+          "audio": 3
+        },
+        "sources": [
+          "https://www.sudashuiapi.com/pricing"
+        ],
+        "notes": [],
+        "duration": {
+          "min": 4,
+          "max": 15
+        },
+        "ratios": {
+          "values": [
+            "1:1",
+            "3:4",
+            "4:3",
+            "9:16",
+            "16:9",
+            "21:9"
+          ],
+          "default": "16:9"
+        },
+        "fixedResolution": "480p"
+      },
+      "sdas-qd-seedance-2.0-4k": {
+        "kind": "video",
+        "references": {
+          "image": 9,
+          "video": 3,
+          "audio": 3
+        },
+        "sources": [
+          "https://www.sudashuiapi.com/pricing"
+        ],
+        "notes": [],
+        "duration": {
+          "min": 4,
+          "max": 15
+        },
+        "ratios": {
+          "values": [
+            "1:1",
+            "3:4",
+            "4:3",
+            "9:16",
+            "16:9",
+            "21:9"
+          ],
+          "default": "16:9"
+        },
+        "fixedResolution": "4k"
+      },
+      "sdas-qd-seedance-2.0-720p": {
+        "kind": "video",
+        "references": {
+          "image": 9,
+          "video": 3,
+          "audio": 3
+        },
+        "sources": [
+          "https://www.sudashuiapi.com/pricing"
+        ],
+        "notes": [],
+        "duration": {
+          "min": 4,
+          "max": 15
+        },
+        "ratios": {
+          "values": [
+            "1:1",
+            "3:4",
+            "4:3",
+            "9:16",
+            "16:9",
+            "21:9"
+          ],
+          "default": "16:9"
+        },
+        "fixedResolution": "720p"
+      },
+      "sdas-qd-seedance-2.0-fast-480p": {
+        "kind": "video",
+        "references": {
+          "image": 9,
+          "video": 3,
+          "audio": 3
+        },
+        "sources": [
+          "https://www.sudashuiapi.com/pricing"
+        ],
+        "notes": [],
+        "duration": {
+          "min": 4,
+          "max": 15
+        },
+        "ratios": {
+          "values": [
+            "1:1",
+            "3:4",
+            "4:3",
+            "9:16",
+            "16:9",
+            "21:9"
+          ],
+          "default": "16:9"
+        },
+        "fixedResolution": "480p"
+      },
+      "sdas-qd-seedance-2.0-fast-720p": {
+        "kind": "video",
+        "references": {
+          "image": 9,
+          "video": 3,
+          "audio": 3
+        },
+        "sources": [
+          "https://www.sudashuiapi.com/pricing"
+        ],
+        "notes": [],
+        "duration": {
+          "min": 4,
+          "max": 15
+        },
+        "ratios": {
+          "values": [
+            "1:1",
+            "3:4",
+            "4:3",
+            "9:16",
+            "16:9",
+            "21:9"
+          ],
+          "default": "16:9"
+        },
+        "fixedResolution": "720p"
+      },
+      "sdas-qd-seedance-2.0-fast-no-face-480p": {
+        "kind": "video",
+        "references": {
+          "image": 9,
+          "video": 3,
+          "audio": 3
+        },
+        "sources": [
+          "https://www.sudashuiapi.com/pricing"
+        ],
+        "notes": [],
+        "duration": {
+          "min": 4,
+          "max": 15
+        },
+        "ratios": {
+          "values": [
+            "1:1",
+            "3:4",
+            "4:3",
+            "9:16",
+            "16:9",
+            "21:9"
+          ],
+          "default": "16:9"
+        },
+        "fixedResolution": "480p"
+      },
+      "sdas-qd-seedance-2.0-fast-no-face-720p": {
+        "kind": "video",
+        "references": {
+          "image": 9,
+          "video": 3,
+          "audio": 3
+        },
+        "sources": [
+          "https://www.sudashuiapi.com/pricing"
+        ],
+        "notes": [],
+        "duration": {
+          "min": 4,
+          "max": 15
+        },
+        "ratios": {
+          "values": [
+            "1:1",
+            "3:4",
+            "4:3",
+            "9:16",
+            "16:9",
+            "21:9"
+          ],
+          "default": "16:9"
+        },
+        "fixedResolution": "720p"
+      },
+      "sdas-qd-seedance-2.0-mini-480p": {
+        "kind": "video",
+        "references": {
+          "image": 9,
+          "video": 3,
+          "audio": 3
+        },
+        "sources": [
+          "https://www.sudashuiapi.com/pricing"
+        ],
+        "notes": [],
+        "duration": {
+          "min": 4,
+          "max": 15
+        },
+        "ratios": {
+          "values": [
+            "1:1",
+            "3:4",
+            "4:3",
+            "9:16",
+            "16:9",
+            "21:9"
+          ],
+          "default": "16:9"
+        },
+        "fixedResolution": "480p"
+      },
+      "sdas-qd-seedance-2.0-mini-720p": {
+        "kind": "video",
+        "references": {
+          "image": 9,
+          "video": 3,
+          "audio": 3
+        },
+        "sources": [
+          "https://www.sudashuiapi.com/pricing"
+        ],
+        "notes": [],
+        "duration": {
+          "min": 4,
+          "max": 15
+        },
+        "ratios": {
+          "values": [
+            "1:1",
+            "3:4",
+            "4:3",
+            "9:16",
+            "16:9",
+            "21:9"
+          ],
+          "default": "16:9"
+        },
+        "fixedResolution": "720p"
+      },
+      "sdas-qd-seedance-2.0-mini-no-face-480p": {
+        "kind": "video",
+        "references": {
+          "image": 9,
+          "video": 3,
+          "audio": 3
+        },
+        "sources": [
+          "https://www.sudashuiapi.com/pricing"
+        ],
+        "notes": [],
+        "duration": {
+          "min": 4,
+          "max": 15
+        },
+        "ratios": {
+          "values": [
+            "1:1",
+            "3:4",
+            "4:3",
+            "9:16",
+            "16:9",
+            "21:9"
+          ],
+          "default": "16:9"
+        },
+        "fixedResolution": "480p"
+      },
+      "sdas-qd-seedance-2.0-mini-no-face-720p": {
+        "kind": "video",
+        "references": {
+          "image": 9,
+          "video": 3,
+          "audio": 3
+        },
+        "sources": [
+          "https://www.sudashuiapi.com/pricing"
+        ],
+        "notes": [],
+        "duration": {
+          "min": 4,
+          "max": 15
+        },
+        "ratios": {
+          "values": [
+            "1:1",
+            "3:4",
+            "4:3",
+            "9:16",
+            "16:9",
+            "21:9"
+          ],
+          "default": "16:9"
+        },
+        "fixedResolution": "720p"
+      },
+      "sdas-qd-seedance-2.0-no-face-1080p": {
+        "kind": "video",
+        "references": {
+          "image": 9,
+          "video": 3,
+          "audio": 3
+        },
+        "sources": [
+          "https://www.sudashuiapi.com/pricing"
+        ],
+        "notes": [],
+        "duration": {
+          "min": 4,
+          "max": 15
+        },
+        "ratios": {
+          "values": [
+            "1:1",
+            "3:4",
+            "4:3",
+            "9:16",
+            "16:9",
+            "21:9"
+          ],
+          "default": "16:9"
+        },
+        "fixedResolution": "1080p"
+      },
+      "sdas-qd-seedance-2.0-no-face-480p": {
+        "kind": "video",
+        "references": {
+          "image": 9,
+          "video": 3,
+          "audio": 3
+        },
+        "sources": [
+          "https://www.sudashuiapi.com/pricing"
+        ],
+        "notes": [],
+        "duration": {
+          "min": 4,
+          "max": 15
+        },
+        "ratios": {
+          "values": [
+            "1:1",
+            "3:4",
+            "4:3",
+            "9:16",
+            "16:9",
+            "21:9"
+          ],
+          "default": "16:9"
+        },
+        "fixedResolution": "480p"
+      },
+      "sdas-qd-seedance-2.0-no-face-4k": {
+        "kind": "video",
+        "references": {
+          "image": 9,
+          "video": 3,
+          "audio": 3
+        },
+        "sources": [
+          "https://www.sudashuiapi.com/pricing"
+        ],
+        "notes": [],
+        "duration": {
+          "min": 4,
+          "max": 15
+        },
+        "ratios": {
+          "values": [
+            "1:1",
+            "3:4",
+            "4:3",
+            "9:16",
+            "16:9",
+            "21:9"
+          ],
+          "default": "16:9"
+        },
+        "fixedResolution": "4k"
+      },
+      "sdas-qd-seedance-2.0-no-face-720p": {
+        "kind": "video",
+        "references": {
+          "image": 9,
+          "video": 3,
+          "audio": 3
+        },
+        "sources": [
+          "https://www.sudashuiapi.com/pricing"
+        ],
+        "notes": [],
+        "duration": {
+          "min": 4,
+          "max": 15
+        },
+        "ratios": {
+          "values": [
+            "1:1",
+            "3:4",
+            "4:3",
+            "9:16",
+            "16:9",
+            "21:9"
+          ],
+          "default": "16:9"
+        },
+        "fixedResolution": "720p"
+      },
+      "sdas-qd-seedance-2.5-1080p": {
+        "kind": "video",
+        "references": {
+          "image": 30,
+          "video": 10,
+          "audio": 10
+        },
+        "sources": [
+          "https://www.sudashuiapi.com/pricing"
+        ],
+        "notes": [],
+        "duration": {
+          "min": 4,
+          "max": 30
+        },
+        "ratios": {
+          "values": [
+            "1:1",
+            "3:4",
+            "4:3",
+            "9:16",
+            "16:9",
+            "21:9"
+          ],
+          "default": "16:9"
+        },
+        "fixedResolution": "1080p"
+      },
+      "sdas-qd-seedance-2.5-480p": {
+        "kind": "video",
+        "references": {
+          "image": 30,
+          "video": 10,
+          "audio": 10
+        },
+        "sources": [
+          "https://www.sudashuiapi.com/pricing"
+        ],
+        "notes": [],
+        "duration": {
+          "min": 4,
+          "max": 30
+        },
+        "ratios": {
+          "values": [
+            "1:1",
+            "3:4",
+            "4:3",
+            "9:16",
+            "16:9",
+            "21:9"
+          ],
+          "default": "16:9"
+        },
+        "fixedResolution": "480p"
+      },
+      "sdas-qd-seedance-2.5-720p": {
+        "kind": "video",
+        "references": {
+          "image": 30,
+          "video": 10,
+          "audio": 10
+        },
+        "sources": [
+          "https://www.sudashuiapi.com/pricing"
+        ],
+        "notes": [],
+        "duration": {
+          "min": 4,
+          "max": 30
+        },
+        "ratios": {
+          "values": [
+            "1:1",
+            "3:4",
+            "4:3",
+            "9:16",
+            "16:9",
+            "21:9"
+          ],
+          "default": "16:9"
+        },
+        "fixedResolution": "720p"
+      },
+      "sdas-qd-seedance-2.5-no-face-1080p": {
+        "kind": "video",
+        "references": {
+          "image": 30,
+          "video": 10,
+          "audio": 10
+        },
+        "sources": [
+          "https://www.sudashuiapi.com/pricing"
+        ],
+        "notes": [],
+        "duration": {
+          "min": 4,
+          "max": 30
+        },
+        "ratios": {
+          "values": [
+            "1:1",
+            "3:4",
+            "4:3",
+            "9:16",
+            "16:9",
+            "21:9"
+          ],
+          "default": "16:9"
+        },
+        "fixedResolution": "1080p"
+      },
+      "sdas-qd-seedance-2.5-no-face-480p": {
+        "kind": "video",
+        "references": {
+          "image": 30,
+          "video": 10,
+          "audio": 10
+        },
+        "sources": [
+          "https://www.sudashuiapi.com/pricing"
+        ],
+        "notes": [],
+        "duration": {
+          "min": 4,
+          "max": 30
+        },
+        "ratios": {
+          "values": [
+            "1:1",
+            "3:4",
+            "4:3",
+            "9:16",
+            "16:9",
+            "21:9"
+          ],
+          "default": "16:9"
+        },
+        "fixedResolution": "480p"
+      },
+      "sdas-qd-seedance-2.5-no-face-720p": {
+        "kind": "video",
+        "references": {
+          "image": 30,
+          "video": 10,
+          "audio": 10
+        },
+        "sources": [
+          "https://www.sudashuiapi.com/pricing"
+        ],
+        "notes": [],
+        "duration": {
+          "min": 4,
+          "max": 30
+        },
+        "ratios": {
+          "values": [
+            "1:1",
+            "3:4",
+            "4:3",
+            "9:16",
+            "16:9",
+            "21:9"
+          ],
+          "default": "16:9"
+        },
+        "fixedResolution": "720p"
+      },
+      "sdas-wd-sd2.0-2-720p": {
+        "kind": "video",
+        "references": {
+          "image": 9,
+          "video": 0,
+          "audio": 3
+        },
+        "sources": [
+          "https://www.sudashuiapi.com/pricing"
+        ],
+        "notes": [],
+        "duration": {
+          "values": [
+            5,
+            8,
+            10,
+            12,
+            13,
+            15
+          ]
+        },
+        "ratios": {
+          "values": [
+            "16:9",
+            "9:16",
+            "1:1",
+            "3:4",
+            "4:3",
+            "21:9"
+          ],
+          "default": "16:9"
+        },
+        "fixedResolution": "720p"
+      },
+      "sdas-wd-sd2.0-480p": {
+        "kind": "video",
+        "references": {
+          "image": 9,
+          "video": 3,
+          "audio": 3
+        },
+        "sources": [
+          "https://www.sudashuiapi.com/pricing"
+        ],
+        "notes": [],
+        "duration": {
+          "min": 4,
+          "max": 15
+        },
+        "ratios": {
+          "values": [
+            "1:1",
+            "3:4",
+            "4:3",
+            "9:16",
+            "16:9",
+            "21:9"
+          ],
+          "default": "16:9"
+        },
+        "fixedResolution": "480p"
+      },
+      "sdas-wd-sd2.0-720p": {
+        "kind": "video",
+        "references": {
+          "image": 9,
+          "video": 3,
+          "audio": 3
+        },
+        "sources": [
+          "https://www.sudashuiapi.com/pricing"
+        ],
+        "notes": [],
+        "duration": {
+          "min": 4,
+          "max": 15
+        },
+        "ratios": {
+          "values": [
+            "1:1",
+            "3:4",
+            "4:3",
+            "9:16",
+            "16:9",
+            "21:9"
+          ],
+          "default": "16:9"
+        },
+        "fixedResolution": "720p"
+      },
+      "sdas-wd-sd2.0-fast-480p": {
+        "kind": "video",
+        "references": {
+          "image": 9,
+          "video": 3,
+          "audio": 3
+        },
+        "sources": [
+          "https://www.sudashuiapi.com/pricing"
+        ],
+        "notes": [],
+        "duration": {
+          "min": 4,
+          "max": 15
+        },
+        "ratios": {
+          "values": [
+            "1:1",
+            "3:4",
+            "4:3",
+            "9:16",
+            "16:9",
+            "21:9"
+          ],
+          "default": "16:9"
+        },
+        "fixedResolution": "480p"
+      },
+      "sdas-wd-sd2.0-fast-720p": {
+        "kind": "video",
+        "references": {
+          "image": 9,
+          "video": 3,
+          "audio": 3
+        },
+        "sources": [
+          "https://www.sudashuiapi.com/pricing"
+        ],
+        "notes": [],
+        "duration": {
+          "min": 4,
+          "max": 15
+        },
+        "ratios": {
+          "values": [
+            "1:1",
+            "3:4",
+            "4:3",
+            "9:16",
+            "16:9",
+            "21:9"
+          ],
+          "default": "16:9"
+        },
+        "fixedResolution": "720p"
+      },
+      "sdas-wd-sd2.5-2-480p": {
+        "kind": "video",
+        "references": {
+          "image": 9,
+          "video": 0,
+          "audio": 3
+        },
+        "sources": [
+          "https://www.sudashuiapi.com/pricing"
+        ],
+        "notes": [],
+        "duration": {
+          "values": [
+            5,
+            8,
+            10,
+            12,
+            13,
+            15,
+            30
+          ]
+        },
+        "ratios": {
+          "values": [
+            "16:9",
+            "9:16",
+            "1:1",
+            "3:4",
+            "4:3",
+            "21:9"
+          ],
+          "default": "16:9"
+        },
+        "fixedResolution": "480p"
+      },
+      "sdas-wd-sd2.5-2-720p": {
+        "kind": "video",
+        "references": {
+          "image": 9,
+          "video": 0,
+          "audio": 3
+        },
+        "sources": [
+          "https://www.sudashuiapi.com/pricing"
+        ],
+        "notes": [],
+        "duration": {
+          "values": [
+            5,
+            8,
+            10,
+            12,
+            13,
+            15,
+            30
+          ]
+        },
+        "ratios": {
+          "values": [
+            "16:9",
+            "9:16",
+            "1:1",
+            "3:4",
+            "4:3",
+            "21:9"
+          ],
+          "default": "16:9"
+        },
+        "fixedResolution": "720p"
+      },
+      "sdas-wd-sd2.5-480p": {
+        "kind": "video",
+        "references": {
+          "image": 30,
+          "video": 10,
+          "audio": 10
+        },
+        "sources": [
+          "https://www.sudashuiapi.com/pricing"
+        ],
+        "notes": [],
+        "duration": {
+          "min": 4,
+          "max": 30
+        },
+        "ratios": {
+          "values": [
+            "1:1",
+            "3:4",
+            "4:3",
+            "9:16",
+            "16:9",
+            "21:9"
+          ],
+          "default": "16:9"
+        },
+        "fixedResolution": "480p"
+      },
+      "sdas-wd-sd2.5-720p": {
+        "kind": "video",
+        "references": {
+          "image": 30,
+          "video": 10,
+          "audio": 10
+        },
+        "sources": [
+          "https://www.sudashuiapi.com/pricing"
+        ],
+        "notes": [],
+        "duration": {
+          "min": 4,
+          "max": 30
+        },
+        "ratios": {
+          "values": [
+            "1:1",
+            "3:4",
+            "4:3",
+            "9:16",
+            "16:9",
+            "21:9"
+          ],
+          "default": "16:9"
+        },
+        "fixedResolution": "720p"
+      },
+      "sdas-wf-sd2.0-mini-933-480p": {
+        "kind": "video",
+        "references": {
+          "image": 9,
+          "video": 3,
+          "audio": 3
+        },
+        "sources": [
+          "https://www.sudashuiapi.com/pricing"
+        ],
+        "notes": [],
+        "duration": {
+          "min": 4,
+          "max": 15
+        },
+        "ratios": {
+          "values": [
+            "1:1",
+            "3:4",
+            "4:3",
+            "9:16",
+            "16:9",
+            "21:9"
+          ],
+          "default": "16:9"
+        },
+        "fixedResolution": "480p"
+      },
+      "sdas-wf-sd2.0-mini-933-720p": {
+        "kind": "video",
+        "references": {
+          "image": 9,
+          "video": 3,
+          "audio": 3
+        },
+        "sources": [
+          "https://www.sudashuiapi.com/pricing"
+        ],
+        "notes": [],
+        "duration": {
+          "min": 4,
+          "max": 12
+        },
+        "ratios": {
+          "values": [
+            "1:1",
+            "3:4",
+            "4:3",
+            "9:16",
+            "16:9",
+            "21:9"
+          ],
+          "default": "16:9"
+        },
+        "fixedResolution": "720p"
+      },
+      "sdas-xg-sd2.0-pro-933-2-720p": {
+        "kind": "video",
+        "references": {},
+        "sources": [
+          "https://www.sudashuiapi.com/pricing"
+        ],
+        "notes": [
+          "渠道未公开此模型的参考素材数量上限，提交前请确认。"
+        ]
+      },
+      "sdas-xg-sd2.0-pro-933-720p": {
+        "kind": "video",
+        "references": {
+          "image": 9,
+          "video": 3,
+          "audio": 3
+        },
+        "sources": [
+          "https://www.sudashuiapi.com/pricing"
+        ],
+        "notes": [],
+        "duration": {
+          "min": 4,
+          "max": 15
+        },
+        "ratios": {
+          "values": [
+            "1:1",
+            "3:4",
+            "4:3",
+            "9:16",
+            "16:9",
+            "21:9"
+          ],
+          "default": "16:9"
+        },
+        "fixedResolution": "720p"
+      },
+      "sdas-xh-wan3.0-2-720p": {
+        "kind": "video",
+        "references": {
+          "image": 10,
+          "video": 5,
+          "audio": 5
+        },
+        "sources": [
+          "https://www.sudashuiapi.com/pricing"
+        ],
+        "notes": [],
+        "duration": {
+          "min": 4,
+          "max": 15
+        },
+        "ratios": {
+          "values": [
+            "16:9",
+            "9:16",
+            "1:1",
+            "4:3",
+            "3:4",
+            "21:9"
+          ],
+          "default": "16:9"
+        },
+        "fixedResolution": "720p"
+      },
+      "sdas-xh-wan3.0-720p": {
+        "kind": "video",
+        "references": {
+          "image": 10,
+          "video": 0,
+          "audio": 5
+        },
+        "sources": [
+          "https://www.sudashuiapi.com/pricing"
+        ],
+        "notes": [],
+        "duration": {
+          "min": 4,
+          "max": 30
+        },
+        "ratios": {
+          "values": [
+            "16:9",
+            "9:16",
+            "1:1",
+            "4:3",
+            "3:4",
+            "21:9"
+          ],
+          "default": "16:9"
+        },
+        "fixedResolution": "720p"
+      },
+      "sdas-zh-gtp-img2": {
+        "kind": "image",
+        "references": {},
+        "sources": [
+          "https://www.sudashuiapi.com/pricing"
+        ],
+        "notes": [
+          "参考图片编辑模型，供应商使用内置编辑提示词。",
+          "渠道未公开此模型的参考素材数量上限，提交前请确认。"
+        ],
+        "ratios": {
+          "values": [
+            "1:1",
+            "16:9",
+            "9:16",
+            "4:3",
+            "3:4",
+            "3:2",
+            "2:3",
+            "4:5",
+            "5:4",
+            "21:9",
+            "9:21"
+          ],
+          "default": "16:9"
+        },
+        "resolutions": {
+          "values": [
+            "1k",
+            "2k",
+            "4k"
+          ],
+          "default": "1k"
+        },
+        "quality": {
+          "values": [
+            "low",
+            "medium",
+            "high"
+          ],
+          "default": "high"
+        }
+      }
+    },
+    "modelhub": {
+      "seedance-2.0": {
+        "kind": "video",
+        "references": {
+          "image": 9,
+          "video": 3,
+          "audio": 3
+        },
+        "sources": [
+          "https://modelhub.cc/quick-start",
+          "https://api.modelhub.cc/v1/models"
+        ],
+        "notes": [
+          "参考图片单张小于 10MiB；参考视频、音频各自总时长不超过 15 秒。",
+          "自动路由模型，实际可用规格还取决于当前可用渠道。"
+        ],
+        "maxTotal": 12,
+        "ratios": {
+          "values": [
+            "21:9",
+            "16:9",
+            "4:3",
+            "1:1",
+            "3:4",
+            "9:16",
+            "auto"
+          ],
+          "default": "9:16"
+        },
+        "resolutions": {
+          "values": [
+            "720p",
+            "1080p",
+            "4k",
+            "480p",
+            "2160p"
+          ],
+          "default": "720p"
+        },
+        "duration": {
+          "values": [
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15
+          ]
+        }
+      },
+      "seedance-2.0-fast": {
+        "kind": "video",
+        "references": {
+          "image": 9,
+          "video": 3,
+          "audio": 3
+        },
+        "sources": [
+          "https://modelhub.cc/quick-start",
+          "https://api.modelhub.cc/v1/models"
+        ],
+        "notes": [
+          "参考图片单张小于 10MiB；参考视频、音频各自总时长不超过 15 秒。",
+          "自动路由模型，实际可用规格还取决于当前可用渠道。"
+        ],
+        "maxTotal": 12,
+        "ratios": {
+          "values": [
+            "21:9",
+            "16:9",
+            "4:3",
+            "1:1",
+            "3:4",
+            "9:16",
+            "auto"
+          ],
+          "default": "9:16"
+        },
+        "resolutions": {
+          "values": [
+            "720p",
+            "1080p",
+            "2k",
+            "4k",
+            "480p"
+          ],
+          "default": "720p"
+        },
+        "duration": {
+          "values": [
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15
+          ]
+        }
+      },
+      "seedance-2.0-mini": {
+        "kind": "video",
+        "references": {
+          "image": 9,
+          "video": 3,
+          "audio": 3
+        },
+        "sources": [
+          "https://modelhub.cc/quick-start",
+          "https://api.modelhub.cc/v1/models"
+        ],
+        "notes": [
+          "参考图片单张小于 10MiB；参考视频、音频各自总时长不超过 15 秒。",
+          "自动路由模型，实际可用规格还取决于当前可用渠道。"
+        ],
+        "maxTotal": 12,
+        "ratios": {
+          "values": [
+            "21:9",
+            "16:9",
+            "4:3",
+            "1:1",
+            "3:4",
+            "9:16"
+          ],
+          "default": "9:16"
+        },
+        "resolutions": {
+          "values": [
+            "720p",
+            "1080p",
+            "2k",
+            "4k",
+            "480p"
+          ],
+          "default": "720p"
+        },
+        "duration": {
+          "values": [
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15
+          ]
+        }
+      },
+      "seedance-2.5": {
+        "kind": "video",
+        "references": {
+          "image": 30,
+          "video": 10,
+          "audio": 10
+        },
+        "sources": [
+          "https://modelhub.cc/quick-start",
+          "https://api.modelhub.cc/v1/models"
+        ],
+        "notes": [
+          "参考图片单张小于 10MiB；参考视频、音频各自总时长不超过 30 秒。",
+          "自动路由模型，实际可用规格还取决于当前可用渠道。"
+        ],
+        "maxTotal": 50,
+        "ratios": {
+          "values": [
+            "21:9",
+            "16:9",
+            "4:3",
+            "1:1",
+            "3:4",
+            "9:16",
+            "auto"
+          ],
+          "default": "9:16"
+        },
+        "resolutions": {
+          "values": [
+            "480p",
+            "720p",
+            "1080p"
+          ],
+          "default": "720p"
+        },
+        "duration": {
+          "values": [
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30
+          ]
+        }
+      },
+      "gpt-image-2": {
+        "kind": "image",
+        "references": {},
+        "sources": [
+          "https://modelhub.cc/quick-start",
+          "https://api.modelhub.cc/v1/models"
+        ],
+        "notes": [
+          "自动路由模型，实际可用规格还取决于当前可用渠道。",
+          "渠道未公开此模型的参考素材数量上限，提交前请确认。"
+        ],
+        "ratios": {
+          "values": [
+            "auto",
+            "1:1",
+            "16:9",
+            "9:16",
+            "4:3",
+            "3:4"
+          ],
+          "default": "auto"
+        },
+        "quality": {
+          "values": [
+            "low",
+            "medium",
+            "high"
+          ],
+          "default": "medium"
+        },
+        "detailLevel": {
+          "values": [
+            "low",
+            "medium",
+            "high"
+          ],
+          "default": "medium"
+        },
+        "resolutions": {
+          "values": [
+            "1k",
+            "2k",
+            "4k"
+          ],
+          "default": "1k"
+        }
+      },
+      "nano-banana-2": {
+        "kind": "image",
+        "references": {},
+        "sources": [
+          "https://modelhub.cc/quick-start",
+          "https://api.modelhub.cc/v1/models"
+        ],
+        "notes": [
+          "自动路由模型，实际可用规格还取决于当前可用渠道。",
+          "渠道未公开此模型的参考素材数量上限，提交前请确认。"
+        ],
+        "ratios": {
+          "values": [
+            "auto",
+            "1:1",
+            "16:9",
+            "9:16",
+            "4:3",
+            "3:4",
+            "5:4",
+            "4:5",
+            "3:2",
+            "2:3",
+            "21:9"
+          ],
+          "default": "auto"
+        },
+        "resolutions": {
+          "values": [
+            "512p",
+            "1k",
+            "2k",
+            "4k"
+          ],
+          "default": "1k"
+        }
+      },
+      "gpt-image-2.5-flare": {
+        "kind": "image",
+        "references": {},
+        "sources": [
+          "https://modelhub.cc/quick-start",
+          "https://api.modelhub.cc/v1/models"
+        ],
+        "notes": [
+          "自动路由模型，实际可用规格还取决于当前可用渠道。",
+          "渠道未公开此模型的参考素材数量上限，提交前请确认。"
+        ],
+        "ratios": {
+          "values": [
+            "1:1",
+            "16:9",
+            "9:16",
+            "4:3",
+            "3:4",
+            "3:2",
+            "2:3",
+            "2:1",
+            "1:2",
+            "21:9",
+            "auto",
+            "27:16",
+            "16:27",
+            "9:8",
+            "8:9"
+          ],
+          "default": "1:1"
+        },
+        "quality": {
+          "values": [
+            "low",
+            "medium",
+            "high",
+            "xhigh",
+            "max"
+          ],
+          "default": "high"
+        },
+        "detailLevel": {
+          "values": [
+            "low",
+            "medium",
+            "high",
+            "xhigh",
+            "max"
+          ],
+          "default": "high"
+        },
+        "resolutions": {
+          "values": [
+            "1k",
+            "2k",
+            "4k"
+          ],
+          "default": "1k"
+        }
+      },
+      "gpt-image-2.5-sunburst": {
+        "kind": "image",
+        "references": {},
+        "sources": [
+          "https://modelhub.cc/quick-start",
+          "https://api.modelhub.cc/v1/models"
+        ],
+        "notes": [
+          "自动路由模型，实际可用规格还取决于当前可用渠道。",
+          "渠道未公开此模型的参考素材数量上限，提交前请确认。"
+        ],
+        "ratios": {
+          "values": [
+            "1:1",
+            "16:9",
+            "9:16",
+            "4:3",
+            "3:4",
+            "3:2",
+            "2:3",
+            "2:1",
+            "1:2",
+            "21:9",
+            "auto",
+            "27:16",
+            "16:27",
+            "9:8",
+            "8:9"
+          ],
+          "default": "1:1"
+        },
+        "quality": {
+          "values": [
+            "low",
+            "medium",
+            "high",
+            "xhigh",
+            "max"
+          ],
+          "default": "high"
+        },
+        "detailLevel": {
+          "values": [
+            "low",
+            "medium",
+            "high",
+            "xhigh",
+            "max"
+          ],
+          "default": "high"
+        },
+        "resolutions": {
+          "values": [
+            "1k",
+            "2k",
+            "4k"
+          ],
+          "default": "1k"
+        }
+      },
+      "vxp-gpt-image-2": {
+        "kind": "image",
+        "references": {
+          "image": 9
+        },
+        "sources": [
+          "https://modelhub.cc/quick-start",
+          "https://api.modelhub.cc/v1/models"
+        ],
+        "notes": [],
+        "ratios": {
+          "values": [
+            "1:1",
+            "16:9",
+            "9:16",
+            "4:3",
+            "3:4",
+            "3:2",
+            "2:3",
+            "2:1",
+            "1:2",
+            "21:9"
+          ],
+          "default": "1:1"
+        },
+        "quality": {
+          "values": [
+            "1080p",
+            "1440p",
+            "2160p"
+          ],
+          "default": "1080p"
+        },
+        "detailLevel": {
+          "values": [
+            "low",
+            "medium",
+            "high"
+          ],
+          "default": "medium"
+        }
+      },
+      "vxp-gpt-image-2.5-flare": {
+        "kind": "image",
+        "references": {
+          "image": 9
+        },
+        "sources": [
+          "https://modelhub.cc/quick-start",
+          "https://api.modelhub.cc/v1/models"
+        ],
+        "notes": [],
+        "ratios": {
+          "values": [
+            "1:1",
+            "16:9",
+            "9:16",
+            "4:3",
+            "3:4",
+            "3:2",
+            "2:3",
+            "2:1",
+            "1:2",
+            "21:9"
+          ],
+          "default": "1:1"
+        },
+        "quality": {
+          "values": [
+            "1080p",
+            "1440p",
+            "2160p"
+          ],
+          "default": "1080p"
+        },
+        "detailLevel": {
+          "values": [
+            "low",
+            "medium",
+            "high",
+            "xhigh",
+            "max"
+          ],
+          "default": "medium"
+        }
+      },
+      "vxp-gpt-image-2.5-sunburst": {
+        "kind": "image",
+        "references": {
+          "image": 9
+        },
+        "sources": [
+          "https://modelhub.cc/quick-start",
+          "https://api.modelhub.cc/v1/models"
+        ],
+        "notes": [],
+        "ratios": {
+          "values": [
+            "1:1",
+            "16:9",
+            "9:16",
+            "4:3",
+            "3:4",
+            "3:2",
+            "2:3",
+            "2:1",
+            "1:2",
+            "21:9"
+          ],
+          "default": "1:1"
+        },
+        "quality": {
+          "values": [
+            "1080p",
+            "1440p",
+            "2160p"
+          ],
+          "default": "1080p"
+        },
+        "detailLevel": {
+          "values": [
+            "low",
+            "medium",
+            "high",
+            "xhigh",
+            "max"
+          ],
+          "default": "medium"
+        }
+      },
+      "vxp-nano-banana-2": {
+        "kind": "image",
+        "references": {
+          "image": 9
+        },
+        "sources": [
+          "https://modelhub.cc/quick-start",
+          "https://api.modelhub.cc/v1/models"
+        ],
+        "notes": [],
+        "ratios": {
+          "values": [
+            "auto",
+            "1:1",
+            "16:9",
+            "9:16",
+            "4:3",
+            "3:4",
+            "5:4",
+            "4:5",
+            "3:2",
+            "2:3",
+            "21:9"
+          ],
+          "default": "auto"
+        },
+        "quality": {
+          "values": [
+            "512p",
+            "1080p",
+            "1440p",
+            "2160p"
+          ],
+          "default": "512p"
+        }
+      },
+      "vxp-nano-banana-2-lite": {
+        "kind": "image",
+        "references": {
+          "image": 14
+        },
+        "sources": [
+          "https://modelhub.cc/quick-start",
+          "https://api.modelhub.cc/v1/models"
+        ],
+        "notes": [],
+        "ratios": {
+          "values": [
+            "auto",
+            "1:1",
+            "16:9",
+            "9:16",
+            "4:3",
+            "3:4",
+            "5:4",
+            "4:5",
+            "3:2",
+            "2:3",
+            "21:9"
+          ],
+          "default": "auto"
+        },
+        "quality": {
+          "values": [
+            "1080p"
+          ],
+          "default": "1080p"
+        }
+      },
+      "vxp-seedance-2.0-fast": {
+        "kind": "video",
+        "references": {
+          "image": 9,
+          "video": 3,
+          "audio": 3
+        },
+        "sources": [
+          "https://modelhub.cc/quick-start",
+          "https://api.modelhub.cc/v1/models"
+        ],
+        "notes": [
+          "参考图片单张小于 10MiB；参考视频、音频各自总时长不超过 15 秒。"
+        ],
+        "maxTotal": 12,
+        "ratios": {
+          "values": [
+            "21:9",
+            "16:9",
+            "4:3",
+            "1:1",
+            "3:4",
+            "9:16"
+          ],
+          "default": "16:9"
+        },
+        "resolutions": {
+          "values": [
+            "480p"
+          ],
+          "default": "480p"
+        },
+        "duration": {
+          "values": [
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15
+          ]
+        }
+      },
+      "vxp-seedance-2.0-mini": {
+        "kind": "video",
+        "references": {
+          "image": 9,
+          "video": 3,
+          "audio": 3
+        },
+        "sources": [
+          "https://modelhub.cc/quick-start",
+          "https://api.modelhub.cc/v1/models"
+        ],
+        "notes": [
+          "参考图片单张小于 10MiB；参考视频、音频各自总时长不超过 15 秒。"
+        ],
+        "maxTotal": 12,
+        "ratios": {
+          "values": [
+            "21:9",
+            "16:9",
+            "4:3",
+            "1:1",
+            "3:4",
+            "9:16"
+          ],
+          "default": "16:9"
+        },
+        "resolutions": {
+          "values": [
+            "480p",
+            "720p"
+          ],
+          "default": "480p"
+        },
+        "duration": {
+          "values": [
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15
+          ]
+        }
+      },
+      "vxp-seedance-2.0-standard": {
+        "kind": "video",
+        "references": {
+          "image": 9,
+          "video": 3,
+          "audio": 3
+        },
+        "sources": [
+          "https://modelhub.cc/quick-start",
+          "https://api.modelhub.cc/v1/models"
+        ],
+        "notes": [
+          "参考图片单张小于 10MiB；参考视频、音频各自总时长不超过 15 秒。"
+        ],
+        "maxTotal": 12,
+        "ratios": {
+          "values": [
+            "21:9",
+            "16:9",
+            "4:3",
+            "1:1",
+            "3:4",
+            "9:16"
+          ],
+          "default": "16:9"
+        },
+        "resolutions": {
+          "values": [
+            "480p",
+            "720p",
+            "1080p",
+            "2160p"
+          ],
+          "default": "480p"
+        },
+        "duration": {
+          "values": [
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15
+          ]
+        }
+      }
+    },
+    "gway": {
+      "seedance-2.0-mini-G3": {
+        "kind": "video",
+        "references": {
+          "image": 5,
+          "audio": 3
+        },
+        "sources": [
+          "https://gway.dev/api/pricing"
+        ],
+        "notes": [],
+        "duration": {
+          "min": 4,
+          "max": 12
+        },
+        "ratios": {
+          "values": [
+            "16:9",
+            "9:16",
+            "1:1"
+          ],
+          "default": "16:9"
+        },
+        "resolutions": {
+          "values": [
+            "720p"
+          ],
+          "default": "720p"
+        }
+      },
+      "seedance-2.5-G1": {
+        "kind": "video",
+        "references": {
+          "image": 30,
+          "audio": 10
+        },
+        "sources": [
+          "https://gway.dev/api/pricing"
+        ],
+        "notes": [],
+        "duration": {
+          "min": 5,
+          "max": 30
+        },
+        "ratios": {
+          "values": [
+            "16:9",
+            "9:16",
+            "1:1"
+          ],
+          "default": "16:9"
+        },
+        "resolutions": {
+          "values": [
+            "480p",
+            "720p"
+          ],
+          "default": "720p"
+        }
+      },
+      "seedance-2.5-g4-官转": {
+        "kind": "video",
+        "references": {
+          "image": 30,
+          "video": 10,
+          "audio": 10
+        },
+        "sources": [
+          "https://gway.dev/api/pricing"
+        ],
+        "notes": [],
+        "duration": {
+          "min": 4,
+          "max": 30
+        },
+        "ratios": {
+          "values": [
+            "16:9",
+            "9:16",
+            "1:1"
+          ],
+          "default": "16:9"
+        },
+        "resolutions": {
+          "values": [
+            "480p",
+            "720p",
+            "1080p"
+          ],
+          "default": "720p"
+        }
+      },
+      "seedance2.0-g2-m1": {
+        "kind": "video",
+        "references": {
+          "image": 9,
+          "video": 3,
+          "audio": 3
+        },
+        "sources": [
+          "https://gway.dev/api/pricing"
+        ],
+        "notes": [],
+        "duration": {
+          "min": 4,
+          "max": 15
+        },
+        "ratios": {
+          "values": [
+            "16:9",
+            "9:16",
+            "1:1"
+          ],
+          "default": "16:9"
+        },
+        "resolutions": {
+          "values": [
+            "720p"
+          ],
+          "default": "720p"
+        }
+      },
+      "seedance-2.0-fast-G3": {
+        "kind": "video",
+        "references": {
+          "image": 8,
+          "video": 1,
+          "audio": 3
+        },
+        "sources": [
+          "https://gway.dev/api/pricing"
+        ],
+        "notes": [],
+        "duration": {
+          "min": 4,
+          "max": 12
+        },
+        "ratios": {
+          "values": [
+            "16:9",
+            "9:16",
+            "1:1"
+          ],
+          "default": "16:9"
+        },
+        "resolutions": {
+          "values": [
+            "720p",
+            "1080p",
+            "2k"
+          ],
+          "default": "720p"
+        }
+      },
+      "minimax-h3": {
+        "kind": "video",
+        "references": {
+          "image": 9,
+          "video": 3,
+          "audio": 3
+        },
+        "sources": [
+          "https://gway.dev/api/pricing"
+        ],
+        "notes": [
+          "参考视频和参考音频的时长合计不超过 15 秒。"
+        ],
+        "duration": {
+          "min": 4,
+          "max": 15
+        },
+        "ratios": {
+          "values": [
+            "16:9",
+            "9:16",
+            "1:1"
+          ],
+          "default": "16:9"
+        },
+        "resolutions": {
+          "values": [
+            "768p"
+          ],
+          "default": "768p"
+        }
+      },
+      "wan3.0-超限": {
+        "kind": "video",
+        "references": {
+          "image": 10,
+          "audio": 5
+        },
+        "sources": [
+          "https://gway.dev/api/pricing"
+        ],
+        "notes": [],
+        "duration": {
+          "min": 5,
+          "max": 30
+        },
+        "resolutions": {
+          "values": [
+            "480p",
+            "720p",
+            "1080p"
+          ],
+          "default": "720p"
+        }
+      },
+      "seedance2.0-g4-官转": {
+        "kind": "video",
+        "references": {
+          "image": 9,
+          "video": 3,
+          "audio": 3
+        },
+        "sources": [
+          "https://gway.dev/api/pricing"
+        ],
+        "notes": [],
+        "duration": {
+          "min": 4,
+          "max": 15
+        },
+        "ratios": {
+          "values": [
+            "16:9",
+            "9:16",
+            "1:1"
+          ],
+          "default": "16:9"
+        },
+        "resolutions": {
+          "values": [
+            "720p",
+            "1080p"
+          ],
+          "default": "720p"
+        }
+      },
+      "seedance-2.5-g5-L": {
+        "kind": "video",
+        "references": {
+          "image": 30,
+          "video": 10,
+          "audio": 10
+        },
+        "sources": [
+          "https://gway.dev/api/pricing"
+        ],
+        "notes": [],
+        "duration": {
+          "min": 4,
+          "max": 30
+        },
+        "ratios": {
+          "values": [
+            "16:9",
+            "9:16",
+            "1:1"
+          ],
+          "default": "16:9"
+        },
+        "resolutions": {
+          "values": [
+            "720p"
+          ],
+          "default": "720p"
+        }
+      },
+      "seedance-2.5-g4-m1-官转": {
+        "kind": "video",
+        "references": {
+          "image": 30,
+          "video": 10,
+          "audio": 10
+        },
+        "sources": [
+          "https://gway.dev/api/pricing"
+        ],
+        "notes": [],
+        "duration": {
+          "min": 4,
+          "max": 25
+        },
+        "ratios": {
+          "values": [
+            "16:9",
+            "9:16",
+            "1:1"
+          ],
+          "default": "16:9"
+        },
+        "resolutions": {
+          "values": [
+            "480p"
+          ],
+          "default": "480p"
+        }
+      },
+      "seedance-2.5-g4-m-官转": {
+        "kind": "video",
+        "references": {
+          "image": 30,
+          "video": 10,
+          "audio": 10
+        },
+        "sources": [
+          "https://gway.dev/api/pricing"
+        ],
+        "notes": [],
+        "duration": {
+          "min": 4,
+          "max": 30
+        },
+        "ratios": {
+          "values": [
+            "16:9",
+            "9:16",
+            "1:1"
+          ],
+          "default": "16:9"
+        },
+        "resolutions": {
+          "values": [
+            "480p",
+            "720p",
+            "1080p"
+          ],
+          "default": "720p"
+        }
+      },
+      "seedance-2.5-g5-v2": {
+        "kind": "video",
+        "references": {
+          "image": 30,
+          "video": 10,
+          "audio": 10
+        },
+        "sources": [
+          "https://gway.dev/api/pricing"
+        ],
+        "notes": [],
+        "duration": {
+          "min": 4,
+          "max": 30
+        },
+        "ratios": {
+          "values": [
+            "16:9",
+            "9:16",
+            "1:1"
+          ],
+          "default": "16:9"
+        },
+        "resolutions": {
+          "values": [
+            "720p",
+            "1080p"
+          ],
+          "default": "720p"
+        }
+      },
+      "seedance2.0-g2-o2": {
+        "kind": "video",
+        "references": {
+          "image": 9,
+          "video": 0,
+          "audio": 3
+        },
+        "sources": [
+          "https://gway.dev/api/pricing"
+        ],
+        "notes": [],
+        "duration": {
+          "min": 4,
+          "max": 15
+        },
+        "ratios": {
+          "values": [
+            "16:9",
+            "9:16",
+            "1:1"
+          ],
+          "default": "16:9"
+        },
+        "resolutions": {
+          "values": [
+            "720p"
+          ],
+          "default": "720p"
+        }
+      },
+      "seedance-2.5-g2-1": {
+        "kind": "video",
+        "references": {
+          "image": 30,
+          "video": 10,
+          "audio": 10
+        },
+        "sources": [
+          "https://gway.dev/api/pricing"
+        ],
+        "notes": [
+          "720p 规格不支持参考视频。"
+        ],
+        "duration": {
+          "min": 4,
+          "max": 30
+        },
+        "ratios": {
+          "values": [
+            "16:9",
+            "9:16",
+            "1:1"
+          ],
+          "default": "16:9"
+        },
+        "resolutions": {
+          "values": [
+            "480p",
+            "720p"
+          ],
+          "default": "720p"
+        },
+        "videoMaxByResolution": {
+          "720p": 0
+        }
+      },
+      "seedance-2.5-g2-c1": {
+        "kind": "video",
+        "references": {
+          "image": 30,
+          "video": 0,
+          "audio": 10
+        },
+        "sources": [
+          "https://gway.dev/api/pricing"
+        ],
+        "notes": [],
+        "duration": {
+          "min": 4,
+          "max": 30
+        },
+        "ratios": {
+          "values": [
+            "16:9",
+            "9:16",
+            "1:1"
+          ],
+          "default": "16:9"
+        },
+        "resolutions": {
+          "values": [
+            "720p"
+          ],
+          "default": "720p"
+        }
+      },
+      "seedance-2.5-g2-2": {
+        "kind": "video",
+        "references": {
+          "image": 30,
+          "video": 10,
+          "audio": 10
+        },
+        "sources": [
+          "https://gway.dev/api/pricing"
+        ],
+        "notes": [],
+        "duration": {
+          "min": 4,
+          "max": 30
+        },
+        "ratios": {
+          "values": [
+            "16:9",
+            "9:16",
+            "1:1"
+          ],
+          "default": "16:9"
+        },
+        "resolutions": {
+          "values": [
+            "480p",
+            "720p"
+          ],
+          "default": "720p"
+        }
+      },
+      "seedance2.0-g2-o1": {
+        "kind": "video",
+        "references": {
+          "image": 9,
+          "video": 3,
+          "audio": 3
+        },
+        "sources": [
+          "https://gway.dev/api/pricing"
+        ],
+        "notes": [],
+        "duration": {
+          "min": 4,
+          "max": 15
+        },
+        "ratios": {
+          "values": [
+            "16:9",
+            "9:16",
+            "1:1"
+          ],
+          "default": "16:9"
+        },
+        "resolutions": {
+          "values": [
+            "720p"
+          ],
+          "default": "720p"
+        }
+      },
+      "seedance2.0-g5-v2": {
+        "kind": "video",
+        "references": {
+          "image": 9,
+          "video": 3,
+          "audio": 3
+        },
+        "sources": [
+          "https://gway.dev/api/pricing"
+        ],
+        "notes": [],
+        "duration": {
+          "min": 4,
+          "max": 15
+        },
+        "ratios": {
+          "values": [
+            "16:9",
+            "9:16",
+            "1:1"
+          ],
+          "default": "16:9"
+        },
+        "resolutions": {
+          "values": [
+            "720p"
+          ],
+          "default": "720p"
+        }
+      },
+      "seedance2.0-g5-v": {
+        "kind": "video",
+        "references": {
+          "image": 9,
+          "video": 3,
+          "audio": 3
+        },
+        "sources": [
+          "https://gway.dev/api/pricing"
+        ],
+        "notes": [],
+        "duration": {
+          "min": 4,
+          "max": 15
+        },
+        "ratios": {
+          "values": [
+            "16:9",
+            "9:16",
+            "1:1"
+          ],
+          "default": "16:9"
+        },
+        "resolutions": {
+          "values": [
+            "720p"
+          ],
+          "default": "720p"
+        }
+      }
+    },
+    "catcoder": {
+      "k1-gpt-image-2.5": {
+        "kind": "image",
+        "references": {
+          "image": 5
+        },
+        "sources": [
+          "https://video.catcode.top/docs",
+          "https://video.catcode.top/v1/models"
+        ],
+        "notes": [
+          "每次生成 1 张图片。"
+        ],
+        "resolutions": {
+          "values": [
+            "1K"
+          ],
+          "default": "1K"
+        },
+        "ratios": {
+          "values": [
+            "16:9",
+            "9:16",
+            "3:4",
+            "4:3",
+            "1:1"
+          ],
+          "default": "16:9"
+        },
+        "quality": {
+          "values": [
+            "high",
+            "low",
+            "max",
+            "medium"
+          ],
+          "default": "medium"
+        }
+      },
+      "k1-gpt-image-2.5-sunburst": {
+        "kind": "image",
+        "references": {
+          "image": 5
+        },
+        "sources": [
+          "https://video.catcode.top/docs",
+          "https://video.catcode.top/v1/models"
+        ],
+        "notes": [
+          "每次生成 1 张图片。"
+        ],
+        "resolutions": {
+          "values": [
+            "1K"
+          ],
+          "default": "1K"
+        },
+        "ratios": {
+          "values": [
+            "16:9",
+            "9:16",
+            "4:3",
+            "3:4",
+            "1:1"
+          ],
+          "default": "16:9"
+        },
+        "quality": {
+          "values": [
+            "high",
+            "low",
+            "max",
+            "medium"
+          ],
+          "default": "medium"
+        }
+      },
+      "ys-gpt-image-2.5-flare": {
+        "kind": "image",
+        "references": {
+          "image": 5
+        },
+        "sources": [
+          "https://video.catcode.top/docs",
+          "https://video.catcode.top/v1/models"
+        ],
+        "notes": [
+          "每次生成 1 张图片。"
+        ],
+        "resolutions": {
+          "values": [
+            "2K",
+            "4K"
+          ],
+          "default": "2K"
+        },
+        "ratios": {
+          "values": [
+            "16:9",
+            "9:16",
+            "4:3",
+            "3:4",
+            "1:1"
+          ],
+          "default": "16:9"
+        },
+        "quality": {
+          "values": [
+            "high",
+            "low",
+            "max",
+            "medium"
+          ],
+          "default": "medium"
+        }
+      },
+      "ys-gpt-image-2.5-sunburst": {
+        "kind": "image",
+        "references": {
+          "image": 5
+        },
+        "sources": [
+          "https://video.catcode.top/docs",
+          "https://video.catcode.top/v1/models"
+        ],
+        "notes": [
+          "每次生成 1 张图片。"
+        ],
+        "resolutions": {
+          "values": [
+            "2K",
+            "4K"
+          ],
+          "default": "2K"
+        },
+        "ratios": {
+          "values": [
+            "16:9",
+            "9:16",
+            "4:3",
+            "3:4",
+            "1:1"
+          ],
+          "default": "16:9"
+        },
+        "quality": {
+          "values": [
+            "high",
+            "low",
+            "max",
+            "medium"
+          ],
+          "default": "medium"
+        }
+      },
+      "Seedance-2.0-官转": {
+        "kind": "video",
+        "references": {
+          "image": 9,
+          "video": 3,
+          "audio": 3
+        },
+        "sources": [
+          "https://video.catcode.top/docs",
+          "https://video.catcode.top/v1/models"
+        ],
+        "notes": [],
+        "resolutions": {
+          "values": [
+            "1080p"
+          ],
+          "default": "1080p"
+        },
+        "duration": {
+          "values": [
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15
+          ]
+        },
+        "ratios": {
+          "values": [
+            "16:9",
+            "9:16",
+            "21:9",
+            "4:3",
+            "1:1",
+            "3:4",
+            "adaptive"
+          ],
+          "default": "16:9"
+        }
+      },
+      "Seedance-2.5-官转": {
+        "kind": "video",
+        "references": {
+          "image": 30,
+          "video": 10,
+          "audio": 10
+        },
+        "sources": [
+          "https://video.catcode.top/docs",
+          "https://video.catcode.top/v1/models"
+        ],
+        "notes": [],
+        "resolutions": {
+          "values": [
+            "1080p"
+          ],
+          "default": "1080p"
+        },
+        "duration": {
+          "values": [
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30
+          ]
+        },
+        "ratios": {
+          "values": [
+            "16:9",
+            "9:16",
+            "21:9",
+            "4:3",
+            "1:1",
+            "3:4",
+            "adaptive"
+          ],
+          "default": "16:9"
+        }
+      },
+      "9图系列-sd2.0-903": {
+        "kind": "video",
+        "references": {
+          "image": 9,
+          "video": 0,
+          "audio": 3
+        },
+        "sources": [
+          "https://video.catcode.top/docs",
+          "https://video.catcode.top/v1/models"
+        ],
+        "notes": [],
+        "resolutions": {
+          "values": [
+            "720p"
+          ],
+          "default": "720p"
+        },
+        "duration": {
+          "values": [
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15
+          ]
+        },
+        "ratios": {
+          "values": [
+            "16:9",
+            "9:16",
+            "4:3",
+            "1:1",
+            "3:4"
+          ],
+          "default": "16:9"
+        }
+      },
+      "9图系列-sd2.5": {
+        "kind": "video",
+        "references": {
+          "image": 9,
+          "video": 3,
+          "audio": 3
+        },
+        "sources": [
+          "https://video.catcode.top/docs",
+          "https://video.catcode.top/v1/models"
+        ],
+        "notes": [],
+        "resolutions": {
+          "values": [
+            "720p"
+          ],
+          "default": "720p"
+        },
+        "duration": {
+          "values": [
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30
+          ]
+        },
+        "ratios": {
+          "values": [
+            "16:9",
+            "9:16",
+            "21:9",
+            "4:3",
+            "3:4"
+          ],
+          "default": "16:9"
+        },
+        "maxTotal": 12
+      },
+      "Y-sd2.5-1080按次": {
+        "kind": "video",
+        "references": {
+          "image": 9,
+          "video": 0,
+          "audio": 3
+        },
+        "sources": [
+          "https://video.catcode.top/docs",
+          "https://video.catcode.top/v1/models"
+        ],
+        "notes": [],
+        "resolutions": {
+          "values": [
+            "1080p"
+          ],
+          "default": "1080p"
+        },
+        "duration": {
+          "values": [
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30
+          ]
+        },
+        "ratios": {
+          "values": [
+            "16:9",
+            "9:16",
+            "4:3",
+            "21:9",
+            "3:4"
+          ],
+          "default": "16:9"
+        }
+      },
+      "Z-sd2.5-480": {
+        "kind": "video",
+        "references": {
+          "image": 30,
+          "video": 10,
+          "audio": 10
+        },
+        "sources": [
+          "https://video.catcode.top/docs",
+          "https://video.catcode.top/v1/models"
+        ],
+        "notes": [],
+        "resolutions": {
+          "values": [
+            "480p"
+          ],
+          "default": "480p"
+        },
+        "duration": {
+          "values": [
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30
+          ]
+        },
+        "ratios": {
+          "values": [
+            "16:9",
+            "9:16",
+            "4:3",
+            "21:9",
+            "3:4"
+          ],
+          "default": "16:9"
+        }
+      },
+      "Z-sd2.5-720": {
+        "kind": "video",
+        "references": {
+          "image": 30,
+          "video": 10,
+          "audio": 10
+        },
+        "sources": [
+          "https://video.catcode.top/docs",
+          "https://video.catcode.top/v1/models"
+        ],
+        "notes": [],
+        "resolutions": {
+          "values": [
+            "720p"
+          ],
+          "default": "720p"
+        },
+        "duration": {
+          "values": [
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30
+          ]
+        },
+        "ratios": {
+          "values": [
+            "16:9",
+            "9:16",
+            "4:3",
+            "21:9",
+            "3:4"
+          ],
+          "default": "16:9"
+        }
+      },
+      "sd-2.0-933-X": {
+        "kind": "video",
+        "references": {
+          "image": 9,
+          "video": 0,
+          "audio": 3
+        },
+        "sources": [
+          "https://video.catcode.top/docs",
+          "https://video.catcode.top/v1/models"
+        ],
+        "notes": [],
+        "resolutions": {
+          "values": [
+            "720p"
+          ],
+          "default": "720p"
+        },
+        "duration": {
+          "values": [
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15
+          ]
+        },
+        "ratios": {
+          "values": [
+            "16:9",
+            "9:16",
+            "21:9",
+            "3:4",
+            "4:3"
+          ],
+          "default": "16:9"
+        }
+      },
+      "sd-2.0-933-Xs": {
+        "kind": "video",
+        "references": {
+          "image": 9,
+          "video": 3,
+          "audio": 3
+        },
+        "sources": [
+          "https://video.catcode.top/docs",
+          "https://video.catcode.top/v1/models"
+        ],
+        "notes": [],
+        "resolutions": {
+          "values": [
+            "720p"
+          ],
+          "default": "720p"
+        },
+        "duration": {
+          "values": [
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15
+          ]
+        },
+        "ratios": {
+          "values": [
+            "16:9",
+            "9:16",
+            "21:9",
+            "3:4",
+            "4:3"
+          ],
+          "default": "16:9"
+        }
+      },
+      "sd-2.0-933-Xs按次": {
+        "kind": "video",
+        "references": {
+          "image": 9,
+          "video": 3,
+          "audio": 3
+        },
+        "sources": [
+          "https://video.catcode.top/docs",
+          "https://video.catcode.top/v1/models"
+        ],
+        "notes": [],
+        "resolutions": {
+          "values": [
+            "720p"
+          ],
+          "default": "720p"
+        },
+        "duration": {
+          "values": [
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15
+          ]
+        },
+        "ratios": {
+          "values": [
+            "16:9",
+            "9:16",
+            "21:9",
+            "3:4",
+            "4:3"
+          ],
+          "default": "16:9"
+        }
+      },
+      "sd-2.0-933-max": {
+        "kind": "video",
+        "references": {
+          "image": 9,
+          "video": 3,
+          "audio": 3
+        },
+        "sources": [
+          "https://video.catcode.top/docs",
+          "https://video.catcode.top/v1/models"
+        ],
+        "notes": [],
+        "resolutions": {
+          "values": [
+            "720p"
+          ],
+          "default": "720p"
+        },
+        "duration": {
+          "values": [
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15
+          ]
+        },
+        "ratios": {
+          "values": [
+            "16:9",
+            "9:16",
+            "4:3",
+            "3:4",
+            "21:9"
+          ],
+          "default": "16:9"
+        }
+      },
+      "sd-2.5-301010-720p": {
+        "kind": "video",
+        "references": {
+          "image": 30,
+          "video": 10,
+          "audio": 10
+        },
+        "sources": [
+          "https://video.catcode.top/docs",
+          "https://video.catcode.top/v1/models"
+        ],
+        "notes": [],
+        "resolutions": {
+          "values": [
+            "720p"
+          ],
+          "default": "720p"
+        },
+        "duration": {
+          "values": [
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30
+          ]
+        },
+        "ratios": {
+          "values": [
+            "16:9",
+            "9:16",
+            "21:9",
+            "4:3",
+            "3:4"
+          ],
+          "default": "16:9"
+        }
+      },
+      "sd-2.5-301010-X": {
+        "kind": "video",
+        "references": {
+          "image": 30,
+          "video": 10,
+          "audio": 10
+        },
+        "sources": [
+          "https://video.catcode.top/docs",
+          "https://video.catcode.top/v1/models"
+        ],
+        "notes": [],
+        "resolutions": {
+          "values": [
+            "720p"
+          ],
+          "default": "720p"
+        },
+        "duration": {
+          "values": [
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30
+          ]
+        },
+        "ratios": {
+          "values": [
+            "16:9",
+            "9:16",
+            "21:9",
+            "4:3",
+            "3:4"
+          ],
+          "default": "16:9"
+        }
+      },
+      "sd-2.5-301010-按次": {
+        "kind": "video",
+        "references": {
+          "image": 30,
+          "video": 10,
+          "audio": 10
+        },
+        "sources": [
+          "https://video.catcode.top/docs",
+          "https://video.catcode.top/v1/models"
+        ],
+        "notes": [],
+        "resolutions": {
+          "values": [
+            "720p"
+          ],
+          "default": "720p"
+        },
+        "duration": {
+          "values": [
+            30
+          ]
+        },
+        "ratios": {
+          "values": [
+            "16:9",
+            "9:16",
+            "21:9",
+            "4:3",
+            "3:4"
+          ],
+          "default": "16:9"
+        }
+      },
+      "sd-2.5-480p按次": {
+        "kind": "video",
+        "references": {
+          "image": 30,
+          "video": 10,
+          "audio": 10
+        },
+        "sources": [
+          "https://video.catcode.top/docs",
+          "https://video.catcode.top/v1/models"
+        ],
+        "notes": [],
+        "resolutions": {
+          "values": [
+            "480p"
+          ],
+          "default": "480p"
+        },
+        "duration": {
+          "values": [
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25
+          ]
+        },
+        "ratios": {
+          "values": [
+            "16:9",
+            "9:16",
+            "4:3",
+            "21:9",
+            "3:4"
+          ],
+          "default": "16:9"
+        }
+      },
+      "sd-2.5-gz": {
+        "kind": "video",
+        "references": {
+          "image": 30,
+          "video": 10,
+          "audio": 10
+        },
+        "sources": [
+          "https://video.catcode.top/docs",
+          "https://video.catcode.top/v1/models"
+        ],
+        "notes": [],
+        "resolutions": {
+          "values": [
+            "720p"
+          ],
+          "default": "720p"
+        },
+        "duration": {
+          "values": [
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30
+          ]
+        },
+        "ratios": {
+          "values": [
+            "16:9",
+            "9:16",
+            "21:9",
+            "4:3",
+            "3:4"
+          ],
+          "default": "16:9"
+        }
+      },
+      "sd2.0-mini": {
+        "kind": "video",
+        "references": {
+          "image": 5,
+          "video": 0,
+          "audio": 3
+        },
+        "sources": [
+          "https://video.catcode.top/docs",
+          "https://video.catcode.top/v1/models"
+        ],
+        "notes": [],
+        "resolutions": {
+          "values": [
+            "720p"
+          ],
+          "default": "720p"
+        },
+        "duration": {
+          "values": [
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12
+          ]
+        },
+        "ratios": {
+          "values": [
+            "16:9",
+            "9:16",
+            "4:3",
+            "1:1",
+            "3:4",
+            "21:9"
+          ],
+          "default": "16:9"
+        }
+      },
+      "Minimax H3": {
+        "kind": "video",
+        "references": {
+          "image": 9,
+          "video": 3,
+          "audio": 3
+        },
+        "sources": [
+          "https://video.catcode.top/docs",
+          "https://video.catcode.top/v1/models"
+        ],
+        "notes": [],
+        "resolutions": {
+          "values": [
+            "1080p"
+          ],
+          "default": "1080p"
+        },
+        "duration": {
+          "values": [
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15
+          ]
+        },
+        "ratios": {
+          "values": [
+            "16:9",
+            "9:16",
+            "21:9",
+            "4:3",
+            "3:4"
+          ],
+          "default": "16:9"
+        },
+        "maxTotal": 12
+      },
+      "Minimax H3-768p": {
+        "kind": "video",
+        "references": {
+          "image": 9,
+          "video": 3,
+          "audio": 3
+        },
+        "sources": [
+          "https://video.catcode.top/docs",
+          "https://video.catcode.top/v1/models"
+        ],
+        "notes": [],
+        "resolutions": {
+          "values": [
+            "768p"
+          ],
+          "default": "768p"
+        },
+        "duration": {
+          "values": [
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15
+          ]
+        },
+        "ratios": {
+          "values": [
+            "16:9",
+            "9:16",
+            "21:9",
+            "4:3",
+            "3:4"
+          ],
+          "default": "16:9"
+        }
+      },
+      "Nano Banana Pro": {
+        "kind": "image",
+        "references": {
+          "image": 0
+        },
+        "sources": [
+          "https://video.catcode.top/docs",
+          "https://video.catcode.top/v1/models"
+        ],
+        "notes": [
+          "每次生成 1 张图片。"
+        ],
+        "resolutions": {
+          "values": [
+            "1K",
+            "2K",
+            "4K"
+          ],
+          "default": "1K"
+        },
+        "ratios": {
+          "values": [
+            "16:9",
+            "9:16",
+            "3:4",
+            "4:3",
+            "1:1"
+          ],
+          "default": "16:9"
+        },
+        "quality": {
+          "values": [
+            "auto"
+          ],
+          "default": "auto"
+        }
+      },
+      "Nano Banana2": {
+        "kind": "image",
+        "references": {
+          "image": 0
+        },
+        "sources": [
+          "https://video.catcode.top/docs",
+          "https://video.catcode.top/v1/models"
+        ],
+        "notes": [
+          "每次生成 1 张图片。"
+        ],
+        "resolutions": {
+          "values": [
+            "1K",
+            "2K",
+            "4K"
+          ],
+          "default": "1K"
+        },
+        "ratios": {
+          "values": [
+            "16:9",
+            "9:16",
+            "3:4",
+            "4:3",
+            "1:1"
+          ],
+          "default": "16:9"
+        },
+        "quality": {
+          "values": [
+            "auto"
+          ],
+          "default": "auto"
+        }
+      },
+      "Nano Banana2.1": {
+        "kind": "image",
+        "references": {
+          "image": 0
+        },
+        "sources": [
+          "https://video.catcode.top/docs",
+          "https://video.catcode.top/v1/models"
+        ],
+        "notes": [
+          "每次生成 1 张图片。"
+        ],
+        "resolutions": {
+          "values": [
+            "1K",
+            "2K",
+            "4K"
+          ],
+          "default": "1K"
+        },
+        "ratios": {
+          "values": [
+            "16:9",
+            "9:16",
+            "3:4",
+            "4:3",
+            "1:1"
+          ],
+          "default": "16:9"
+        },
+        "quality": {
+          "values": [
+            "auto"
+          ],
+          "default": "auto"
+        }
+      },
+      "Seedream 5.0 Pro": {
+        "kind": "image",
+        "references": {
+          "image": 0
+        },
+        "sources": [
+          "https://video.catcode.top/docs",
+          "https://video.catcode.top/v1/models"
+        ],
+        "notes": [
+          "每次生成 1 张图片。"
+        ],
+        "resolutions": {
+          "values": [
+            "1K",
+            "2K"
+          ],
+          "default": "1K"
+        },
+        "ratios": {
+          "values": [
+            "16:9",
+            "9:16",
+            "3:4",
+            "4:3",
+            "1:1"
+          ],
+          "default": "16:9"
+        },
+        "quality": {
+          "values": [
+            "auto"
+          ],
+          "default": "auto"
+        }
+      },
+      "kling-4.0": {
+        "kind": "video",
+        "references": {
+          "image": 10,
+          "video": 5,
+          "audio": 3
+        },
+        "sources": [
+          "https://video.catcode.top/docs",
+          "https://video.catcode.top/v1/models"
+        ],
+        "notes": [],
+        "resolutions": {
+          "values": [
+            "1080p"
+          ],
+          "default": "1080p"
+        },
+        "duration": {
+          "values": [
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30
+          ]
+        },
+        "ratios": {
+          "values": [
+            "16:9",
+            "9:16",
+            "21:9",
+            "4:3",
+            "3:4"
+          ],
+          "default": "16:9"
+        }
+      }
+    },
+    "wxart": {
+      "gpt-image-2-official": {
+        "kind": "image",
+        "references": {},
+        "sources": [
+          "https://wxart.space/console/docs"
+        ],
+        "notes": [
+          "渠道未公开此模型的参考素材数量上限，提交前请确认。"
+        ]
+      },
+      "minimax-h3": {
+        "kind": "video",
+        "references": {
+          "image": 9,
+          "video": 3,
+          "audio": 3
+        },
+        "sources": [
+          "https://wxart.space/console/docs"
+        ],
+        "notes": [
+          "参考视频总时长不超过 15 秒。"
+        ],
+        "maxTotal": 12,
+        "duration": {
+          "min": 4,
+          "max": 15
+        },
+        "resolutions": {
+          "values": [
+            "768p",
+            "2k"
+          ],
+          "default": "768p"
+        }
+      },
+      "nano-banana-pro": {
+        "kind": "image",
+        "references": {},
+        "sources": [
+          "https://wxart.space/console/docs"
+        ],
+        "notes": [
+          "渠道未公开此模型的参考素材数量上限，提交前请确认。"
+        ]
+      },
+      "nano-banana2": {
+        "kind": "image",
+        "references": {},
+        "sources": [
+          "https://wxart.space/console/docs"
+        ],
+        "notes": [
+          "渠道未公开此模型的参考素材数量上限，提交前请确认。"
+        ]
+      },
+      "omni-flash": {
+        "kind": "video",
+        "references": {},
+        "sources": [
+          "https://wxart.space/console/docs"
+        ],
+        "notes": [
+          "渠道未公开此模型的参考素材数量上限，提交前请确认。"
+        ]
+      },
+      "sd2": {
+        "kind": "video",
+        "references": {},
+        "sources": [
+          "https://wxart.space/console/docs"
+        ],
+        "notes": [
+          "渠道未公开此模型的参考素材数量上限，提交前请确认。"
+        ]
+      },
+      "seedance2.0": {
+        "kind": "video",
+        "references": {
+          "image": 9,
+          "video": 3,
+          "audio": 3
+        },
+        "sources": [
+          "https://wxart.space/console/docs"
+        ],
+        "notes": [
+          "参考视频总时长不超过 15 秒。"
+        ],
+        "maxTotal": 12,
+        "duration": {
+          "min": 4,
+          "max": 15
+        },
+        "resolutions": {
+          "values": [
+            "480p",
+            "720p",
+            "1080p",
+            "4K"
+          ],
+          "default": "720p"
+        }
+      },
+      "seedance2.5": {
+        "kind": "video",
+        "references": {
+          "image": 30,
+          "video": 10,
+          "audio": 10
+        },
+        "sources": [
+          "https://wxart.space/console/docs"
+        ],
+        "notes": [
+          "参考视频总时长不超过 30 秒。"
+        ],
+        "maxTotal": 50,
+        "duration": {
+          "min": 4,
+          "max": 30
+        },
+        "resolutions": {
+          "values": [
+            "480p",
+            "720p",
+            "1080p"
+          ],
+          "default": "720p"
+        }
+      },
+      "veo3.1": {
+        "kind": "video",
+        "references": {},
+        "sources": [
+          "https://wxart.space/console/docs"
+        ],
+        "notes": [
+          "渠道未公开此模型的参考素材数量上限，提交前请确认。"
+        ]
+      },
+      "veo3.1-fast": {
+        "kind": "video",
+        "references": {},
+        "sources": [
+          "https://wxart.space/console/docs"
+        ],
+        "notes": [
+          "渠道未公开此模型的参考素材数量上限，提交前请确认。"
+        ]
+      },
+      "veo3.1-lite": {
+        "kind": "video",
+        "references": {},
+        "sources": [
+          "https://wxart.space/console/docs"
+        ],
+        "notes": [
+          "渠道未公开此模型的参考素材数量上限，提交前请确认。"
+        ]
+      },
+      "veo3.1-pre": {
+        "kind": "video",
+        "references": {},
+        "sources": [
+          "https://wxart.space/console/docs"
+        ],
+        "notes": [
+          "渠道未公开此模型的参考素材数量上限，提交前请确认。"
+        ]
+      }
+    }
+  }
+}

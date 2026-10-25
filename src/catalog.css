@@ -1,0 +1,220 @@
+/* Keep model capabilities readable directly in the catalog. */
+.image-output-note {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.7;
+  margin: -5px 0 16px;
+}
+.catalog-page .catalog-grid {
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 350px), 1fr));
+  gap: 20px;
+}
+.catalog-page .catalog-card {
+  padding: 22px 22px 0;
+}
+.catalog-page .catalog-card h3 {
+  min-height: 0;
+  overflow-wrap: anywhere;
+}
+.catalog-page .catalog-card > .catalog-description {
+  display: block;
+  -webkit-line-clamp: unset;
+  overflow: visible;
+  min-height: 0;
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+  margin: 0 0 20px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.85;
+}
+.model-capabilities {
+  padding: 18px 0;
+  border-top: 1px solid var(--border);
+}
+.model-reference-heading {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 11px;
+  color: var(--muted);
+  margin-bottom: 10px;
+}
+.model-reference-heading small {
+  font-size: inherit;
+}
+.model-reference-limits {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin-bottom: 18px;
+}
+.model-reference-limits.single {
+  grid-template-columns: minmax(0, 1fr);
+}
+.model-reference-limits > div {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 11px 12px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--input);
+}
+.model-reference-limits.single > div {
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+.model-reference-limits span {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--muted);
+  font-size: 11px;
+}
+.model-reference-limits strong {
+  color: var(--text);
+  font-size: 15px;
+  font-weight: 550;
+  font-variant-numeric: tabular-nums;
+}
+.model-reference-limits .is-unavailable strong {
+  font-size: 12px;
+  color: var(--muted);
+}
+.model-specification-list {
+  margin: 0;
+  display: grid;
+  gap: 12px;
+}
+.model-specification-list > div {
+  display: grid;
+  grid-template-columns: 64px minmax(0, 1fr);
+  align-items: baseline;
+  gap: 10px;
+  font-size: 12px;
+  line-height: 1.6;
+}
+.model-specification-list dt {
+  color: var(--muted);
+}
+.model-specification-list dd {
+  margin: 0;
+  color: var(--secondary);
+  overflow-wrap: anywhere;
+}
+.model-capability-values {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px 7px;
+}
+.model-capability-values > span {
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: var(--input);
+  color: var(--secondary);
+  font-size: 11px;
+}
+.catalog-page .catalog-spec-prices {
+  margin: 0 0 18px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+}
+.catalog-spec-prices h4 {
+  font-size: 11px;
+  color: var(--muted);
+  font-weight: 400;
+  margin: 0 0 6px;
+}
+.catalog-page .catalog-card-bottom {
+  margin-top: 0;
+}
+.model-status {
+  margin-top: auto;
+  padding: 16px 0;
+  border-top: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+.model-status-top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px 12px;
+}
+.model-status-rate {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+}
+.model-status strong {
+  font-size: inherit;
+  font-weight: 500;
+}
+.model-status .succeeded {
+  color: var(--accent);
+}
+.model-status .failed {
+  color: var(--pink);
+}
+.model-status .mixed {
+  color: var(--gold);
+}
+.model-status-recent {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+.model-status-recent > strong {
+  color: var(--secondary);
+}
+.model-status-bars {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  height: 16px;
+}
+.model-status-bars > i {
+  display: block;
+  width: 3px;
+  height: 14px;
+  border-radius: 1px;
+  background: var(--border-strong);
+}
+.model-status-bars > .succeeded {
+  background: var(--accent);
+}
+.model-status-bars > .failed {
+  background: var(--pink);
+  height: 10px;
+}
+.model-status-duration {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 7px;
+  margin-top: 11px;
+  font-size: 11px;
+}
+.model-status-duration > small {
+  margin-left: auto;
+  font-size: 10px;
+}
+@media (max-width: 767px) {
+  .catalog-page .catalog-grid {
+    gap: 14px;
+  }
+  .catalog-page .catalog-card {
+    padding: 18px 16px 0;
+  }
+  .catalog-page .catalog-card h3 {
+    font-size: 15px;
+  }
+  .catalog-page .catalog-card > code {
+    margin-bottom: 12px;
+  }
+}

@@ -1,0 +1,12 @@
+node_modules
+data
+dist
+dist-server
+test-results
+.git
+.env
+.local-credentials.json
+*.log
+.tools
+bin
+legacy

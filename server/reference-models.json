@@ -1,0 +1,3712 @@
+[
+  {
+    "model_id": "sd2.0-933-op",
+    "display_name": "OP渠道-Video Pro（9图3音3视）",
+    "type": "video",
+    "description": "按次计费，后台过人脸，原生分辨率，纯满血，带数字水印，4-15秒 ",
+    "params_schema": [
+      {
+        "name": "prompt",
+        "type": "string",
+        "label": "提示词",
+        "required": true
+      },
+      {
+        "name": "aspectRatio",
+        "type": "select",
+        "label": "尺寸",
+        "default": "16:9",
+        "options": [
+          {
+            "l": "1:1",
+            "v": "1:1"
+          },
+          {
+            "l": "16:9",
+            "v": "16:9"
+          },
+          {
+            "l": "9:16",
+            "v": "9:16"
+          },
+          {
+            "l": "3:4",
+            "v": "3:4"
+          },
+          {
+            "l": "4:3",
+            "v": "4:3"
+          },
+          {
+            "l": "21:9",
+            "v": "21:9"
+          }
+        ],
+        "required": true
+      },
+      {
+        "name": "resolution",
+        "type": "select",
+        "label": "分辨率",
+        "default": "720p",
+        "options": [
+          {
+            "l": "480p",
+            "v": "480p"
+          },
+          {
+            "l": "720p",
+            "v": "720p"
+          },
+          {
+            "l": "1080p",
+            "v": "1080p"
+          },
+          {
+            "l": "4k",
+            "v": "4k"
+          }
+        ],
+        "required": true
+      },
+      {
+        "name": "duration",
+        "type": "select",
+        "label": "时长",
+        "default": 15,
+        "options": [
+          {
+            "l": "4秒",
+            "v": 4
+          },
+          {
+            "l": "5秒",
+            "v": 5
+          },
+          {
+            "l": "6秒",
+            "v": 6
+          },
+          {
+            "l": "7秒",
+            "v": 7
+          },
+          {
+            "l": "8秒",
+            "v": 8
+          },
+          {
+            "l": "9秒",
+            "v": 9
+          },
+          {
+            "l": "10秒",
+            "v": 10
+          },
+          {
+            "l": "11秒",
+            "v": 11
+          },
+          {
+            "l": "12秒",
+            "v": 12
+          },
+          {
+            "l": "13秒",
+            "v": 13
+          },
+          {
+            "l": "14秒",
+            "v": 14
+          },
+          {
+            "l": "15秒",
+            "v": 15
+          }
+        ],
+        "required": true
+      },
+      {
+        "max": 9,
+        "name": "imageUrls",
+        "type": "[]string",
+        "label": "参考图片",
+        "itemType": "image"
+      },
+      {
+        "max": 3,
+        "name": "videoUrls",
+        "type": "[]string",
+        "label": "参考视频",
+        "itemType": "video"
+      },
+      {
+        "max": 3,
+        "name": "audioUrls",
+        "type": "[]string",
+        "label": "参考音频",
+        "itemType": "audio"
+      },
+      {
+        "name": "faceMode",
+        "type": "boolean",
+        "label": "关闭后台过脸",
+        "default": false
+      }
+    ],
+    "pricing": [
+      {
+        "id": 0,
+        "model_id": "sd2.0-933-op",
+        "size_key": "per_use:resolution:480p",
+        "credits": "30.0000",
+        "description": null,
+        "is_active": 1
+      },
+      {
+        "id": 0,
+        "model_id": "sd2.0-933-op",
+        "size_key": "per_use:resolution:720p",
+        "credits": "38.0000",
+        "description": null,
+        "is_active": 1
+      },
+      {
+        "id": 0,
+        "model_id": "sd2.0-933-op",
+        "size_key": "per_use:resolution:1080p",
+        "credits": "60.0000",
+        "description": null,
+        "is_active": 1
+      },
+      {
+        "id": 0,
+        "model_id": "sd2.0-933-op",
+        "size_key": "per_use:resolution:4k",
+        "credits": "150.0000",
+        "description": null,
+        "is_active": 1
+      }
+    ],
+    "groups": [
+      {
+        "id": 15,
+        "name": "OP渠道",
+        "sort_order": 2,
+        "model_sort_order": 1
+      }
+    ],
+    "sort_order": 30
+  },
+  {
+    "model_id": "sd2.0-933-oc",
+    "display_name": "CC渠道2-Video Pro（9图3音3视）",
+    "type": "video",
+    "description": "按次计费，原生过人脸，原生分辨率，其他线路渠道，4-15秒 ",
+    "params_schema": [
+      {
+        "name": "prompt",
+        "type": "string",
+        "label": "提示词",
+        "required": true
+      },
+      {
+        "name": "aspectRatio",
+        "type": "select",
+        "label": "尺寸",
+        "default": "16:9",
+        "options": [
+          {
+            "l": "1:1",
+            "v": "1:1"
+          },
+          {
+            "l": "16:9",
+            "v": "16:9"
+          },
+          {
+            "l": "9:16",
+            "v": "9:16"
+          },
+          {
+            "l": "3:4",
+            "v": "3:4"
+          },
+          {
+            "l": "4:3",
+            "v": "4:3"
+          },
+          {
+            "l": "21:9",
+            "v": "21:9"
+          }
+        ],
+        "required": true
+      },
+      {
+        "name": "duration",
+        "type": "select",
+        "label": "时长",
+        "default": 15,
+        "options": [
+          {
+            "l": "4秒",
+            "v": 4
+          },
+          {
+            "l": "5秒",
+            "v": 5
+          },
+          {
+            "l": "6秒",
+            "v": 6
+          },
+          {
+            "l": "7秒",
+            "v": 7
+          },
+          {
+            "l": "8秒",
+            "v": 8
+          },
+          {
+            "l": "9秒",
+            "v": 9
+          },
+          {
+            "l": "10秒",
+            "v": 10
+          },
+          {
+            "l": "11秒",
+            "v": 11
+          },
+          {
+            "l": "12秒",
+            "v": 12
+          },
+          {
+            "l": "13秒",
+            "v": 13
+          },
+          {
+            "l": "14秒",
+            "v": 14
+          },
+          {
+            "l": "15秒",
+            "v": 15
+          }
+        ],
+        "required": true
+      },
+      {
+        "max": 9,
+        "name": "imageUrls",
+        "type": "[]string",
+        "label": "参考图片",
+        "itemType": "image"
+      },
+      {
+        "max": 3,
+        "name": "videoUrls",
+        "type": "[]string",
+        "label": "参考视频",
+        "itemType": "video"
+      },
+      {
+        "max": 3,
+        "name": "audioUrls",
+        "type": "[]string",
+        "label": "参考音频",
+        "itemType": "audio"
+      }
+    ],
+    "pricing": [
+      {
+        "id": 0,
+        "model_id": "sd2.0-933-oc",
+        "size_key": "per_use",
+        "credits": "38.0000",
+        "description": null,
+        "is_active": 1
+      }
+    ],
+    "groups": [
+      {
+        "id": 12,
+        "name": "CC渠道",
+        "sort_order": 4,
+        "model_sort_order": 2
+      }
+    ],
+    "sort_order": 50
+  },
+  {
+    "model_id": "wan3.0",
+    "display_name": "CC渠道-Wan3.0（10图5音5视）",
+    "type": "video",
+    "description": "按次计费，原生过人脸，原生分辨率，其他线路渠道，4-30秒 ",
+    "params_schema": [
+      {
+        "name": "prompt",
+        "type": "string",
+        "label": "提示词",
+        "required": true
+      },
+      {
+        "name": "aspectRatio",
+        "type": "select",
+        "label": "尺寸",
+        "default": "16:9",
+        "options": [
+          {
+            "l": "1:1",
+            "v": "1:1"
+          },
+          {
+            "l": "16:9",
+            "v": "16:9"
+          },
+          {
+            "l": "9:16",
+            "v": "9:16"
+          },
+          {
+            "l": "3:4",
+            "v": "3:4"
+          },
+          {
+            "l": "4:3",
+            "v": "4:3"
+          },
+          {
+            "l": "21:9",
+            "v": "21:9"
+          }
+        ],
+        "required": true
+      },
+      {
+        "name": "resolution",
+        "type": "select",
+        "label": "分辨率",
+        "default": "1080p",
+        "options": [
+          {
+            "l": "720p",
+            "v": "720p"
+          },
+          {
+            "l": "1080p",
+            "v": "1080p"
+          }
+        ],
+        "required": true
+      },
+      {
+        "name": "duration",
+        "type": "select",
+        "label": "时长",
+        "default": 30,
+        "options": [
+          {
+            "l": "5秒",
+            "v": 5
+          },
+          {
+            "l": "6秒",
+            "v": 6
+          },
+          {
+            "l": "7秒",
+            "v": 7
+          },
+          {
+            "l": "8秒",
+            "v": 8
+          },
+          {
+            "l": "9秒",
+            "v": 9
+          },
+          {
+            "l": "10秒",
+            "v": 10
+          },
+          {
+            "l": "11秒",
+            "v": 11
+          },
+          {
+            "l": "12秒",
+            "v": 12
+          },
+          {
+            "l": "13秒",
+            "v": 13
+          },
+          {
+            "l": "14秒",
+            "v": 14
+          },
+          {
+            "l": "15秒",
+            "v": 15
+          },
+          {
+            "l": "16秒",
+            "v": 16
+          },
+          {
+            "l": "17秒",
+            "v": 17
+          },
+          {
+            "l": "18秒",
+            "v": 18
+          },
+          {
+            "l": "19秒",
+            "v": 19
+          },
+          {
+            "l": "20秒",
+            "v": 20
+          },
+          {
+            "l": "21秒",
+            "v": 21
+          },
+          {
+            "l": "22秒",
+            "v": 22
+          },
+          {
+            "l": "23秒",
+            "v": 23
+          },
+          {
+            "l": "24秒",
+            "v": 24
+          },
+          {
+            "l": "25秒",
+            "v": 25
+          },
+          {
+            "l": "26秒",
+            "v": 26
+          },
+          {
+            "l": "27秒",
+            "v": 27
+          },
+          {
+            "l": "28秒",
+            "v": 28
+          },
+          {
+            "l": "29秒",
+            "v": 29
+          },
+          {
+            "l": "30秒",
+            "v": 30
+          }
+        ],
+        "required": true
+      },
+      {
+        "max": 9,
+        "name": "imageUrls",
+        "type": "[]string",
+        "label": "参考图片",
+        "itemType": "image"
+      },
+      {
+        "max": 3,
+        "name": "videoUrls",
+        "type": "[]string",
+        "label": "参考视频",
+        "itemType": "video"
+      },
+      {
+        "max": 3,
+        "name": "audioUrls",
+        "type": "[]string",
+        "label": "参考音频",
+        "itemType": "audio"
+      }
+    ],
+    "pricing": [
+      {
+        "id": 0,
+        "model_id": "wan3.0",
+        "size_key": "per_use",
+        "credits": "45.0000",
+        "description": null,
+        "is_active": 1
+      }
+    ],
+    "groups": [
+      {
+        "id": 12,
+        "name": "CC渠道",
+        "sort_order": 4,
+        "model_sort_order": 3
+      }
+    ],
+    "sort_order": 51
+  },
+  {
+    "model_id": "sd2.0-933-qd",
+    "display_name": "QD渠道-Video Pro（9图3音3视）",
+    "type": "video",
+    "description": "按秒计费，原生过人脸，原生分辨率，纯满血，带数字水印，4-15秒 ",
+    "params_schema": [
+      {
+        "name": "prompt",
+        "type": "string",
+        "label": "提示词",
+        "required": true
+      },
+      {
+        "name": "aspectRatio",
+        "type": "select",
+        "label": "尺寸",
+        "default": "16:9",
+        "options": [
+          {
+            "l": "1:1",
+            "v": "1:1"
+          },
+          {
+            "l": "16:9",
+            "v": "16:9"
+          },
+          {
+            "l": "9:16",
+            "v": "9:16"
+          },
+          {
+            "l": "3:4",
+            "v": "3:4"
+          },
+          {
+            "l": "4:3",
+            "v": "4:3"
+          },
+          {
+            "l": "21:9",
+            "v": "21:9"
+          }
+        ],
+        "required": true
+      },
+      {
+        "name": "resolution",
+        "type": "select",
+        "label": "分辨率",
+        "default": "720p",
+        "options": [
+          {
+            "l": "480p",
+            "v": "480p"
+          },
+          {
+            "l": "720p",
+            "v": "720p"
+          },
+          {
+            "l": "1080p",
+            "v": "1080p"
+          }
+        ],
+        "required": true
+      },
+      {
+        "name": "duration",
+        "type": "select",
+        "label": "时长",
+        "default": 15,
+        "options": [
+          {
+            "l": "4秒",
+            "v": 4
+          },
+          {
+            "l": "5秒",
+            "v": 5
+          },
+          {
+            "l": "6秒",
+            "v": 6
+          },
+          {
+            "l": "7秒",
+            "v": 7
+          },
+          {
+            "l": "8秒",
+            "v": 8
+          },
+          {
+            "l": "9秒",
+            "v": 9
+          },
+          {
+            "l": "10秒",
+            "v": 10
+          },
+          {
+            "l": "11秒",
+            "v": 11
+          },
+          {
+            "l": "12秒",
+            "v": 12
+          },
+          {
+            "l": "13秒",
+            "v": 13
+          },
+          {
+            "l": "14秒",
+            "v": 14
+          },
+          {
+            "l": "15秒",
+            "v": 15
+          }
+        ],
+        "required": true
+      },
+      {
+        "max": 9,
+        "name": "imageUrls",
+        "type": "[]string",
+        "label": "参考图片",
+        "itemType": "image"
+      },
+      {
+        "max": 3,
+        "name": "videoUrls",
+        "type": "[]string",
+        "label": "参考视频",
+        "itemType": "video"
+      },
+      {
+        "max": 3,
+        "name": "audioUrls",
+        "type": "[]string",
+        "label": "参考音频",
+        "itemType": "audio"
+      }
+    ],
+    "pricing": [
+      {
+        "id": 0,
+        "model_id": "sd2.0-933-qd",
+        "size_key": "per_sec:resolution:480p",
+        "credits": "3.5000",
+        "description": null,
+        "is_active": 1
+      },
+      {
+        "id": 0,
+        "model_id": "sd2.0-933-qd",
+        "size_key": "per_sec:resolution:720p",
+        "credits": "4.5000",
+        "description": null,
+        "is_active": 1
+      },
+      {
+        "id": 0,
+        "model_id": "sd2.0-933-qd",
+        "size_key": "per_sec:resolution:1080p",
+        "credits": "9.5000",
+        "description": null,
+        "is_active": 1
+      }
+    ],
+    "groups": [
+      {
+        "id": 5,
+        "name": "QD渠道",
+        "sort_order": 3,
+        "model_sort_order": 2
+      }
+    ],
+    "sort_order": 56
+  },
+  {
+    "model_id": "nanobanana",
+    "display_name": "NanoBanana",
+    "type": "image",
+    "description": null,
+    "params_schema": [
+      {
+        "name": "aspectRatio",
+        "type": "select",
+        "label": "比例",
+        "default": "16:9",
+        "options": [
+          {
+            "l": "1:1",
+            "v": "1:1"
+          },
+          {
+            "l": "16:9",
+            "v": "16:9"
+          },
+          {
+            "l": "9:16",
+            "v": "9:16"
+          },
+          {
+            "l": "3:4",
+            "v": "3:4"
+          },
+          {
+            "l": "4:3",
+            "v": "4:3"
+          },
+          {
+            "l": "21:9",
+            "v": "21:9"
+          }
+        ],
+        "required": true
+      },
+      {
+        "max": 6,
+        "name": "imageUrls",
+        "type": "[]string",
+        "label": "参考图片",
+        "itemType": "image"
+      },
+      {
+        "name": "prompt",
+        "type": "string",
+        "label": "提示词",
+        "required": true
+      }
+    ],
+    "pricing": [
+      {
+        "id": 0,
+        "model_id": "nanobanana",
+        "size_key": "per_use",
+        "credits": "1.0000",
+        "description": null,
+        "is_active": 1
+      }
+    ],
+    "groups": [],
+    "sort_order": 59
+  },
+  {
+    "model_id": "seedream5.0",
+    "display_name": "Seedream 5.0",
+    "type": "image",
+    "description": "",
+    "params_schema": [
+      {
+        "name": "aspectRatio",
+        "type": "select",
+        "label": "比例",
+        "default": "16:9",
+        "options": [
+          {
+            "l": "1:1",
+            "v": "1:1"
+          },
+          {
+            "l": "16:9",
+            "v": "16:9"
+          },
+          {
+            "l": "9:16",
+            "v": "9:16"
+          },
+          {
+            "l": "3:4",
+            "v": "3:4"
+          },
+          {
+            "l": "4:3",
+            "v": "4:3"
+          },
+          {
+            "l": "21:9",
+            "v": "21:9"
+          }
+        ],
+        "required": true
+      },
+      {
+        "max": 6,
+        "name": "imageUrls",
+        "type": "[]string",
+        "label": "参考图片",
+        "itemType": "image"
+      },
+      {
+        "name": "prompt",
+        "type": "string",
+        "label": "提示词",
+        "required": true
+      }
+    ],
+    "pricing": [
+      {
+        "id": 0,
+        "model_id": "seedream5.0",
+        "size_key": "per_use:resolution:2k",
+        "credits": "1.0000",
+        "description": null,
+        "is_active": 1
+      }
+    ],
+    "groups": [],
+    "sort_order": 60
+  },
+  {
+    "model_id": "gpt-image-2",
+    "display_name": "GPT-image-2",
+    "type": "image",
+    "description": "",
+    "params_schema": [
+      {
+        "name": "aspectRatio",
+        "type": "select",
+        "label": "比例",
+        "default": "16:9",
+        "options": [
+          {
+            "l": "1:1",
+            "v": "1:1"
+          },
+          {
+            "l": "16:9",
+            "v": "16:9"
+          },
+          {
+            "l": "9:16",
+            "v": "9:16"
+          },
+          {
+            "l": "3:4",
+            "v": "3:4"
+          },
+          {
+            "l": "4:3",
+            "v": "4:3"
+          },
+          {
+            "l": "21:9",
+            "v": "21:9"
+          }
+        ],
+        "required": true
+      },
+      {
+        "max": 6,
+        "name": "imageUrls",
+        "type": "[]string",
+        "label": "参考图片",
+        "itemType": "image"
+      },
+      {
+        "name": "prompt",
+        "type": "string",
+        "label": "提示词",
+        "required": true
+      }
+    ],
+    "pricing": [
+      {
+        "id": 0,
+        "model_id": "gpt-image-2",
+        "size_key": "per_use",
+        "credits": "1.0000",
+        "description": null,
+        "is_active": 1
+      }
+    ],
+    "groups": [],
+    "sort_order": 62
+  },
+  {
+    "model_id": "nano-banana-2",
+    "display_name": "Nano-Banana-2",
+    "type": "image",
+    "description": null,
+    "params_schema": [
+      {
+        "name": "aspectRatio",
+        "type": "select",
+        "label": "比例",
+        "default": "16:9",
+        "options": [
+          {
+            "l": "1:1",
+            "v": "1:1"
+          },
+          {
+            "l": "16:9",
+            "v": "16:9"
+          },
+          {
+            "l": "9:16",
+            "v": "9:16"
+          },
+          {
+            "l": "3:4",
+            "v": "3:4"
+          },
+          {
+            "l": "4:3",
+            "v": "4:3"
+          }
+        ],
+        "required": true
+      },
+      {
+        "max": 5,
+        "name": "imageUrls",
+        "type": "[]string",
+        "label": "参考图片",
+        "itemType": "image"
+      },
+      {
+        "name": "prompt",
+        "type": "string",
+        "label": "提示词",
+        "required": true
+      }
+    ],
+    "pricing": [
+      {
+        "id": 0,
+        "model_id": "nano-banana-2",
+        "size_key": "per_use",
+        "credits": "1.0000",
+        "description": null,
+        "is_active": 1
+      }
+    ],
+    "groups": [],
+    "sort_order": 63
+  },
+  {
+    "model_id": "sd2.5-qd",
+    "display_name": "QD渠道-Video 2.5（30图10音10视）",
+    "type": "video",
+    "description": "按秒计费，原生过人脸，原生分辨率，纯满血，带数字水印，4-30秒 ",
+    "params_schema": [
+      {
+        "name": "prompt",
+        "type": "string",
+        "label": "提示词",
+        "required": true
+      },
+      {
+        "name": "aspectRatio",
+        "type": "select",
+        "label": "尺寸",
+        "default": "16:9",
+        "options": [
+          {
+            "l": "1:1",
+            "v": "1:1"
+          },
+          {
+            "l": "16:9",
+            "v": "16:9"
+          },
+          {
+            "l": "9:16",
+            "v": "9:16"
+          },
+          {
+            "l": "3:4",
+            "v": "3:4"
+          },
+          {
+            "l": "4:3",
+            "v": "4:3"
+          },
+          {
+            "l": "21:9",
+            "v": "21:9"
+          }
+        ],
+        "required": true
+      },
+      {
+        "name": "resolution",
+        "type": "select",
+        "label": "分辨率",
+        "default": "720p",
+        "options": [
+          {
+            "l": "480p",
+            "v": "480p"
+          },
+          {
+            "l": "720p",
+            "v": "720p"
+          },
+          {
+            "l": "1080p",
+            "v": "1080p"
+          }
+        ],
+        "required": true
+      },
+      {
+        "name": "duration",
+        "type": "select",
+        "label": "时长",
+        "default": 30,
+        "options": [
+          {
+            "l": "4秒",
+            "v": 4
+          },
+          {
+            "l": "5秒",
+            "v": 5
+          },
+          {
+            "l": "6秒",
+            "v": 6
+          },
+          {
+            "l": "7秒",
+            "v": 7
+          },
+          {
+            "l": "8秒",
+            "v": 8
+          },
+          {
+            "l": "9秒",
+            "v": 9
+          },
+          {
+            "l": "10秒",
+            "v": 10
+          },
+          {
+            "l": "11秒",
+            "v": 11
+          },
+          {
+            "l": "12秒",
+            "v": 12
+          },
+          {
+            "l": "13秒",
+            "v": 13
+          },
+          {
+            "l": "14秒",
+            "v": 14
+          },
+          {
+            "l": "15秒",
+            "v": 15
+          },
+          {
+            "l": "16秒",
+            "v": 16
+          },
+          {
+            "l": "17秒",
+            "v": 17
+          },
+          {
+            "l": "18秒",
+            "v": 18
+          },
+          {
+            "l": "19秒",
+            "v": 19
+          },
+          {
+            "l": "20秒",
+            "v": 20
+          },
+          {
+            "l": "21秒",
+            "v": 21
+          },
+          {
+            "l": "22秒",
+            "v": 22
+          },
+          {
+            "l": "23秒",
+            "v": 23
+          },
+          {
+            "l": "24秒",
+            "v": 24
+          },
+          {
+            "l": "25秒",
+            "v": 25
+          },
+          {
+            "l": "26秒",
+            "v": 26
+          },
+          {
+            "l": "27秒",
+            "v": 27
+          },
+          {
+            "l": "28秒",
+            "v": 28
+          },
+          {
+            "l": "29秒",
+            "v": 29
+          },
+          {
+            "l": "30秒",
+            "v": 30
+          }
+        ],
+        "required": true
+      },
+      {
+        "max": 30,
+        "name": "imageUrls",
+        "type": "[]string",
+        "label": "参考图片",
+        "itemType": "image"
+      },
+      {
+        "max": 10,
+        "name": "videoUrls",
+        "type": "[]string",
+        "label": "参考视频",
+        "itemType": "video"
+      },
+      {
+        "max": 10,
+        "name": "audioUrls",
+        "type": "[]string",
+        "label": "参考音频",
+        "itemType": "audio"
+      }
+    ],
+    "pricing": [
+      {
+        "id": 0,
+        "model_id": "sd2.5-qd",
+        "size_key": "per_sec:resolution:480p",
+        "credits": "4.5000",
+        "description": null,
+        "is_active": 1
+      },
+      {
+        "id": 0,
+        "model_id": "sd2.5-qd",
+        "size_key": "per_sec:resolution:720p",
+        "credits": "6.5000",
+        "description": null,
+        "is_active": 1
+      },
+      {
+        "id": 0,
+        "model_id": "sd2.5-qd",
+        "size_key": "per_sec:resolution:1080p",
+        "credits": "12.5000",
+        "description": null,
+        "is_active": 1
+      }
+    ],
+    "groups": [
+      {
+        "id": 5,
+        "name": "QD渠道",
+        "sort_order": 3,
+        "model_sort_order": 6
+      }
+    ],
+    "sort_order": 64
+  },
+  {
+    "model_id": "sd2.0-933-oa",
+    "display_name": "CC渠道-Video Pro（9图3音3视）",
+    "type": "video",
+    "description": "按次计费，原生过人脸，原生分辨率，其他线路渠道，4-15秒 ",
+    "params_schema": [
+      {
+        "name": "prompt",
+        "type": "string",
+        "label": "提示词",
+        "required": true
+      },
+      {
+        "name": "aspectRatio",
+        "type": "select",
+        "label": "尺寸",
+        "default": "16:9",
+        "options": [
+          {
+            "l": "1:1",
+            "v": "1:1"
+          },
+          {
+            "l": "16:9",
+            "v": "16:9"
+          },
+          {
+            "l": "9:16",
+            "v": "9:16"
+          },
+          {
+            "l": "3:4",
+            "v": "3:4"
+          },
+          {
+            "l": "4:3",
+            "v": "4:3"
+          },
+          {
+            "l": "21:9",
+            "v": "21:9"
+          }
+        ],
+        "required": true
+      },
+      {
+        "name": "duration",
+        "type": "select",
+        "label": "时长",
+        "default": 15,
+        "options": [
+          {
+            "l": "4秒",
+            "v": 4
+          },
+          {
+            "l": "5秒",
+            "v": 5
+          },
+          {
+            "l": "6秒",
+            "v": 6
+          },
+          {
+            "l": "7秒",
+            "v": 7
+          },
+          {
+            "l": "8秒",
+            "v": 8
+          },
+          {
+            "l": "9秒",
+            "v": 9
+          },
+          {
+            "l": "10秒",
+            "v": 10
+          },
+          {
+            "l": "11秒",
+            "v": 11
+          },
+          {
+            "l": "12秒",
+            "v": 12
+          },
+          {
+            "l": "13秒",
+            "v": 13
+          },
+          {
+            "l": "14秒",
+            "v": 14
+          },
+          {
+            "l": "15秒",
+            "v": 15
+          }
+        ],
+        "required": true
+      },
+      {
+        "max": 9,
+        "name": "imageUrls",
+        "type": "[]string",
+        "label": "参考图片",
+        "itemType": "image"
+      },
+      {
+        "max": 3,
+        "name": "videoUrls",
+        "type": "[]string",
+        "label": "参考视频",
+        "itemType": "video"
+      },
+      {
+        "max": 3,
+        "name": "audioUrls",
+        "type": "[]string",
+        "label": "参考音频",
+        "itemType": "audio"
+      }
+    ],
+    "pricing": [
+      {
+        "id": 0,
+        "model_id": "sd2.0-933-oa",
+        "size_key": "per_use",
+        "credits": "50.0000",
+        "description": null,
+        "is_active": 1
+      }
+    ],
+    "groups": [
+      {
+        "id": 12,
+        "name": "CC渠道",
+        "sort_order": 4,
+        "model_sort_order": 1
+      }
+    ],
+    "sort_order": 74
+  },
+  {
+    "model_id": "minimax-h3",
+    "display_name": "MiniMax-H3（9图3音3视）",
+    "type": "video",
+    "description": "按次计费，原生过人脸，原生分辨率，4-15秒",
+    "params_schema": [
+      {
+        "name": "prompt",
+        "type": "string",
+        "label": "提示词",
+        "required": true
+      },
+      {
+        "name": "aspectRatio",
+        "type": "select",
+        "label": "尺寸",
+        "default": "16:9",
+        "options": [
+          {
+            "l": "1:1",
+            "v": "1:1"
+          },
+          {
+            "l": "16:9",
+            "v": "16:9"
+          },
+          {
+            "l": "9:16",
+            "v": "9:16"
+          },
+          {
+            "l": "3:4",
+            "v": "3:4"
+          },
+          {
+            "l": "4:3",
+            "v": "4:3"
+          },
+          {
+            "l": "21:9",
+            "v": "21:9"
+          }
+        ],
+        "required": true
+      },
+      {
+        "name": "resolution",
+        "type": "select",
+        "label": "分辨率",
+        "default": "768P",
+        "options": [
+          {
+            "l": "768p",
+            "v": "768P"
+          }
+        ]
+      },
+      {
+        "name": "duration",
+        "type": "select",
+        "label": "时长",
+        "default": 15,
+        "options": [
+          {
+            "l": "4秒",
+            "v": 4
+          },
+          {
+            "l": "5秒",
+            "v": 5
+          },
+          {
+            "l": "6秒",
+            "v": 6
+          },
+          {
+            "l": "7秒",
+            "v": 7
+          },
+          {
+            "l": "8秒",
+            "v": 8
+          },
+          {
+            "l": "9秒",
+            "v": 9
+          },
+          {
+            "l": "10秒",
+            "v": 10
+          },
+          {
+            "l": "11秒",
+            "v": 11
+          },
+          {
+            "l": "12秒",
+            "v": 12
+          },
+          {
+            "l": "13秒",
+            "v": 13
+          },
+          {
+            "l": "14秒",
+            "v": 14
+          },
+          {
+            "l": "15秒",
+            "v": 15
+          }
+        ],
+        "required": true
+      },
+      {
+        "max": 9,
+        "name": "imageUrls",
+        "type": "[]string",
+        "label": "参考图片",
+        "itemType": "image"
+      },
+      {
+        "max": 3,
+        "name": "audioUrls",
+        "type": "[]string",
+        "label": "参考音频",
+        "itemType": "audio"
+      },
+      {
+        "max": 3,
+        "name": "videoUrls",
+        "type": "[]string",
+        "label": "参考视频",
+        "itemType": "video"
+      }
+    ],
+    "pricing": [
+      {
+        "id": 0,
+        "model_id": "minimax-h3",
+        "size_key": "per_sec:resolution:768P",
+        "credits": "1.0000",
+        "description": null,
+        "is_active": 1
+      }
+    ],
+    "groups": [
+      {
+        "id": 11,
+        "name": "MiniMax",
+        "sort_order": 6,
+        "model_sort_order": 2
+      }
+    ],
+    "sort_order": 75
+  },
+  {
+    "model_id": "sd2.0-fast-933-op",
+    "display_name": "OP渠道-Video Fast（9图3音3视）",
+    "type": "video",
+    "description": "按次计费，后台过人脸，原生分辨率，纯满血，带数字水印，4-15秒 ",
+    "params_schema": [
+      {
+        "name": "prompt",
+        "type": "string",
+        "label": "提示词",
+        "required": true
+      },
+      {
+        "name": "aspectRatio",
+        "type": "select",
+        "label": "尺寸",
+        "default": "16:9",
+        "options": [
+          {
+            "l": "1:1",
+            "v": "1:1"
+          },
+          {
+            "l": "16:9",
+            "v": "16:9"
+          },
+          {
+            "l": "9:16",
+            "v": "9:16"
+          },
+          {
+            "l": "3:4",
+            "v": "3:4"
+          },
+          {
+            "l": "4:3",
+            "v": "4:3"
+          },
+          {
+            "l": "21:9",
+            "v": "21:9"
+          }
+        ],
+        "required": true
+      },
+      {
+        "name": "resolution",
+        "type": "select",
+        "label": "分辨率",
+        "default": "720p",
+        "options": [
+          {
+            "l": "480p",
+            "v": "480p"
+          },
+          {
+            "l": "720p",
+            "v": "720p"
+          }
+        ],
+        "required": true
+      },
+      {
+        "name": "duration",
+        "type": "select",
+        "label": "时长",
+        "default": 15,
+        "options": [
+          {
+            "l": "4秒",
+            "v": 4
+          },
+          {
+            "l": "5秒",
+            "v": 5
+          },
+          {
+            "l": "6秒",
+            "v": 6
+          },
+          {
+            "l": "7秒",
+            "v": 7
+          },
+          {
+            "l": "8秒",
+            "v": 8
+          },
+          {
+            "l": "9秒",
+            "v": 9
+          },
+          {
+            "l": "10秒",
+            "v": 10
+          },
+          {
+            "l": "11秒",
+            "v": 11
+          },
+          {
+            "l": "12秒",
+            "v": 12
+          },
+          {
+            "l": "13秒",
+            "v": 13
+          },
+          {
+            "l": "14秒",
+            "v": 14
+          },
+          {
+            "l": "15秒",
+            "v": 15
+          }
+        ],
+        "required": true
+      },
+      {
+        "max": 9,
+        "name": "imageUrls",
+        "type": "[]string",
+        "label": "参考图片",
+        "itemType": "image"
+      },
+      {
+        "max": 3,
+        "name": "videoUrls",
+        "type": "[]string",
+        "label": "参考视频",
+        "itemType": "video"
+      },
+      {
+        "max": 3,
+        "name": "audioUrls",
+        "type": "[]string",
+        "label": "参考音频",
+        "itemType": "audio"
+      },
+      {
+        "name": "faceMode",
+        "type": "boolean",
+        "label": "关闭后台过脸",
+        "default": false
+      }
+    ],
+    "pricing": [
+      {
+        "id": 0,
+        "model_id": "sd2.0-fast-933-op",
+        "size_key": "per_use:resolution:480p",
+        "credits": "25.0000",
+        "description": null,
+        "is_active": 1
+      },
+      {
+        "id": 0,
+        "model_id": "sd2.0-fast-933-op",
+        "size_key": "per_use:resolution:720p",
+        "credits": "32.0000",
+        "description": null,
+        "is_active": 1
+      }
+    ],
+    "groups": [
+      {
+        "id": 15,
+        "name": "OP渠道",
+        "sort_order": 2,
+        "model_sort_order": 2
+      }
+    ],
+    "sort_order": 77
+  },
+  {
+    "model_id": "sd2.0-mini-933-op",
+    "display_name": "OP渠道-Video Mini（9图3音3视）",
+    "type": "video",
+    "description": "按次计费，后台过人脸，原生分辨率，纯满血，带数字水印，4-15秒 ",
+    "params_schema": [
+      {
+        "name": "prompt",
+        "type": "string",
+        "label": "提示词",
+        "required": true
+      },
+      {
+        "name": "aspectRatio",
+        "type": "select",
+        "label": "尺寸",
+        "default": "16:9",
+        "options": [
+          {
+            "l": "1:1",
+            "v": "1:1"
+          },
+          {
+            "l": "16:9",
+            "v": "16:9"
+          },
+          {
+            "l": "9:16",
+            "v": "9:16"
+          },
+          {
+            "l": "3:4",
+            "v": "3:4"
+          },
+          {
+            "l": "4:3",
+            "v": "4:3"
+          },
+          {
+            "l": "21:9",
+            "v": "21:9"
+          }
+        ],
+        "required": true
+      },
+      {
+        "name": "resolution",
+        "type": "select",
+        "label": "分辨率",
+        "default": "720p",
+        "options": [
+          {
+            "l": "480p",
+            "v": "480p"
+          },
+          {
+            "l": "720p",
+            "v": "720p"
+          }
+        ],
+        "required": true
+      },
+      {
+        "name": "duration",
+        "type": "select",
+        "label": "时长",
+        "default": 15,
+        "options": [
+          {
+            "l": "4秒",
+            "v": 4
+          },
+          {
+            "l": "5秒",
+            "v": 5
+          },
+          {
+            "l": "6秒",
+            "v": 6
+          },
+          {
+            "l": "7秒",
+            "v": 7
+          },
+          {
+            "l": "8秒",
+            "v": 8
+          },
+          {
+            "l": "9秒",
+            "v": 9
+          },
+          {
+            "l": "10秒",
+            "v": 10
+          },
+          {
+            "l": "11秒",
+            "v": 11
+          },
+          {
+            "l": "12秒",
+            "v": 12
+          },
+          {
+            "l": "13秒",
+            "v": 13
+          },
+          {
+            "l": "14秒",
+            "v": 14
+          },
+          {
+            "l": "15秒",
+            "v": 15
+          }
+        ],
+        "required": true
+      },
+      {
+        "max": 9,
+        "name": "imageUrls",
+        "type": "[]string",
+        "label": "参考图片",
+        "itemType": "image"
+      },
+      {
+        "max": 3,
+        "name": "videoUrls",
+        "type": "[]string",
+        "label": "参考视频",
+        "itemType": "video"
+      },
+      {
+        "max": 3,
+        "name": "audioUrls",
+        "type": "[]string",
+        "label": "参考音频",
+        "itemType": "audio"
+      },
+      {
+        "name": "faceMode",
+        "type": "boolean",
+        "label": "关闭后台过脸",
+        "default": false
+      }
+    ],
+    "pricing": [
+      {
+        "id": 0,
+        "model_id": "sd2.0-mini-933-op",
+        "size_key": "per_use:resolution:480p",
+        "credits": "20.0000",
+        "description": null,
+        "is_active": 1
+      },
+      {
+        "id": 0,
+        "model_id": "sd2.0-mini-933-op",
+        "size_key": "per_use:resolution:720p",
+        "credits": "27.0000",
+        "description": null,
+        "is_active": 1
+      }
+    ],
+    "groups": [
+      {
+        "id": 15,
+        "name": "OP渠道",
+        "sort_order": 2,
+        "model_sort_order": 3
+      }
+    ],
+    "sort_order": 78
+  },
+  {
+    "model_id": "sd2.5-op",
+    "display_name": "OP渠道-Video 2.5（30图10音10视）",
+    "type": "video",
+    "description": "按次计费，后台过人脸，原生分辨率，纯满血，带数字水印，4-30秒 ",
+    "params_schema": [
+      {
+        "name": "prompt",
+        "type": "string",
+        "label": "提示词",
+        "required": true
+      },
+      {
+        "name": "aspectRatio",
+        "type": "select",
+        "label": "尺寸",
+        "default": "16:9",
+        "options": [
+          {
+            "l": "1:1",
+            "v": "1:1"
+          },
+          {
+            "l": "16:9",
+            "v": "16:9"
+          },
+          {
+            "l": "9:16",
+            "v": "9:16"
+          },
+          {
+            "l": "3:4",
+            "v": "3:4"
+          },
+          {
+            "l": "4:3",
+            "v": "4:3"
+          },
+          {
+            "l": "21:9",
+            "v": "21:9"
+          }
+        ],
+        "required": true
+      },
+      {
+        "name": "resolution",
+        "type": "select",
+        "label": "分辨率",
+        "default": "720p",
+        "options": [
+          {
+            "l": "480p",
+            "v": "480p"
+          },
+          {
+            "l": "720p",
+            "v": "720p"
+          },
+          {
+            "l": "1080p",
+            "v": "1080p"
+          }
+        ],
+        "required": true
+      },
+      {
+        "name": "duration",
+        "type": "select",
+        "label": "时长",
+        "default": 30,
+        "options": [
+          {
+            "l": "4秒",
+            "v": 4
+          },
+          {
+            "l": "5秒",
+            "v": 5
+          },
+          {
+            "l": "6秒",
+            "v": 6
+          },
+          {
+            "l": "7秒",
+            "v": 7
+          },
+          {
+            "l": "8秒",
+            "v": 8
+          },
+          {
+            "l": "9秒",
+            "v": 9
+          },
+          {
+            "l": "10秒",
+            "v": 10
+          },
+          {
+            "l": "11秒",
+            "v": 11
+          },
+          {
+            "l": "12秒",
+            "v": 12
+          },
+          {
+            "l": "13秒",
+            "v": 13
+          },
+          {
+            "l": "14秒",
+            "v": 14
+          },
+          {
+            "l": "15秒",
+            "v": 15
+          },
+          {
+            "l": "16秒",
+            "v": 16
+          },
+          {
+            "l": "17秒",
+            "v": 17
+          },
+          {
+            "l": "18秒",
+            "v": 18
+          },
+          {
+            "l": "19秒",
+            "v": 19
+          },
+          {
+            "l": "20秒",
+            "v": 20
+          },
+          {
+            "l": "21秒",
+            "v": 21
+          },
+          {
+            "l": "22秒",
+            "v": 22
+          },
+          {
+            "l": "23秒",
+            "v": 23
+          },
+          {
+            "l": "24秒",
+            "v": 24
+          },
+          {
+            "l": "25秒",
+            "v": 25
+          },
+          {
+            "l": "26秒",
+            "v": 26
+          },
+          {
+            "l": "27秒",
+            "v": 27
+          },
+          {
+            "l": "28秒",
+            "v": 28
+          },
+          {
+            "l": "29秒",
+            "v": 29
+          },
+          {
+            "l": "30秒",
+            "v": 30
+          }
+        ],
+        "required": true
+      },
+      {
+        "max": 30,
+        "name": "imageUrls",
+        "type": "[]string",
+        "label": "参考图片",
+        "itemType": "image"
+      },
+      {
+        "max": 10,
+        "name": "videoUrls",
+        "type": "[]string",
+        "label": "参考视频",
+        "itemType": "video"
+      },
+      {
+        "max": 10,
+        "name": "audioUrls",
+        "type": "[]string",
+        "label": "参考音频",
+        "itemType": "audio"
+      }
+    ],
+    "pricing": [
+      {
+        "id": 0,
+        "model_id": "sd2.5-op",
+        "size_key": "per_use:resolution:480p",
+        "credits": "110.0000",
+        "description": null,
+        "is_active": 1
+      },
+      {
+        "id": 0,
+        "model_id": "sd2.5-op",
+        "size_key": "per_use:resolution:720p",
+        "credits": "150.0000",
+        "description": null,
+        "is_active": 1
+      },
+      {
+        "id": 0,
+        "model_id": "sd2.5-op",
+        "size_key": "per_use:resolution:1080p",
+        "credits": "200.0000",
+        "description": null,
+        "is_active": 1
+      }
+    ],
+    "groups": [
+      {
+        "id": 15,
+        "name": "OP渠道",
+        "sort_order": 2,
+        "model_sort_order": 4
+      }
+    ],
+    "sort_order": 79
+  },
+  {
+    "model_id": "sd2.0-fast-933-qd",
+    "display_name": "QD渠道-Video Fast（9图3音3视）",
+    "type": "video",
+    "description": "按秒计费，原生过人脸，原生分辨率，纯满血，带数字水印，4-15秒 ",
+    "params_schema": [
+      {
+        "name": "prompt",
+        "type": "string",
+        "label": "提示词",
+        "required": true
+      },
+      {
+        "name": "aspectRatio",
+        "type": "select",
+        "label": "尺寸",
+        "default": "16:9",
+        "options": [
+          {
+            "l": "1:1",
+            "v": "1:1"
+          },
+          {
+            "l": "16:9",
+            "v": "16:9"
+          },
+          {
+            "l": "9:16",
+            "v": "9:16"
+          },
+          {
+            "l": "3:4",
+            "v": "3:4"
+          },
+          {
+            "l": "4:3",
+            "v": "4:3"
+          },
+          {
+            "l": "21:9",
+            "v": "21:9"
+          }
+        ],
+        "required": true
+      },
+      {
+        "name": "resolution",
+        "type": "select",
+        "label": "分辨率",
+        "default": "720p",
+        "options": [
+          {
+            "l": "480p",
+            "v": "480p"
+          },
+          {
+            "l": "720p",
+            "v": "720p"
+          }
+        ],
+        "required": true
+      },
+      {
+        "name": "duration",
+        "type": "select",
+        "label": "时长",
+        "default": 15,
+        "options": [
+          {
+            "l": "4秒",
+            "v": 4
+          },
+          {
+            "l": "5秒",
+            "v": 5
+          },
+          {
+            "l": "6秒",
+            "v": 6
+          },
+          {
+            "l": "7秒",
+            "v": 7
+          },
+          {
+            "l": "8秒",
+            "v": 8
+          },
+          {
+            "l": "9秒",
+            "v": 9
+          },
+          {
+            "l": "10秒",
+            "v": 10
+          },
+          {
+            "l": "11秒",
+            "v": 11
+          },
+          {
+            "l": "12秒",
+            "v": 12
+          },
+          {
+            "l": "13秒",
+            "v": 13
+          },
+          {
+            "l": "14秒",
+            "v": 14
+          },
+          {
+            "l": "15秒",
+            "v": 15
+          }
+        ],
+        "required": true
+      },
+      {
+        "max": 9,
+        "name": "imageUrls",
+        "type": "[]string",
+        "label": "参考图片",
+        "itemType": "image"
+      },
+      {
+        "max": 3,
+        "name": "videoUrls",
+        "type": "[]string",
+        "label": "参考视频",
+        "itemType": "video"
+      },
+      {
+        "max": 3,
+        "name": "audioUrls",
+        "type": "[]string",
+        "label": "参考音频",
+        "itemType": "audio"
+      }
+    ],
+    "pricing": [
+      {
+        "id": 0,
+        "model_id": "sd2.0-fast-933-qd",
+        "size_key": "per_sec:resolution:480p",
+        "credits": "2.8000",
+        "description": null,
+        "is_active": 1
+      },
+      {
+        "id": 0,
+        "model_id": "sd2.0-fast-933-qd",
+        "size_key": "per_sec:resolution:720p",
+        "credits": "3.8000",
+        "description": null,
+        "is_active": 1
+      }
+    ],
+    "groups": [
+      {
+        "id": 5,
+        "name": "QD渠道",
+        "sort_order": 3,
+        "model_sort_order": 4
+      }
+    ],
+    "sort_order": 82
+  },
+  {
+    "model_id": "sd2.0-mini-933-qd",
+    "display_name": "QD渠道-Video Mini（9图3音3视）",
+    "type": "video",
+    "description": "按秒计费，原生过人脸，原生分辨率，纯满血，带数字水印，4-15秒 ",
+    "params_schema": [
+      {
+        "name": "prompt",
+        "type": "string",
+        "label": "提示词",
+        "required": true
+      },
+      {
+        "name": "aspectRatio",
+        "type": "select",
+        "label": "尺寸",
+        "default": "16:9",
+        "options": [
+          {
+            "l": "1:1",
+            "v": "1:1"
+          },
+          {
+            "l": "16:9",
+            "v": "16:9"
+          },
+          {
+            "l": "9:16",
+            "v": "9:16"
+          },
+          {
+            "l": "3:4",
+            "v": "3:4"
+          },
+          {
+            "l": "4:3",
+            "v": "4:3"
+          },
+          {
+            "l": "21:9",
+            "v": "21:9"
+          }
+        ],
+        "required": true
+      },
+      {
+        "name": "resolution",
+        "type": "select",
+        "label": "分辨率",
+        "default": "720p",
+        "options": [
+          {
+            "l": "480p",
+            "v": "480p"
+          },
+          {
+            "l": "720p",
+            "v": "720p"
+          }
+        ],
+        "required": true
+      },
+      {
+        "name": "duration",
+        "type": "select",
+        "label": "时长",
+        "default": 15,
+        "options": [
+          {
+            "l": "4秒",
+            "v": 4
+          },
+          {
+            "l": "5秒",
+            "v": 5
+          },
+          {
+            "l": "6秒",
+            "v": 6
+          },
+          {
+            "l": "7秒",
+            "v": 7
+          },
+          {
+            "l": "8秒",
+            "v": 8
+          },
+          {
+            "l": "9秒",
+            "v": 9
+          },
+          {
+            "l": "10秒",
+            "v": 10
+          },
+          {
+            "l": "11秒",
+            "v": 11
+          },
+          {
+            "l": "12秒",
+            "v": 12
+          },
+          {
+            "l": "13秒",
+            "v": 13
+          },
+          {
+            "l": "14秒",
+            "v": 14
+          },
+          {
+            "l": "15秒",
+            "v": 15
+          }
+        ],
+        "required": true
+      },
+      {
+        "max": 9,
+        "name": "imageUrls",
+        "type": "[]string",
+        "label": "参考图片",
+        "itemType": "image"
+      },
+      {
+        "max": 3,
+        "name": "videoUrls",
+        "type": "[]string",
+        "label": "参考视频",
+        "itemType": "video"
+      },
+      {
+        "max": 3,
+        "name": "audioUrls",
+        "type": "[]string",
+        "label": "参考音频",
+        "itemType": "audio"
+      }
+    ],
+    "pricing": [
+      {
+        "id": 0,
+        "model_id": "sd2.0-mini-933-qd",
+        "size_key": "per_sec:resolution:480p",
+        "credits": "2.0000",
+        "description": null,
+        "is_active": 1
+      },
+      {
+        "id": 0,
+        "model_id": "sd2.0-mini-933-qd",
+        "size_key": "per_sec:resolution:720p",
+        "credits": "2.5000",
+        "description": null,
+        "is_active": 1
+      }
+    ],
+    "groups": [
+      {
+        "id": 5,
+        "name": "QD渠道",
+        "sort_order": 3,
+        "model_sort_order": 5
+      }
+    ],
+    "sort_order": 83
+  },
+  {
+    "model_id": "sd2.5-qt",
+    "display_name": "QT渠道-Video 2.5（30图10音10视）",
+    "type": "video",
+    "description": "特价渠道，按秒计费，原生过人脸，原生分辨率，纯满血，带数字水印，5-30秒",
+    "params_schema": [
+      {
+        "name": "prompt",
+        "type": "string",
+        "label": "提示词",
+        "required": true
+      },
+      {
+        "name": "resolution",
+        "type": "select",
+        "label": "分辨率",
+        "default": "720p",
+        "options": [
+          {
+            "l": "480p",
+            "v": "480p"
+          },
+          {
+            "l": "720p",
+            "v": "720p"
+          },
+          {
+            "l": "1080p",
+            "v": "1080p"
+          }
+        ],
+        "required": true
+      },
+      {
+        "name": "aspectRatio",
+        "type": "select",
+        "label": "尺寸",
+        "default": "16:9",
+        "options": [
+          {
+            "l": "1:1",
+            "v": "1:1"
+          },
+          {
+            "l": "16:9",
+            "v": "16:9"
+          },
+          {
+            "l": "9:16",
+            "v": "9:16"
+          },
+          {
+            "l": "3:4",
+            "v": "3:4"
+          },
+          {
+            "l": "4:3",
+            "v": "4:3"
+          },
+          {
+            "l": "21:9",
+            "v": "21:9"
+          }
+        ],
+        "required": true
+      },
+      {
+        "name": "duration",
+        "type": "select",
+        "label": "时长",
+        "default": 30,
+        "options": [
+          {
+            "l": "5秒",
+            "v": 5
+          },
+          {
+            "l": "6秒",
+            "v": 6
+          },
+          {
+            "l": "7秒",
+            "v": 7
+          },
+          {
+            "l": "8秒",
+            "v": 8
+          },
+          {
+            "l": "9秒",
+            "v": 9
+          },
+          {
+            "l": "10秒",
+            "v": 10
+          },
+          {
+            "l": "11秒",
+            "v": 11
+          },
+          {
+            "l": "12秒",
+            "v": 12
+          },
+          {
+            "l": "13秒",
+            "v": 13
+          },
+          {
+            "l": "14秒",
+            "v": 14
+          },
+          {
+            "l": "15秒",
+            "v": 15
+          },
+          {
+            "l": "16秒",
+            "v": 16
+          },
+          {
+            "l": "17秒",
+            "v": 17
+          },
+          {
+            "l": "18秒",
+            "v": 18
+          },
+          {
+            "l": "19秒",
+            "v": 19
+          },
+          {
+            "l": "20秒",
+            "v": 20
+          },
+          {
+            "l": "21秒",
+            "v": 21
+          },
+          {
+            "l": "22秒",
+            "v": 22
+          },
+          {
+            "l": "23秒",
+            "v": 23
+          },
+          {
+            "l": "24秒",
+            "v": 24
+          },
+          {
+            "l": "25秒",
+            "v": 25
+          },
+          {
+            "l": "26秒",
+            "v": 26
+          },
+          {
+            "l": "27秒",
+            "v": 27
+          },
+          {
+            "l": "28秒",
+            "v": 28
+          },
+          {
+            "l": "29秒",
+            "v": 29
+          },
+          {
+            "l": "30秒",
+            "v": 30
+          }
+        ],
+        "required": true
+      },
+      {
+        "max": 30,
+        "name": "imageUrls",
+        "type": "[]string",
+        "label": "参考图片",
+        "itemType": "image"
+      },
+      {
+        "max": 10,
+        "name": "videoUrls",
+        "type": "[]string",
+        "label": "参考视频",
+        "itemType": "video"
+      },
+      {
+        "max": 10,
+        "name": "audioUrls",
+        "type": "[]string",
+        "label": "参考音频",
+        "itemType": "audio"
+      }
+    ],
+    "pricing": [
+      {
+        "id": 0,
+        "model_id": "sd2.5-qt",
+        "size_key": "per_sec:resolution:480p",
+        "credits": "3.5000",
+        "description": null,
+        "is_active": 1
+      },
+      {
+        "id": 0,
+        "model_id": "sd2.5-qt",
+        "size_key": "per_sec:resolution:720p",
+        "credits": "4.5000",
+        "description": null,
+        "is_active": 1
+      },
+      {
+        "id": 0,
+        "model_id": "sd2.5-qt",
+        "size_key": "per_sec:resolution:1080p",
+        "credits": "12.0000",
+        "description": null,
+        "is_active": 1
+      }
+    ],
+    "groups": [
+      {
+        "id": 16,
+        "name": "特价分组",
+        "sort_order": 1,
+        "model_sort_order": 2
+      }
+    ],
+    "sort_order": 97
+  },
+  {
+    "model_id": "sd2.0-933-qt",
+    "display_name": "QT渠道-Video Pro（9图3音3视）",
+    "type": "video",
+    "description": "特价渠道，按秒计费，原生过人脸，原生分辨率，纯满血，带数字水印，5-15秒",
+    "params_schema": [
+      {
+        "name": "prompt",
+        "type": "string",
+        "label": "提示词",
+        "required": true
+      },
+      {
+        "name": "aspectRatio",
+        "type": "select",
+        "label": "尺寸",
+        "default": "16:9",
+        "options": [
+          {
+            "l": "1:1",
+            "v": "1:1"
+          },
+          {
+            "l": "16:9",
+            "v": "16:9"
+          },
+          {
+            "l": "9:16",
+            "v": "9:16"
+          },
+          {
+            "l": "3:4",
+            "v": "3:4"
+          },
+          {
+            "l": "4:3",
+            "v": "4:3"
+          },
+          {
+            "l": "21:9",
+            "v": "21:9"
+          }
+        ],
+        "required": true
+      },
+      {
+        "name": "resolution",
+        "type": "select",
+        "label": "分辨率",
+        "default": "720p",
+        "options": [
+          {
+            "l": "480p",
+            "v": "480p"
+          },
+          {
+            "l": "720p",
+            "v": "720p"
+          }
+        ],
+        "required": true
+      },
+      {
+        "name": "duration",
+        "type": "select",
+        "label": "时长",
+        "default": 15,
+        "options": [
+          {
+            "l": "5秒",
+            "v": 5
+          },
+          {
+            "l": "6秒",
+            "v": 6
+          },
+          {
+            "l": "7秒",
+            "v": 7
+          },
+          {
+            "l": "8秒",
+            "v": 8
+          },
+          {
+            "l": "9秒",
+            "v": 9
+          },
+          {
+            "l": "10秒",
+            "v": 10
+          },
+          {
+            "l": "11秒",
+            "v": 11
+          },
+          {
+            "l": "12秒",
+            "v": 12
+          },
+          {
+            "l": "13秒",
+            "v": 13
+          },
+          {
+            "l": "14秒",
+            "v": 14
+          },
+          {
+            "l": "15秒",
+            "v": 15
+          }
+        ],
+        "required": true
+      },
+      {
+        "max": 9,
+        "name": "imageUrls",
+        "type": "[]string",
+        "label": "参考图片",
+        "itemType": "image"
+      },
+      {
+        "max": 3,
+        "name": "videoUrls",
+        "type": "[]string",
+        "label": "参考视频",
+        "itemType": "video"
+      },
+      {
+        "max": 3,
+        "name": "audioUrls",
+        "type": "[]string",
+        "label": "参考音频",
+        "itemType": "audio"
+      }
+    ],
+    "pricing": [
+      {
+        "id": 0,
+        "model_id": "sd2.0-933-qt",
+        "size_key": "per_sec:resolution:480p",
+        "credits": "3.0000",
+        "description": null,
+        "is_active": 1
+      },
+      {
+        "id": 0,
+        "model_id": "sd2.0-933-qt",
+        "size_key": "per_sec:resolution:720p",
+        "credits": "4.0000",
+        "description": null,
+        "is_active": 1
+      }
+    ],
+    "groups": [
+      {
+        "id": 16,
+        "name": "特价分组",
+        "sort_order": 1,
+        "model_sort_order": 1
+      }
+    ],
+    "sort_order": 98
+  },
+  {
+    "model_id": "sd2.0-933-xx",
+    "display_name": "QT渠道-Video Pro（9图3音0视）",
+    "type": "video",
+    "description": "特价渠道，按次计费，原生过人脸，原生分辨率，不支持视频参考，5-15秒",
+    "params_schema": [
+      {
+        "name": "prompt",
+        "type": "string",
+        "label": "提示词",
+        "required": true
+      },
+      {
+        "name": "aspectRatio",
+        "type": "select",
+        "label": "尺寸",
+        "default": "16:9",
+        "options": [
+          {
+            "l": "1:1",
+            "v": "1:1"
+          },
+          {
+            "l": "16:9",
+            "v": "16:9"
+          },
+          {
+            "l": "9:16",
+            "v": "9:16"
+          },
+          {
+            "l": "3:4",
+            "v": "3:4"
+          },
+          {
+            "l": "4:3",
+            "v": "4:3"
+          },
+          {
+            "l": "21:9",
+            "v": "21:9"
+          }
+        ],
+        "required": true
+      },
+      {
+        "name": "resolution",
+        "type": "select",
+        "label": "分辨率",
+        "default": "720p",
+        "options": [
+          {
+            "l": "720p",
+            "v": "720p"
+          }
+        ]
+      },
+      {
+        "name": "duration",
+        "type": "select",
+        "label": "时长",
+        "default": 15,
+        "options": [
+          {
+            "l": "4秒",
+            "v": 4
+          },
+          {
+            "l": "5秒",
+            "v": 5
+          },
+          {
+            "l": "6秒",
+            "v": 6
+          },
+          {
+            "l": "7秒",
+            "v": 7
+          },
+          {
+            "l": "8秒",
+            "v": 8
+          },
+          {
+            "l": "9秒",
+            "v": 9
+          },
+          {
+            "l": "10秒",
+            "v": 10
+          },
+          {
+            "l": "11秒",
+            "v": 11
+          },
+          {
+            "l": "12秒",
+            "v": 12
+          },
+          {
+            "l": "13秒",
+            "v": 13
+          },
+          {
+            "l": "14秒",
+            "v": 14
+          },
+          {
+            "l": "15秒",
+            "v": 15
+          }
+        ],
+        "required": true
+      },
+      {
+        "max": 9,
+        "name": "imageUrls",
+        "type": "[]string",
+        "label": "参考图片",
+        "itemType": "image"
+      },
+      {
+        "max": 3,
+        "name": "audioUrls",
+        "type": "[]string",
+        "label": "参考音频",
+        "itemType": "audio"
+      }
+    ],
+    "pricing": [
+      {
+        "id": 0,
+        "model_id": "sd2.0-933-xx",
+        "size_key": "per_use",
+        "credits": "30.0000",
+        "description": null,
+        "is_active": 1
+      }
+    ],
+    "groups": [
+      {
+        "id": 16,
+        "name": "特价分组",
+        "sort_order": 1,
+        "model_sort_order": 3
+      }
+    ],
+    "sort_order": 99
+  },
+  {
+    "model_id": "sd2.5-xi",
+    "display_name": "QT渠道-Video 2.5（30图10音10视-按次）",
+    "type": "video",
+    "description": "特价渠道，按次计费，原生过人脸，原生分辨率，720p，视频参考不加价，5-30秒",
+    "params_schema": [
+      {
+        "name": "prompt",
+        "type": "string",
+        "label": "提示词",
+        "required": true
+      },
+      {
+        "name": "aspectRatio",
+        "type": "select",
+        "label": "尺寸",
+        "default": "16:9",
+        "options": [
+          {
+            "l": "1:1",
+            "v": "1:1"
+          },
+          {
+            "l": "16:9",
+            "v": "16:9"
+          },
+          {
+            "l": "9:16",
+            "v": "9:16"
+          },
+          {
+            "l": "3:4",
+            "v": "3:4"
+          },
+          {
+            "l": "4:3",
+            "v": "4:3"
+          },
+          {
+            "l": "21:9",
+            "v": "21:9"
+          }
+        ],
+        "required": true
+      },
+      {
+        "name": "duration",
+        "type": "select",
+        "label": "时长",
+        "default": 30,
+        "options": [
+          {
+            "l": "4秒",
+            "v": 4
+          },
+          {
+            "l": "5秒",
+            "v": 5
+          },
+          {
+            "l": "6秒",
+            "v": 6
+          },
+          {
+            "l": "7秒",
+            "v": 7
+          },
+          {
+            "l": "8秒",
+            "v": 8
+          },
+          {
+            "l": "9秒",
+            "v": 9
+          },
+          {
+            "l": "10秒",
+            "v": 10
+          },
+          {
+            "l": "11秒",
+            "v": 11
+          },
+          {
+            "l": "12秒",
+            "v": 12
+          },
+          {
+            "l": "13秒",
+            "v": 13
+          },
+          {
+            "l": "14秒",
+            "v": 14
+          },
+          {
+            "l": "15秒",
+            "v": 15
+          },
+          {
+            "l": "16秒",
+            "v": 16
+          },
+          {
+            "l": "17秒",
+            "v": 17
+          },
+          {
+            "l": "18秒",
+            "v": 18
+          },
+          {
+            "l": "19秒",
+            "v": 19
+          },
+          {
+            "l": "20秒",
+            "v": 20
+          },
+          {
+            "l": "21秒",
+            "v": 21
+          },
+          {
+            "l": "22秒",
+            "v": 22
+          },
+          {
+            "l": "23秒",
+            "v": 23
+          },
+          {
+            "l": "24秒",
+            "v": 24
+          },
+          {
+            "l": "25秒",
+            "v": 25
+          },
+          {
+            "l": "26秒",
+            "v": 26
+          },
+          {
+            "l": "27秒",
+            "v": 27
+          },
+          {
+            "l": "28秒",
+            "v": 28
+          },
+          {
+            "l": "29秒",
+            "v": 29
+          },
+          {
+            "l": "30秒",
+            "v": 30
+          }
+        ],
+        "required": true
+      },
+      {
+        "max": 30,
+        "name": "imageUrls",
+        "type": "[]string",
+        "label": "参考图片",
+        "itemType": "image"
+      },
+      {
+        "max": 10,
+        "name": "videoUrls",
+        "type": "[]string",
+        "label": "参考视频",
+        "itemType": "video"
+      },
+      {
+        "max": 10,
+        "name": "audioUrls",
+        "type": "[]string",
+        "label": "参考音频",
+        "itemType": "audio"
+      }
+    ],
+    "pricing": [
+      {
+        "id": 0,
+        "model_id": "sd2.5-xi",
+        "size_key": "per_use",
+        "credits": "60.0000",
+        "description": null,
+        "is_active": 1
+      }
+    ],
+    "groups": [
+      {
+        "id": 16,
+        "name": "特价分组",
+        "sort_order": 1,
+        "model_sort_order": 9
+      }
+    ],
+    "sort_order": 102
+  },
+  {
+    "model_id": "wan3.0-s",
+    "display_name": "Wan3.0（10图5音5视-按秒）",
+    "type": "video",
+    "description": "按秒计费，原生过人脸，原生分辨率，满参满血，5-30秒 ",
+    "params_schema": [
+      {
+        "name": "prompt",
+        "type": "string",
+        "label": "提示词",
+        "required": true
+      },
+      {
+        "name": "aspectRatio",
+        "type": "select",
+        "label": "尺寸",
+        "default": "1280x720",
+        "options": [
+          {
+            "l": "1:1",
+            "v": "1024x1024",
+            "y": "1:1"
+          },
+          {
+            "l": "16:9",
+            "v": "1280x720",
+            "y": "16:9"
+          },
+          {
+            "l": "9:16",
+            "v": "720x1280",
+            "y": "9:16"
+          },
+          {
+            "l": "3:4",
+            "v": "864x1152",
+            "y": "3:4"
+          },
+          {
+            "l": "4:3",
+            "v": "1152x864",
+            "y": "4:3"
+          },
+          {
+            "l": "21:9",
+            "v": "1344x576",
+            "y": "21:9"
+          }
+        ],
+        "required": true
+      },
+      {
+        "name": "resolution",
+        "type": "select",
+        "label": "分辨率",
+        "default": "1080p",
+        "options": [
+          {
+            "l": "480p",
+            "v": "480p"
+          },
+          {
+            "l": "720p",
+            "v": "720p"
+          },
+          {
+            "l": "1080p",
+            "v": "1080p"
+          }
+        ],
+        "required": true
+      },
+      {
+        "name": "duration",
+        "type": "select",
+        "label": "时长",
+        "default": 30,
+        "options": [
+          {
+            "l": "5秒",
+            "v": 5
+          },
+          {
+            "l": "6秒",
+            "v": 6
+          },
+          {
+            "l": "7秒",
+            "v": 7
+          },
+          {
+            "l": "8秒",
+            "v": 8
+          },
+          {
+            "l": "9秒",
+            "v": 9
+          },
+          {
+            "l": "10秒",
+            "v": 10
+          },
+          {
+            "l": "11秒",
+            "v": 11
+          },
+          {
+            "l": "12秒",
+            "v": 12
+          },
+          {
+            "l": "13秒",
+            "v": 13
+          },
+          {
+            "l": "14秒",
+            "v": 14
+          },
+          {
+            "l": "15秒",
+            "v": 15
+          },
+          {
+            "l": "16秒",
+            "v": 16
+          },
+          {
+            "l": "17秒",
+            "v": 17
+          },
+          {
+            "l": "18秒",
+            "v": 18
+          },
+          {
+            "l": "19秒",
+            "v": 19
+          },
+          {
+            "l": "20秒",
+            "v": 20
+          },
+          {
+            "l": "21秒",
+            "v": 21
+          },
+          {
+            "l": "22秒",
+            "v": 22
+          },
+          {
+            "l": "23秒",
+            "v": 23
+          },
+          {
+            "l": "24秒",
+            "v": 24
+          },
+          {
+            "l": "25秒",
+            "v": 25
+          },
+          {
+            "l": "26秒",
+            "v": 26
+          },
+          {
+            "l": "27秒",
+            "v": 27
+          },
+          {
+            "l": "28秒",
+            "v": 28
+          },
+          {
+            "l": "29秒",
+            "v": 29
+          },
+          {
+            "l": "30秒",
+            "v": 30
+          }
+        ],
+        "required": true
+      },
+      {
+        "max": 10,
+        "name": "imageUrls",
+        "type": "[]string",
+        "label": "参考图片",
+        "itemType": "image"
+      },
+      {
+        "max": 5,
+        "name": "videoUrls",
+        "type": "[]string",
+        "label": "参考视频",
+        "itemType": "video"
+      },
+      {
+        "max": 5,
+        "name": "audioUrls",
+        "type": "[]string",
+        "label": "参考音频",
+        "itemType": "audio"
+      }
+    ],
+    "pricing": [
+      {
+        "id": 0,
+        "model_id": "wan3.0-s",
+        "size_key": "per_sec:resolution:480p",
+        "credits": "1.0000",
+        "description": null,
+        "is_active": 1
+      },
+      {
+        "id": 0,
+        "model_id": "wan3.0-s",
+        "size_key": "per_sec:resolution:720p",
+        "credits": "1.5000",
+        "description": null,
+        "is_active": 1
+      },
+      {
+        "id": 0,
+        "model_id": "wan3.0-s",
+        "size_key": "per_sec:resolution:1080p",
+        "credits": "2.0000",
+        "description": null,
+        "is_active": 1
+      }
+    ],
+    "groups": [
+      {
+        "id": 18,
+        "name": "Wan3",
+        "sort_order": 5,
+        "model_sort_order": 1
+      }
+    ],
+    "sort_order": 112
+  },
+  {
+    "model_id": "sd2.5-oe",
+    "display_name": "OP渠道-Video 2.5（30图10音10视）",
+    "type": "video",
+    "description": null,
+    "params_schema": [
+      {
+        "name": "prompt",
+        "type": "string",
+        "label": "提示词",
+        "required": true
+      },
+      {
+        "name": "aspectRatio",
+        "type": "select",
+        "label": "尺寸",
+        "default": "16:9",
+        "options": [
+          {
+            "l": "1:1",
+            "v": "1:1"
+          },
+          {
+            "l": "16:9",
+            "v": "16:9"
+          },
+          {
+            "l": "9:16",
+            "v": "9:16"
+          },
+          {
+            "l": "3:4",
+            "v": "3:4"
+          },
+          {
+            "l": "4:3",
+            "v": "4:3"
+          },
+          {
+            "l": "21:9",
+            "v": "21:9"
+          }
+        ],
+        "required": true
+      },
+      {
+        "name": "resolution",
+        "type": "select",
+        "label": "分辨率",
+        "default": "720p",
+        "options": [
+          {
+            "l": "480p",
+            "v": "480p"
+          },
+          {
+            "l": "720p",
+            "v": "720p"
+          },
+          {
+            "l": "1080p",
+            "v": "1080p"
+          }
+        ],
+        "required": true
+      },
+      {
+        "name": "duration",
+        "type": "select",
+        "label": "时长",
+        "default": 30,
+        "options": [
+          {
+            "l": "4秒",
+            "v": 4
+          },
+          {
+            "l": "5秒",
+            "v": 5
+          },
+          {
+            "l": "6秒",
+            "v": 6
+          },
+          {
+            "l": "7秒",
+            "v": 7
+          },
+          {
+            "l": "8秒",
+            "v": 8
+          },
+          {
+            "l": "9秒",
+            "v": 9
+          },
+          {
+            "l": "10秒",
+            "v": 10
+          },
+          {
+            "l": "11秒",
+            "v": 11
+          },
+          {
+            "l": "12秒",
+            "v": 12
+          },
+          {
+            "l": "13秒",
+            "v": 13
+          },
+          {
+            "l": "14秒",
+            "v": 14
+          },
+          {
+            "l": "15秒",
+            "v": 15
+          },
+          {
+            "l": "16秒",
+            "v": 16
+          },
+          {
+            "l": "17秒",
+            "v": 17
+          },
+          {
+            "l": "18秒",
+            "v": 18
+          },
+          {
+            "l": "19秒",
+            "v": 19
+          },
+          {
+            "l": "20秒",
+            "v": 20
+          },
+          {
+            "l": "21秒",
+            "v": 21
+          },
+          {
+            "l": "22秒",
+            "v": 22
+          },
+          {
+            "l": "23秒",
+            "v": 23
+          },
+          {
+            "l": "24秒",
+            "v": 24
+          },
+          {
+            "l": "25秒",
+            "v": 25
+          },
+          {
+            "l": "26秒",
+            "v": 26
+          },
+          {
+            "l": "27秒",
+            "v": 27
+          },
+          {
+            "l": "28秒",
+            "v": 28
+          },
+          {
+            "l": "29秒",
+            "v": 29
+          },
+          {
+            "l": "30秒",
+            "v": 30
+          }
+        ],
+        "required": true
+      },
+      {
+        "max": 30,
+        "name": "imageUrls",
+        "type": "[]string",
+        "label": "参考图片",
+        "itemType": "image"
+      },
+      {
+        "max": 10,
+        "name": "videoUrls",
+        "type": "[]string",
+        "label": "参考视频",
+        "itemType": "video"
+      },
+      {
+        "max": 10,
+        "name": "audioUrls",
+        "type": "[]string",
+        "label": "参考音频",
+        "itemType": "audio"
+      }
+    ],
+    "pricing": [
+      {
+        "id": 0,
+        "model_id": "sd2.5-oe",
+        "size_key": "per_use:resolution:480p",
+        "credits": "80.0000",
+        "description": null,
+        "is_active": 1
+      },
+      {
+        "id": 0,
+        "model_id": "sd2.5-oe",
+        "size_key": "per_use:resolution:720p",
+        "credits": "90.0000",
+        "description": null,
+        "is_active": 1
+      },
+      {
+        "id": 0,
+        "model_id": "sd2.5-oe",
+        "size_key": "per_use:resolution:1080p",
+        "credits": "120.0000",
+        "description": null,
+        "is_active": 1
+      }
+    ],
+    "groups": [
+      {
+        "id": 15,
+        "name": "OP渠道",
+        "sort_order": 2,
+        "model_sort_order": 5
+      }
+    ],
+    "sort_order": 115
+  }
+]

@@ -1,0 +1,3559 @@
+{
+  "verifiedAt": "2026-10-25",
+  "models": {
+    "doubao-seedance-2-5-260628": {
+      "kind": "video",
+      "parameters": [
+        {
+          "name": "resolution",
+          "label": "分辨率",
+          "type": "select",
+          "options": [
+            {
+              "v": "720p",
+              "l": "720p"
+            },
+            {
+              "v": "480p",
+              "l": "480p"
+            },
+            {
+              "v": "1080p",
+              "l": "1080p"
+            }
+          ],
+          "default": "720p"
+        },
+        {
+          "name": "duration",
+          "label": "时长",
+          "type": "number",
+          "integer": true,
+          "min": 4,
+          "max": 30,
+          "default": 5
+        },
+        {
+          "name": "aspectRatio",
+          "label": "比例",
+          "type": "select",
+          "options": [
+            {
+              "v": "adaptive",
+              "l": "adaptive"
+            },
+            {
+              "v": "16:9",
+              "l": "16:9"
+            },
+            {
+              "v": "9:16",
+              "l": "9:16"
+            },
+            {
+              "v": "1:1",
+              "l": "1:1"
+            },
+            {
+              "v": "4:3",
+              "l": "4:3"
+            },
+            {
+              "v": "3:4",
+              "l": "3:4"
+            },
+            {
+              "v": "21:9",
+              "l": "21:9"
+            }
+          ],
+          "default": "adaptive"
+        },
+        {
+          "name": "function_mode",
+          "label": "生成方式",
+          "type": "select",
+          "options": [
+            {
+              "v": "references",
+              "l": "references"
+            },
+            {
+              "v": "first_last_frames",
+              "l": "first_last_frames"
+            }
+          ],
+          "default": "references"
+        },
+        {
+          "name": "imageUrls",
+          "label": "参考图片",
+          "type": "assets",
+          "itemType": "image",
+          "max": 30,
+          "limitSource": "documentation"
+        },
+        {
+          "name": "videoUrls",
+          "label": "参考视频",
+          "type": "assets",
+          "itemType": "video",
+          "max": 10,
+          "limitSource": "documentation"
+        },
+        {
+          "name": "audioUrls",
+          "label": "参考音频",
+          "type": "assets",
+          "itemType": "audio",
+          "max": 10,
+          "limitSource": "documentation"
+        }
+      ],
+      "frames": true,
+      "optionNames": [],
+      "source": "https://api.mai-token.com/docs?category=video&model=doubao-seedance-2-5-260628",
+      "description": "视频生成；分辨率 720p / 480p / 1080p；时长 4–30 秒；参考图片最多 30 张；参考视频最多 10 段；参考音频最多 10 段；支持独立首尾帧。"
+    },
+    "Hailuo-H3": {
+      "kind": "video",
+      "parameters": [
+        {
+          "name": "resolution",
+          "label": "分辨率",
+          "type": "select",
+          "options": [
+            {
+              "v": "2k",
+              "l": "2k"
+            }
+          ],
+          "default": "2k"
+        },
+        {
+          "name": "duration",
+          "label": "时长",
+          "type": "number",
+          "integer": true,
+          "min": 15,
+          "max": 15,
+          "default": 15
+        }
+      ],
+      "optionNames": [],
+      "source": "https://api.mai-token.com/docs?category=video&model=Hailuo-H3",
+      "description": "视频生成；分辨率 2k；时长 15–15 秒。"
+    },
+    "Nano Banana 2 Lite": {
+      "kind": "image",
+      "parameters": [
+        {
+          "name": "imageUrls",
+          "label": "参考图片",
+          "type": "assets",
+          "itemType": "image",
+          "max": 16,
+          "limitSource": "documentation"
+        }
+      ],
+      "optionNames": [],
+      "source": "https://api.mai-token.com/docs?category=image&model=Nano%20Banana%202%20Lite",
+      "description": "图片生成；参考图片最多 16 张；当前接入默认单张输出。"
+    },
+    "doubao-seedance-2-0-260128": {
+      "kind": "video",
+      "parameters": [
+        {
+          "name": "resolution",
+          "label": "分辨率",
+          "type": "select",
+          "options": [
+            {
+              "v": "720p",
+              "l": "720p"
+            },
+            {
+              "v": "480p",
+              "l": "480p"
+            },
+            {
+              "v": "1080p",
+              "l": "1080p"
+            },
+            {
+              "v": "4k",
+              "l": "4k"
+            }
+          ],
+          "default": "720p"
+        },
+        {
+          "name": "duration",
+          "label": "时长",
+          "type": "number",
+          "integer": true,
+          "min": 4,
+          "max": 15,
+          "default": 5
+        },
+        {
+          "name": "aspectRatio",
+          "label": "比例",
+          "type": "select",
+          "options": [
+            {
+              "v": "adaptive",
+              "l": "adaptive"
+            },
+            {
+              "v": "16:9",
+              "l": "16:9"
+            },
+            {
+              "v": "9:16",
+              "l": "9:16"
+            },
+            {
+              "v": "1:1",
+              "l": "1:1"
+            },
+            {
+              "v": "4:3",
+              "l": "4:3"
+            },
+            {
+              "v": "3:4",
+              "l": "3:4"
+            },
+            {
+              "v": "21:9",
+              "l": "21:9"
+            }
+          ],
+          "default": "adaptive"
+        },
+        {
+          "name": "function_mode",
+          "label": "生成方式",
+          "type": "select",
+          "options": [
+            {
+              "v": "references",
+              "l": "references"
+            },
+            {
+              "v": "first_last_frames",
+              "l": "first_last_frames"
+            }
+          ],
+          "default": "references"
+        },
+        {
+          "name": "imageUrls",
+          "label": "参考图片",
+          "type": "assets",
+          "itemType": "image",
+          "max": 9,
+          "limitSource": "documentation"
+        },
+        {
+          "name": "videoUrls",
+          "label": "参考视频",
+          "type": "assets",
+          "itemType": "video",
+          "max": 3,
+          "limitSource": "documentation"
+        },
+        {
+          "name": "audioUrls",
+          "label": "参考音频",
+          "type": "assets",
+          "itemType": "audio",
+          "max": 3,
+          "limitSource": "documentation"
+        }
+      ],
+      "frames": true,
+      "optionNames": [],
+      "source": "https://api.mai-token.com/docs?category=video&model=doubao-seedance-2-0-260128",
+      "description": "视频生成；分辨率 720p / 480p / 1080p / 4k；时长 4–15 秒；参考图片最多 9 张；参考视频最多 3 段；参考音频最多 3 段；支持独立首尾帧。"
+    },
+    "gemini-3-pro-image": {
+      "kind": "image",
+      "parameters": [],
+      "optionNames": [],
+      "source": "https://api.mai-token.com/docs?category=image&model=gemini-3-pro-image",
+      "description": "图片生成；当前接入默认单张输出。"
+    },
+    "gemini-3.1-flash-image": {
+      "kind": "image",
+      "parameters": [],
+      "optionNames": [],
+      "source": "https://api.mai-token.com/docs?category=image&model=gemini-3.1-flash-image",
+      "description": "图片生成；当前接入默认单张输出。"
+    },
+    "kling-image-o3": {
+      "kind": "image",
+      "parameters": [
+        {
+          "name": "resolution",
+          "label": "分辨率",
+          "type": "select",
+          "options": [
+            {
+              "v": "1K",
+              "l": "1K"
+            },
+            {
+              "v": "2K",
+              "l": "2K"
+            },
+            {
+              "v": "4K",
+              "l": "4K"
+            }
+          ],
+          "default": "1K"
+        },
+        {
+          "name": "aspectRatio",
+          "label": "比例",
+          "type": "select",
+          "options": [
+            {
+              "v": "1:1",
+              "l": "1:1"
+            },
+            {
+              "v": "16:9",
+              "l": "16:9"
+            },
+            {
+              "v": "9:16",
+              "l": "9:16"
+            },
+            {
+              "v": "4:3",
+              "l": "4:3"
+            },
+            {
+              "v": "3:4",
+              "l": "3:4"
+            },
+            {
+              "v": "3:2",
+              "l": "3:2"
+            },
+            {
+              "v": "2:3",
+              "l": "2:3"
+            },
+            {
+              "v": "21:9",
+              "l": "21:9"
+            }
+          ],
+          "default": "1:1"
+        },
+        {
+          "name": "imageUrls",
+          "label": "参考图片",
+          "type": "assets",
+          "itemType": "image",
+          "max": 10,
+          "limitSource": "documentation"
+        }
+      ],
+      "optionNames": [],
+      "source": "https://api.mai-token.com/docs?category=image&model=kling-image-o3",
+      "description": "图片生成；分辨率 1K / 2K / 4K；参考图片最多 10 张；当前接入默认单张输出。"
+    },
+    "minimax-h3-max": {
+      "kind": "video",
+      "parameters": [
+        {
+          "name": "resolution",
+          "label": "分辨率",
+          "type": "select",
+          "options": [
+            {
+              "v": "768p",
+              "l": "768p"
+            }
+          ],
+          "default": "768p"
+        },
+        {
+          "name": "duration",
+          "label": "时长",
+          "type": "number",
+          "integer": true,
+          "min": 5,
+          "max": 15,
+          "default": 5
+        },
+        {
+          "name": "aspectRatio",
+          "label": "比例",
+          "type": "select",
+          "options": [
+            {
+              "v": "16:9",
+              "l": "16:9"
+            },
+            {
+              "v": "9:16",
+              "l": "9:16"
+            },
+            {
+              "v": "1:1",
+              "l": "1:1"
+            }
+          ],
+          "default": "16:9"
+        },
+        {
+          "name": "function_mode",
+          "label": "生成方式",
+          "type": "select",
+          "options": [
+            {
+              "v": "references",
+              "l": "references"
+            },
+            {
+              "v": "first_last_frames",
+              "l": "first_last_frames"
+            }
+          ],
+          "default": "references"
+        },
+        {
+          "name": "imageUrls",
+          "label": "参考图片",
+          "type": "assets",
+          "itemType": "image",
+          "max": 12,
+          "limitSource": "documentation"
+        },
+        {
+          "name": "videoUrls",
+          "label": "参考视频",
+          "type": "assets",
+          "itemType": "video",
+          "max": 12,
+          "limitSource": "documentation"
+        },
+        {
+          "name": "audioUrls",
+          "label": "参考音频",
+          "type": "assets",
+          "itemType": "audio",
+          "max": 12,
+          "limitSource": "documentation"
+        }
+      ],
+      "frames": true,
+      "optionNames": [],
+      "source": "https://api.mai-token.com/docs?category=video&model=minimax-h3-max",
+      "description": "视频生成；分辨率 768p；时长 5–15 秒；参考图片最多 12 张；参考视频最多 12 段；参考音频最多 12 段；支持独立首尾帧。"
+    },
+    "minimax-h3-multi": {
+      "kind": "video",
+      "parameters": [
+        {
+          "name": "resolution",
+          "label": "分辨率",
+          "type": "select",
+          "options": [
+            {
+              "v": "768p",
+              "l": "768p"
+            }
+          ],
+          "default": "768p"
+        },
+        {
+          "name": "duration",
+          "label": "时长",
+          "type": "number",
+          "integer": true,
+          "min": 5,
+          "max": 15,
+          "default": 5
+        },
+        {
+          "name": "aspectRatio",
+          "label": "比例",
+          "type": "select",
+          "options": [
+            {
+              "v": "16:9",
+              "l": "16:9"
+            },
+            {
+              "v": "9:16",
+              "l": "9:16"
+            },
+            {
+              "v": "1:1",
+              "l": "1:1"
+            }
+          ],
+          "default": "16:9"
+        },
+        {
+          "name": "function_mode",
+          "label": "生成方式",
+          "type": "select",
+          "options": [
+            {
+              "v": "references",
+              "l": "references"
+            },
+            {
+              "v": "first_last_frames",
+              "l": "first_last_frames"
+            }
+          ],
+          "default": "references"
+        },
+        {
+          "name": "imageUrls",
+          "label": "参考图片",
+          "type": "assets",
+          "itemType": "image",
+          "max": 12,
+          "limitSource": "documentation"
+        },
+        {
+          "name": "videoUrls",
+          "label": "参考视频",
+          "type": "assets",
+          "itemType": "video",
+          "max": 12,
+          "limitSource": "documentation"
+        },
+        {
+          "name": "audioUrls",
+          "label": "参考音频",
+          "type": "assets",
+          "itemType": "audio",
+          "max": 12,
+          "limitSource": "documentation"
+        }
+      ],
+      "frames": true,
+      "optionNames": [],
+      "source": "https://api.mai-token.com/docs?category=video&model=minimax-h3-multi",
+      "description": "视频生成；分辨率 768p；时长 5–15 秒；参考图片最多 12 张；参考视频最多 12 段；参考音频最多 12 段；支持独立首尾帧。"
+    },
+    "minimax_h3-2k": {
+      "kind": "video",
+      "parameters": [
+        {
+          "name": "resolution",
+          "label": "分辨率",
+          "type": "select",
+          "options": [
+            {
+              "v": "2k",
+              "l": "2k"
+            }
+          ],
+          "default": "2k"
+        },
+        {
+          "name": "duration",
+          "label": "时长",
+          "type": "number",
+          "integer": true,
+          "min": 5,
+          "max": 5,
+          "default": 5
+        },
+        {
+          "name": "aspectRatio",
+          "label": "比例",
+          "type": "select",
+          "options": [
+            {
+              "v": "16:9",
+              "l": "16:9"
+            },
+            {
+              "v": "9:16",
+              "l": "9:16"
+            }
+          ],
+          "default": "16:9"
+        }
+      ],
+      "optionNames": [],
+      "source": "https://api.mai-token.com/docs?category=video&model=minimax_h3-2k",
+      "description": "视频生成；分辨率 2k；时长 5–5 秒。"
+    },
+    "minimax_h3-768p": {
+      "kind": "video",
+      "parameters": [
+        {
+          "name": "resolution",
+          "label": "分辨率",
+          "type": "select",
+          "options": [
+            {
+              "v": "768p",
+              "l": "768p"
+            }
+          ],
+          "default": "768p"
+        },
+        {
+          "name": "duration",
+          "label": "时长",
+          "type": "number",
+          "integer": true,
+          "min": 5,
+          "max": 5,
+          "default": 5
+        },
+        {
+          "name": "aspectRatio",
+          "label": "比例",
+          "type": "select",
+          "options": [
+            {
+              "v": "16:9",
+              "l": "16:9"
+            },
+            {
+              "v": "9:16",
+              "l": "9:16"
+            }
+          ],
+          "default": "16:9"
+        }
+      ],
+      "optionNames": [],
+      "source": "https://api.mai-token.com/docs?category=video&model=minimax_h3-768p",
+      "description": "视频生成；分辨率 768p；时长 5–5 秒。"
+    },
+    "nano-banana-pro": {
+      "kind": "image",
+      "parameters": [
+        {
+          "name": "resolution",
+          "label": "分辨率",
+          "type": "select",
+          "options": [
+            {
+              "v": "1K",
+              "l": "1K"
+            },
+            {
+              "v": "2K",
+              "l": "2K"
+            },
+            {
+              "v": "4K",
+              "l": "4K"
+            }
+          ],
+          "default": "1K"
+        },
+        {
+          "name": "aspectRatio",
+          "label": "比例",
+          "type": "select",
+          "options": [
+            {
+              "v": "1:1",
+              "l": "1:1"
+            },
+            {
+              "v": "16:9",
+              "l": "16:9"
+            },
+            {
+              "v": "9:16",
+              "l": "9:16"
+            },
+            {
+              "v": "4:3",
+              "l": "4:3"
+            },
+            {
+              "v": "3:4",
+              "l": "3:4"
+            },
+            {
+              "v": "3:2",
+              "l": "3:2"
+            },
+            {
+              "v": "2:3",
+              "l": "2:3"
+            },
+            {
+              "v": "21:9",
+              "l": "21:9"
+            },
+            {
+              "v": "5:4",
+              "l": "5:4"
+            },
+            {
+              "v": "4:5",
+              "l": "4:5"
+            },
+            {
+              "v": "2:1",
+              "l": "2:1"
+            },
+            {
+              "v": "1:2",
+              "l": "1:2"
+            },
+            {
+              "v": "9:21",
+              "l": "9:21"
+            },
+            {
+              "v": "5:3",
+              "l": "5:3"
+            },
+            {
+              "v": "3:5",
+              "l": "3:5"
+            },
+            {
+              "v": "16:10",
+              "l": "16:10"
+            },
+            {
+              "v": "10:16",
+              "l": "10:16"
+            },
+            {
+              "v": "7:3",
+              "l": "7:3"
+            },
+            {
+              "v": "3:7",
+              "l": "3:7"
+            }
+          ],
+          "default": "1:1"
+        },
+        {
+          "name": "imageUrls",
+          "label": "参考图片",
+          "type": "assets",
+          "itemType": "image",
+          "max": 8,
+          "limitSource": "documentation"
+        }
+      ],
+      "optionNames": [],
+      "source": "https://api.mai-token.com/docs?category=image&model=nano-banana-pro",
+      "description": "图片生成；分辨率 1K / 2K / 4K；参考图片最多 8 张；当前接入默认单张输出。"
+    },
+    "nano-banana2": {
+      "kind": "image",
+      "parameters": [
+        {
+          "name": "resolution",
+          "label": "分辨率",
+          "type": "select",
+          "options": [
+            {
+              "v": "1K",
+              "l": "1K"
+            },
+            {
+              "v": "2K",
+              "l": "2K"
+            },
+            {
+              "v": "4K",
+              "l": "4K"
+            }
+          ],
+          "default": "1K"
+        },
+        {
+          "name": "aspectRatio",
+          "label": "比例",
+          "type": "select",
+          "options": [
+            {
+              "v": "1:1",
+              "l": "1:1"
+            },
+            {
+              "v": "16:9",
+              "l": "16:9"
+            },
+            {
+              "v": "9:16",
+              "l": "9:16"
+            },
+            {
+              "v": "4:3",
+              "l": "4:3"
+            },
+            {
+              "v": "3:4",
+              "l": "3:4"
+            },
+            {
+              "v": "3:2",
+              "l": "3:2"
+            },
+            {
+              "v": "2:3",
+              "l": "2:3"
+            },
+            {
+              "v": "21:9",
+              "l": "21:9"
+            },
+            {
+              "v": "5:4",
+              "l": "5:4"
+            },
+            {
+              "v": "4:5",
+              "l": "4:5"
+            },
+            {
+              "v": "2:1",
+              "l": "2:1"
+            },
+            {
+              "v": "1:2",
+              "l": "1:2"
+            },
+            {
+              "v": "9:21",
+              "l": "9:21"
+            },
+            {
+              "v": "5:3",
+              "l": "5:3"
+            },
+            {
+              "v": "3:5",
+              "l": "3:5"
+            },
+            {
+              "v": "16:10",
+              "l": "16:10"
+            },
+            {
+              "v": "10:16",
+              "l": "10:16"
+            },
+            {
+              "v": "7:3",
+              "l": "7:3"
+            },
+            {
+              "v": "3:7",
+              "l": "3:7"
+            }
+          ],
+          "default": "1:1"
+        },
+        {
+          "name": "imageUrls",
+          "label": "参考图片",
+          "type": "assets",
+          "itemType": "image",
+          "max": 9,
+          "limitSource": "documentation"
+        }
+      ],
+      "optionNames": [],
+      "source": "https://api.mai-token.com/docs?category=image&model=nano-banana2",
+      "description": "图片生成；分辨率 1K / 2K / 4K；参考图片最多 9 张；当前接入默认单张输出。"
+    },
+    "qwen-image": {
+      "kind": "image",
+      "parameters": [
+        {
+          "name": "resolution",
+          "label": "分辨率",
+          "type": "select",
+          "options": [
+            {
+              "v": "1K",
+              "l": "1K"
+            }
+          ],
+          "default": "1K"
+        },
+        {
+          "name": "aspectRatio",
+          "label": "比例",
+          "type": "select",
+          "options": [
+            {
+              "v": "1:1",
+              "l": "1:1"
+            },
+            {
+              "v": "16:9",
+              "l": "16:9"
+            },
+            {
+              "v": "9:16",
+              "l": "9:16"
+            },
+            {
+              "v": "4:3",
+              "l": "4:3"
+            },
+            {
+              "v": "3:4",
+              "l": "3:4"
+            },
+            {
+              "v": "3:2",
+              "l": "3:2"
+            },
+            {
+              "v": "2:3",
+              "l": "2:3"
+            },
+            {
+              "v": "21:9",
+              "l": "21:9"
+            }
+          ],
+          "default": "1:1"
+        },
+        {
+          "name": "imageUrls",
+          "label": "参考图片",
+          "type": "assets",
+          "itemType": "image",
+          "max": 3,
+          "limitSource": "documentation"
+        }
+      ],
+      "optionNames": [],
+      "source": "https://api.mai-token.com/docs?category=image&model=qwen-image",
+      "description": "图片生成；分辨率 1K；参考图片最多 3 张；当前接入默认单张输出。"
+    },
+    "sd-2.0-1080p": {
+      "kind": "video",
+      "parameters": [
+        {
+          "name": "resolution",
+          "label": "分辨率",
+          "type": "select",
+          "options": [
+            {
+              "v": "1080p",
+              "l": "1080p"
+            }
+          ],
+          "default": "1080p"
+        },
+        {
+          "name": "duration",
+          "label": "时长",
+          "type": "number",
+          "integer": true,
+          "min": 4,
+          "max": 15,
+          "default": 5
+        },
+        {
+          "name": "aspectRatio",
+          "label": "比例",
+          "type": "select",
+          "options": [
+            {
+              "v": "16:9",
+              "l": "16:9"
+            },
+            {
+              "v": "9:16",
+              "l": "9:16"
+            },
+            {
+              "v": "1:1",
+              "l": "1:1"
+            },
+            {
+              "v": "3:4",
+              "l": "3:4"
+            },
+            {
+              "v": "4:3",
+              "l": "4:3"
+            },
+            {
+              "v": "21:9",
+              "l": "21:9"
+            }
+          ],
+          "default": "16:9"
+        },
+        {
+          "name": "function_mode",
+          "label": "生成方式",
+          "type": "select",
+          "options": [
+            {
+              "v": "references",
+              "l": "references"
+            },
+            {
+              "v": "first_last_frames",
+              "l": "first_last_frames"
+            }
+          ],
+          "default": "references"
+        },
+        {
+          "name": "imageUrls",
+          "label": "参考图片",
+          "type": "assets",
+          "itemType": "image",
+          "max": 9,
+          "limitSource": "documentation"
+        },
+        {
+          "name": "videoUrls",
+          "label": "参考视频",
+          "type": "assets",
+          "itemType": "video",
+          "max": 3,
+          "limitSource": "documentation"
+        },
+        {
+          "name": "audioUrls",
+          "label": "参考音频",
+          "type": "assets",
+          "itemType": "audio",
+          "max": 3,
+          "limitSource": "documentation"
+        }
+      ],
+      "frames": true,
+      "optionNames": [],
+      "source": "https://api.mai-token.com/docs?category=video&model=sd-2.0-1080p",
+      "description": "视频生成；分辨率 1080p；时长 4–15 秒；参考图片最多 9 张；参考视频最多 3 段；参考音频最多 3 段；支持独立首尾帧。"
+    },
+    "sd-2.0-1080p-c": {
+      "kind": "video",
+      "parameters": [
+        {
+          "name": "resolution",
+          "label": "分辨率",
+          "type": "select",
+          "options": [
+            {
+              "v": "1080p",
+              "l": "1080p"
+            }
+          ],
+          "default": "1080p"
+        },
+        {
+          "name": "duration",
+          "label": "时长",
+          "type": "number",
+          "integer": true,
+          "min": 4,
+          "max": 15,
+          "default": 5
+        },
+        {
+          "name": "aspectRatio",
+          "label": "比例",
+          "type": "select",
+          "options": [
+            {
+              "v": "16:9",
+              "l": "16:9"
+            },
+            {
+              "v": "9:16",
+              "l": "9:16"
+            },
+            {
+              "v": "1:1",
+              "l": "1:1"
+            },
+            {
+              "v": "4:3",
+              "l": "4:3"
+            },
+            {
+              "v": "3:4",
+              "l": "3:4"
+            },
+            {
+              "v": "21:9",
+              "l": "21:9"
+            }
+          ],
+          "default": "16:9"
+        },
+        {
+          "name": "function_mode",
+          "label": "生成方式",
+          "type": "select",
+          "options": [
+            {
+              "v": "references",
+              "l": "references"
+            },
+            {
+              "v": "first_last_frames",
+              "l": "first_last_frames"
+            }
+          ],
+          "default": "references"
+        },
+        {
+          "name": "imageUrls",
+          "label": "参考图片",
+          "type": "assets",
+          "itemType": "image",
+          "max": 9,
+          "limitSource": "documentation"
+        },
+        {
+          "name": "videoUrls",
+          "label": "参考视频",
+          "type": "assets",
+          "itemType": "video",
+          "max": 3,
+          "limitSource": "documentation"
+        },
+        {
+          "name": "audioUrls",
+          "label": "参考音频",
+          "type": "assets",
+          "itemType": "audio",
+          "max": 3,
+          "limitSource": "documentation"
+        }
+      ],
+      "frames": true,
+      "optionNames": [],
+      "source": "https://api.mai-token.com/docs?category=video&model=sd-2.0-1080p-c",
+      "description": "视频生成；分辨率 1080p；时长 4–15 秒；参考图片最多 9 张；参考视频最多 3 段；参考音频最多 3 段；支持独立首尾帧。"
+    },
+    "sd-2.0-2k-c": {
+      "kind": "video",
+      "parameters": [
+        {
+          "name": "resolution",
+          "label": "分辨率",
+          "type": "select",
+          "options": [
+            {
+              "v": "2k",
+              "l": "2k"
+            }
+          ],
+          "default": "2k"
+        },
+        {
+          "name": "duration",
+          "label": "时长",
+          "type": "number",
+          "integer": true,
+          "min": 4,
+          "max": 15,
+          "default": 5
+        },
+        {
+          "name": "aspectRatio",
+          "label": "比例",
+          "type": "select",
+          "options": [
+            {
+              "v": "16:9",
+              "l": "16:9"
+            },
+            {
+              "v": "9:16",
+              "l": "9:16"
+            },
+            {
+              "v": "1:1",
+              "l": "1:1"
+            },
+            {
+              "v": "4:3",
+              "l": "4:3"
+            },
+            {
+              "v": "3:4",
+              "l": "3:4"
+            },
+            {
+              "v": "21:9",
+              "l": "21:9"
+            }
+          ],
+          "default": "16:9"
+        },
+        {
+          "name": "function_mode",
+          "label": "生成方式",
+          "type": "select",
+          "options": [
+            {
+              "v": "references",
+              "l": "references"
+            },
+            {
+              "v": "first_last_frames",
+              "l": "first_last_frames"
+            }
+          ],
+          "default": "references"
+        },
+        {
+          "name": "imageUrls",
+          "label": "参考图片",
+          "type": "assets",
+          "itemType": "image",
+          "max": 9,
+          "limitSource": "documentation"
+        },
+        {
+          "name": "videoUrls",
+          "label": "参考视频",
+          "type": "assets",
+          "itemType": "video",
+          "max": 3,
+          "limitSource": "documentation"
+        },
+        {
+          "name": "audioUrls",
+          "label": "参考音频",
+          "type": "assets",
+          "itemType": "audio",
+          "max": 3,
+          "limitSource": "documentation"
+        }
+      ],
+      "frames": true,
+      "optionNames": [],
+      "source": "https://api.mai-token.com/docs?category=video&model=sd-2.0-2k-c",
+      "description": "视频生成；分辨率 2k；时长 4–15 秒；参考图片最多 9 张；参考视频最多 3 段；参考音频最多 3 段；支持独立首尾帧。"
+    },
+    "sd-2.0-480p": {
+      "kind": "video",
+      "parameters": [
+        {
+          "name": "resolution",
+          "label": "分辨率",
+          "type": "select",
+          "options": [
+            {
+              "v": "480p",
+              "l": "480p"
+            }
+          ],
+          "default": "480p"
+        },
+        {
+          "name": "duration",
+          "label": "时长",
+          "type": "number",
+          "integer": true,
+          "min": 4,
+          "max": 15,
+          "default": 5
+        },
+        {
+          "name": "aspectRatio",
+          "label": "比例",
+          "type": "select",
+          "options": [
+            {
+              "v": "16:9",
+              "l": "16:9"
+            },
+            {
+              "v": "9:16",
+              "l": "9:16"
+            },
+            {
+              "v": "1:1",
+              "l": "1:1"
+            },
+            {
+              "v": "3:4",
+              "l": "3:4"
+            },
+            {
+              "v": "4:3",
+              "l": "4:3"
+            },
+            {
+              "v": "21:9",
+              "l": "21:9"
+            }
+          ],
+          "default": "16:9"
+        },
+        {
+          "name": "function_mode",
+          "label": "生成方式",
+          "type": "select",
+          "options": [
+            {
+              "v": "references",
+              "l": "references"
+            },
+            {
+              "v": "first_last_frames",
+              "l": "first_last_frames"
+            }
+          ],
+          "default": "references"
+        },
+        {
+          "name": "imageUrls",
+          "label": "参考图片",
+          "type": "assets",
+          "itemType": "image",
+          "max": 9,
+          "limitSource": "documentation"
+        },
+        {
+          "name": "videoUrls",
+          "label": "参考视频",
+          "type": "assets",
+          "itemType": "video",
+          "max": 3,
+          "limitSource": "documentation"
+        },
+        {
+          "name": "audioUrls",
+          "label": "参考音频",
+          "type": "assets",
+          "itemType": "audio",
+          "max": 3,
+          "limitSource": "documentation"
+        }
+      ],
+      "frames": true,
+      "optionNames": [],
+      "source": "https://api.mai-token.com/docs?category=video&model=sd-2.0-480p",
+      "description": "视频生成；分辨率 480p；时长 4–15 秒；参考图片最多 9 张；参考视频最多 3 段；参考音频最多 3 段；支持独立首尾帧。"
+    },
+    "sd-2.0-4k": {
+      "kind": "video",
+      "parameters": [
+        {
+          "name": "resolution",
+          "label": "分辨率",
+          "type": "select",
+          "options": [
+            {
+              "v": "4k",
+              "l": "4k"
+            }
+          ],
+          "default": "4k"
+        },
+        {
+          "name": "duration",
+          "label": "时长",
+          "type": "number",
+          "integer": true,
+          "min": 4,
+          "max": 15,
+          "default": 5
+        },
+        {
+          "name": "aspectRatio",
+          "label": "比例",
+          "type": "select",
+          "options": [
+            {
+              "v": "16:9",
+              "l": "16:9"
+            },
+            {
+              "v": "9:16",
+              "l": "9:16"
+            },
+            {
+              "v": "1:1",
+              "l": "1:1"
+            },
+            {
+              "v": "3:4",
+              "l": "3:4"
+            },
+            {
+              "v": "4:3",
+              "l": "4:3"
+            },
+            {
+              "v": "21:9",
+              "l": "21:9"
+            }
+          ],
+          "default": "16:9"
+        },
+        {
+          "name": "function_mode",
+          "label": "生成方式",
+          "type": "select",
+          "options": [
+            {
+              "v": "references",
+              "l": "references"
+            },
+            {
+              "v": "first_last_frames",
+              "l": "first_last_frames"
+            }
+          ],
+          "default": "references"
+        },
+        {
+          "name": "imageUrls",
+          "label": "参考图片",
+          "type": "assets",
+          "itemType": "image",
+          "max": 9,
+          "limitSource": "documentation"
+        },
+        {
+          "name": "videoUrls",
+          "label": "参考视频",
+          "type": "assets",
+          "itemType": "video",
+          "max": 3,
+          "limitSource": "documentation"
+        },
+        {
+          "name": "audioUrls",
+          "label": "参考音频",
+          "type": "assets",
+          "itemType": "audio",
+          "max": 3,
+          "limitSource": "documentation"
+        }
+      ],
+      "frames": true,
+      "optionNames": [],
+      "source": "https://api.mai-token.com/docs?category=video&model=sd-2.0-4k",
+      "description": "视频生成；分辨率 4k；时长 4–15 秒；参考图片最多 9 张；参考视频最多 3 段；参考音频最多 3 段；支持独立首尾帧。"
+    },
+    "sd-2.0-4k-c": {
+      "kind": "video",
+      "parameters": [
+        {
+          "name": "resolution",
+          "label": "分辨率",
+          "type": "select",
+          "options": [
+            {
+              "v": "4k",
+              "l": "4k"
+            }
+          ],
+          "default": "4k"
+        },
+        {
+          "name": "duration",
+          "label": "时长",
+          "type": "number",
+          "integer": true,
+          "min": 4,
+          "max": 15,
+          "default": 5
+        },
+        {
+          "name": "aspectRatio",
+          "label": "比例",
+          "type": "select",
+          "options": [
+            {
+              "v": "16:9",
+              "l": "16:9"
+            },
+            {
+              "v": "9:16",
+              "l": "9:16"
+            },
+            {
+              "v": "1:1",
+              "l": "1:1"
+            },
+            {
+              "v": "4:3",
+              "l": "4:3"
+            },
+            {
+              "v": "3:4",
+              "l": "3:4"
+            },
+            {
+              "v": "21:9",
+              "l": "21:9"
+            }
+          ],
+          "default": "16:9"
+        },
+        {
+          "name": "function_mode",
+          "label": "生成方式",
+          "type": "select",
+          "options": [
+            {
+              "v": "references",
+              "l": "references"
+            },
+            {
+              "v": "first_last_frames",
+              "l": "first_last_frames"
+            }
+          ],
+          "default": "references"
+        },
+        {
+          "name": "imageUrls",
+          "label": "参考图片",
+          "type": "assets",
+          "itemType": "image",
+          "max": 9,
+          "limitSource": "documentation"
+        },
+        {
+          "name": "videoUrls",
+          "label": "参考视频",
+          "type": "assets",
+          "itemType": "video",
+          "max": 3,
+          "limitSource": "documentation"
+        },
+        {
+          "name": "audioUrls",
+          "label": "参考音频",
+          "type": "assets",
+          "itemType": "audio",
+          "max": 3,
+          "limitSource": "documentation"
+        }
+      ],
+      "frames": true,
+      "optionNames": [],
+      "source": "https://api.mai-token.com/docs?category=video&model=sd-2.0-4k-c",
+      "description": "视频生成；分辨率 4k；时长 4–15 秒；参考图片最多 9 张；参考视频最多 3 段；参考音频最多 3 段；支持独立首尾帧。"
+    },
+    "sd-2.0-720p": {
+      "kind": "video",
+      "parameters": [
+        {
+          "name": "resolution",
+          "label": "分辨率",
+          "type": "select",
+          "options": [
+            {
+              "v": "720p",
+              "l": "720p"
+            }
+          ],
+          "default": "720p"
+        },
+        {
+          "name": "duration",
+          "label": "时长",
+          "type": "number",
+          "integer": true,
+          "min": 4,
+          "max": 15,
+          "default": 4
+        },
+        {
+          "name": "aspectRatio",
+          "label": "比例",
+          "type": "select",
+          "options": [
+            {
+              "v": "16:9",
+              "l": "16:9"
+            },
+            {
+              "v": "9:16",
+              "l": "9:16"
+            },
+            {
+              "v": "1:1",
+              "l": "1:1"
+            },
+            {
+              "v": "4:3",
+              "l": "4:3"
+            },
+            {
+              "v": "3:4",
+              "l": "3:4"
+            },
+            {
+              "v": "3:2",
+              "l": "3:2"
+            },
+            {
+              "v": "2:3",
+              "l": "2:3"
+            },
+            {
+              "v": "4:5",
+              "l": "4:5"
+            },
+            {
+              "v": "5:4",
+              "l": "5:4"
+            },
+            {
+              "v": "21:9",
+              "l": "21:9"
+            },
+            {
+              "v": "9:21",
+              "l": "9:21"
+            },
+            {
+              "v": "adaptive",
+              "l": "adaptive"
+            }
+          ],
+          "default": "16:9"
+        },
+        {
+          "name": "function_mode",
+          "label": "生成方式",
+          "type": "select",
+          "options": [
+            {
+              "v": "references",
+              "l": "references"
+            },
+            {
+              "v": "first_last_frames",
+              "l": "first_last_frames"
+            }
+          ],
+          "default": "references"
+        },
+        {
+          "name": "imageUrls",
+          "label": "参考图片",
+          "type": "assets",
+          "itemType": "image",
+          "max": 9,
+          "limitSource": "documentation"
+        },
+        {
+          "name": "videoUrls",
+          "label": "参考视频",
+          "type": "assets",
+          "itemType": "video",
+          "limitSource": "undocumented"
+        },
+        {
+          "name": "audioUrls",
+          "label": "参考音频",
+          "type": "assets",
+          "itemType": "audio",
+          "limitSource": "undocumented"
+        }
+      ],
+      "frames": true,
+      "optionNames": [],
+      "source": "https://api.mai-token.com/docs?category=video&model=sd-2.0-720p",
+      "description": "视频生成；分辨率 720p；时长 4–15 秒；参考图片最多 9 张；参考视频数量上限待确认；参考音频数量上限待确认；支持独立首尾帧。"
+    },
+    "sd-2.0-720p-c": {
+      "kind": "video",
+      "parameters": [
+        {
+          "name": "resolution",
+          "label": "分辨率",
+          "type": "select",
+          "options": [
+            {
+              "v": "720p",
+              "l": "720p"
+            }
+          ],
+          "default": "720p"
+        },
+        {
+          "name": "duration",
+          "label": "时长",
+          "type": "number",
+          "integer": true,
+          "min": 4,
+          "max": 15,
+          "default": 5
+        },
+        {
+          "name": "aspectRatio",
+          "label": "比例",
+          "type": "select",
+          "options": [
+            {
+              "v": "16:9",
+              "l": "16:9"
+            },
+            {
+              "v": "9:16",
+              "l": "9:16"
+            },
+            {
+              "v": "1:1",
+              "l": "1:1"
+            },
+            {
+              "v": "4:3",
+              "l": "4:3"
+            },
+            {
+              "v": "3:4",
+              "l": "3:4"
+            },
+            {
+              "v": "21:9",
+              "l": "21:9"
+            }
+          ],
+          "default": "16:9"
+        },
+        {
+          "name": "function_mode",
+          "label": "生成方式",
+          "type": "select",
+          "options": [
+            {
+              "v": "references",
+              "l": "references"
+            },
+            {
+              "v": "first_last_frames",
+              "l": "first_last_frames"
+            }
+          ],
+          "default": "references"
+        },
+        {
+          "name": "imageUrls",
+          "label": "参考图片",
+          "type": "assets",
+          "itemType": "image",
+          "max": 9,
+          "limitSource": "documentation"
+        },
+        {
+          "name": "videoUrls",
+          "label": "参考视频",
+          "type": "assets",
+          "itemType": "video",
+          "max": 3,
+          "limitSource": "documentation"
+        },
+        {
+          "name": "audioUrls",
+          "label": "参考音频",
+          "type": "assets",
+          "itemType": "audio",
+          "max": 3,
+          "limitSource": "documentation"
+        }
+      ],
+      "frames": true,
+      "optionNames": [],
+      "source": "https://api.mai-token.com/docs?category=video&model=sd-2.0-720p-c",
+      "description": "视频生成；分辨率 720p；时长 4–15 秒；参考图片最多 9 张；参考视频最多 3 段；参考音频最多 3 段；支持独立首尾帧。"
+    },
+    "sd-2.5-1080p-c": {
+      "kind": "video",
+      "parameters": [
+        {
+          "name": "resolution",
+          "label": "分辨率",
+          "type": "select",
+          "options": [
+            {
+              "v": "1080p",
+              "l": "1080p"
+            }
+          ],
+          "default": "1080p"
+        },
+        {
+          "name": "duration",
+          "label": "时长",
+          "type": "number",
+          "integer": true,
+          "min": 4,
+          "max": 30,
+          "default": 5
+        },
+        {
+          "name": "aspectRatio",
+          "label": "比例",
+          "type": "select",
+          "options": [
+            {
+              "v": "16:9",
+              "l": "16:9"
+            },
+            {
+              "v": "9:16",
+              "l": "9:16"
+            },
+            {
+              "v": "1:1",
+              "l": "1:1"
+            },
+            {
+              "v": "4:3",
+              "l": "4:3"
+            },
+            {
+              "v": "3:4",
+              "l": "3:4"
+            },
+            {
+              "v": "21:9",
+              "l": "21:9"
+            }
+          ],
+          "default": "16:9"
+        },
+        {
+          "name": "function_mode",
+          "label": "生成方式",
+          "type": "select",
+          "options": [
+            {
+              "v": "references",
+              "l": "references"
+            },
+            {
+              "v": "first_last_frames",
+              "l": "first_last_frames"
+            }
+          ],
+          "default": "references"
+        },
+        {
+          "name": "imageUrls",
+          "label": "参考图片",
+          "type": "assets",
+          "itemType": "image",
+          "max": 30,
+          "limitSource": "documentation"
+        },
+        {
+          "name": "videoUrls",
+          "label": "参考视频",
+          "type": "assets",
+          "itemType": "video",
+          "max": 10,
+          "limitSource": "documentation"
+        },
+        {
+          "name": "audioUrls",
+          "label": "参考音频",
+          "type": "assets",
+          "itemType": "audio",
+          "max": 10,
+          "limitSource": "documentation"
+        }
+      ],
+      "frames": true,
+      "optionNames": [],
+      "source": "https://api.mai-token.com/docs?category=video&model=sd-2.5-1080p-c",
+      "description": "视频生成；分辨率 1080p；时长 4–30 秒；参考图片最多 30 张；参考视频最多 10 段；参考音频最多 10 段；支持独立首尾帧。"
+    },
+    "sd-2.5-720p": {
+      "kind": "video",
+      "parameters": [
+        {
+          "name": "resolution",
+          "label": "分辨率",
+          "type": "select",
+          "options": [
+            {
+              "v": "720p",
+              "l": "720p"
+            }
+          ],
+          "default": "720p"
+        },
+        {
+          "name": "duration",
+          "label": "时长",
+          "type": "number",
+          "integer": true,
+          "min": 4,
+          "max": 30,
+          "default": 5
+        },
+        {
+          "name": "aspectRatio",
+          "label": "比例",
+          "type": "select",
+          "options": [
+            {
+              "v": "16:9",
+              "l": "16:9"
+            },
+            {
+              "v": "9:16",
+              "l": "9:16"
+            },
+            {
+              "v": "1:1",
+              "l": "1:1"
+            },
+            {
+              "v": "4:3",
+              "l": "4:3"
+            },
+            {
+              "v": "3:4",
+              "l": "3:4"
+            },
+            {
+              "v": "21:9",
+              "l": "21:9"
+            }
+          ],
+          "default": "16:9"
+        },
+        {
+          "name": "function_mode",
+          "label": "生成方式",
+          "type": "select",
+          "options": [
+            {
+              "v": "references",
+              "l": "references"
+            },
+            {
+              "v": "first_last_frames",
+              "l": "first_last_frames"
+            }
+          ],
+          "default": "references"
+        },
+        {
+          "name": "imageUrls",
+          "label": "参考图片",
+          "type": "assets",
+          "itemType": "image",
+          "max": 30,
+          "limitSource": "documentation"
+        },
+        {
+          "name": "videoUrls",
+          "label": "参考视频",
+          "type": "assets",
+          "itemType": "video",
+          "max": 10,
+          "limitSource": "documentation"
+        },
+        {
+          "name": "audioUrls",
+          "label": "参考音频",
+          "type": "assets",
+          "itemType": "audio",
+          "max": 10,
+          "limitSource": "documentation"
+        }
+      ],
+      "frames": true,
+      "optionNames": [],
+      "source": "https://api.mai-token.com/docs?category=video&model=sd-2.5-720p",
+      "description": "视频生成；分辨率 720p；时长 4–30 秒；参考图片最多 30 张；参考视频最多 10 段；参考音频最多 10 段；支持独立首尾帧。"
+    },
+    "sd-2.5-720p-c": {
+      "kind": "video",
+      "parameters": [
+        {
+          "name": "resolution",
+          "label": "分辨率",
+          "type": "select",
+          "options": [
+            {
+              "v": "720p",
+              "l": "720p"
+            }
+          ],
+          "default": "720p"
+        },
+        {
+          "name": "duration",
+          "label": "时长",
+          "type": "number",
+          "integer": true,
+          "min": 4,
+          "max": 30,
+          "default": 5
+        },
+        {
+          "name": "aspectRatio",
+          "label": "比例",
+          "type": "select",
+          "options": [
+            {
+              "v": "16:9",
+              "l": "16:9"
+            },
+            {
+              "v": "9:16",
+              "l": "9:16"
+            },
+            {
+              "v": "1:1",
+              "l": "1:1"
+            },
+            {
+              "v": "4:3",
+              "l": "4:3"
+            },
+            {
+              "v": "3:4",
+              "l": "3:4"
+            },
+            {
+              "v": "21:9",
+              "l": "21:9"
+            }
+          ],
+          "default": "16:9"
+        },
+        {
+          "name": "function_mode",
+          "label": "生成方式",
+          "type": "select",
+          "options": [
+            {
+              "v": "references",
+              "l": "references"
+            },
+            {
+              "v": "first_last_frames",
+              "l": "first_last_frames"
+            }
+          ],
+          "default": "references"
+        },
+        {
+          "name": "imageUrls",
+          "label": "参考图片",
+          "type": "assets",
+          "itemType": "image",
+          "max": 30,
+          "limitSource": "documentation"
+        },
+        {
+          "name": "videoUrls",
+          "label": "参考视频",
+          "type": "assets",
+          "itemType": "video",
+          "max": 10,
+          "limitSource": "documentation"
+        },
+        {
+          "name": "audioUrls",
+          "label": "参考音频",
+          "type": "assets",
+          "itemType": "audio",
+          "max": 10,
+          "limitSource": "documentation"
+        }
+      ],
+      "frames": true,
+      "optionNames": [],
+      "source": "https://api.mai-token.com/docs?category=video&model=sd-2.5-720p-c",
+      "description": "视频生成；分辨率 720p；时长 4–30 秒；参考图片最多 30 张；参考视频最多 10 段；参考音频最多 10 段；支持独立首尾帧。"
+    },
+    "sd-fast-720p": {
+      "kind": "video",
+      "parameters": [
+        {
+          "name": "resolution",
+          "label": "分辨率",
+          "type": "select",
+          "options": [
+            {
+              "v": "720p",
+              "l": "720p"
+            }
+          ],
+          "default": "720p"
+        },
+        {
+          "name": "duration",
+          "label": "时长",
+          "type": "number",
+          "integer": true,
+          "min": 4,
+          "max": 15,
+          "default": 5
+        },
+        {
+          "name": "aspectRatio",
+          "label": "比例",
+          "type": "select",
+          "options": [
+            {
+              "v": "16:9",
+              "l": "16:9"
+            },
+            {
+              "v": "9:16",
+              "l": "9:16"
+            },
+            {
+              "v": "1:1",
+              "l": "1:1"
+            },
+            {
+              "v": "4:3",
+              "l": "4:3"
+            },
+            {
+              "v": "3:4",
+              "l": "3:4"
+            },
+            {
+              "v": "21:9",
+              "l": "21:9"
+            }
+          ],
+          "default": "16:9"
+        },
+        {
+          "name": "function_mode",
+          "label": "生成方式",
+          "type": "select",
+          "options": [
+            {
+              "v": "references",
+              "l": "references"
+            },
+            {
+              "v": "first_last_frames",
+              "l": "first_last_frames"
+            }
+          ],
+          "default": "references"
+        },
+        {
+          "name": "imageUrls",
+          "label": "参考图片",
+          "type": "assets",
+          "itemType": "image",
+          "max": 9,
+          "limitSource": "documentation"
+        },
+        {
+          "name": "videoUrls",
+          "label": "参考视频",
+          "type": "assets",
+          "itemType": "video",
+          "max": 3,
+          "limitSource": "documentation"
+        },
+        {
+          "name": "audioUrls",
+          "label": "参考音频",
+          "type": "assets",
+          "itemType": "audio",
+          "max": 3,
+          "limitSource": "documentation"
+        }
+      ],
+      "frames": true,
+      "optionNames": [],
+      "source": "https://api.mai-token.com/docs?category=video&model=sd-fast-720p",
+      "description": "视频生成；分辨率 720p；时长 4–15 秒；参考图片最多 9 张；参考视频最多 3 段；参考音频最多 3 段；支持独立首尾帧。"
+    },
+    "sd-fast-720p-c": {
+      "kind": "video",
+      "parameters": [
+        {
+          "name": "resolution",
+          "label": "分辨率",
+          "type": "select",
+          "options": [
+            {
+              "v": "720p",
+              "l": "720p"
+            }
+          ],
+          "default": "720p"
+        },
+        {
+          "name": "duration",
+          "label": "时长",
+          "type": "number",
+          "integer": true,
+          "min": 4,
+          "max": 15,
+          "default": 5
+        },
+        {
+          "name": "aspectRatio",
+          "label": "比例",
+          "type": "select",
+          "options": [
+            {
+              "v": "16:9",
+              "l": "16:9"
+            },
+            {
+              "v": "9:16",
+              "l": "9:16"
+            },
+            {
+              "v": "1:1",
+              "l": "1:1"
+            },
+            {
+              "v": "4:3",
+              "l": "4:3"
+            },
+            {
+              "v": "3:4",
+              "l": "3:4"
+            },
+            {
+              "v": "21:9",
+              "l": "21:9"
+            }
+          ],
+          "default": "16:9"
+        },
+        {
+          "name": "function_mode",
+          "label": "生成方式",
+          "type": "select",
+          "options": [
+            {
+              "v": "references",
+              "l": "references"
+            },
+            {
+              "v": "first_last_frames",
+              "l": "first_last_frames"
+            }
+          ],
+          "default": "references"
+        },
+        {
+          "name": "imageUrls",
+          "label": "参考图片",
+          "type": "assets",
+          "itemType": "image",
+          "max": 9,
+          "limitSource": "documentation"
+        },
+        {
+          "name": "videoUrls",
+          "label": "参考视频",
+          "type": "assets",
+          "itemType": "video",
+          "max": 3,
+          "limitSource": "documentation"
+        },
+        {
+          "name": "audioUrls",
+          "label": "参考音频",
+          "type": "assets",
+          "itemType": "audio",
+          "max": 3,
+          "limitSource": "documentation"
+        }
+      ],
+      "frames": true,
+      "optionNames": [],
+      "source": "https://api.mai-token.com/docs?category=video&model=sd-fast-720p-c",
+      "description": "视频生成；分辨率 720p；时长 4–15 秒；参考图片最多 9 张；参考视频最多 3 段；参考音频最多 3 段；支持独立首尾帧。"
+    },
+    "sd-fast-480p": {
+      "kind": "video",
+      "parameters": [
+        {
+          "name": "resolution",
+          "label": "分辨率",
+          "type": "select",
+          "options": [
+            {
+              "v": "480p",
+              "l": "480p"
+            }
+          ],
+          "default": "480p"
+        },
+        {
+          "name": "duration",
+          "label": "时长",
+          "type": "number",
+          "integer": true,
+          "min": 4,
+          "max": 15,
+          "default": 5
+        },
+        {
+          "name": "aspectRatio",
+          "label": "比例",
+          "type": "select",
+          "options": [
+            {
+              "v": "16:9",
+              "l": "16:9"
+            },
+            {
+              "v": "9:16",
+              "l": "9:16"
+            },
+            {
+              "v": "1:1",
+              "l": "1:1"
+            },
+            {
+              "v": "4:3",
+              "l": "4:3"
+            },
+            {
+              "v": "3:4",
+              "l": "3:4"
+            },
+            {
+              "v": "21:9",
+              "l": "21:9"
+            }
+          ],
+          "default": "16:9"
+        },
+        {
+          "name": "function_mode",
+          "label": "生成方式",
+          "type": "select",
+          "options": [
+            {
+              "v": "references",
+              "l": "references"
+            },
+            {
+              "v": "first_last_frames",
+              "l": "first_last_frames"
+            }
+          ],
+          "default": "references"
+        },
+        {
+          "name": "imageUrls",
+          "label": "参考图片",
+          "type": "assets",
+          "itemType": "image",
+          "max": 9,
+          "limitSource": "documentation"
+        },
+        {
+          "name": "videoUrls",
+          "label": "参考视频",
+          "type": "assets",
+          "itemType": "video",
+          "max": 3,
+          "limitSource": "documentation"
+        },
+        {
+          "name": "audioUrls",
+          "label": "参考音频",
+          "type": "assets",
+          "itemType": "audio",
+          "max": 3,
+          "limitSource": "documentation"
+        }
+      ],
+      "frames": true,
+      "optionNames": [],
+      "source": "https://api.mai-token.com/docs?category=video&model=sd-fast-480p",
+      "description": "视频生成；分辨率 480p；时长 4–15 秒；参考图片最多 9 张；参考视频最多 3 段；参考音频最多 3 段；支持独立首尾帧。"
+    },
+    "sd-mini-480p": {
+      "kind": "video",
+      "parameters": [
+        {
+          "name": "resolution",
+          "label": "分辨率",
+          "type": "select",
+          "options": [
+            {
+              "v": "480p",
+              "l": "480p"
+            }
+          ],
+          "default": "480p"
+        },
+        {
+          "name": "duration",
+          "label": "时长",
+          "type": "number",
+          "integer": true,
+          "min": 4,
+          "max": 15,
+          "default": 5
+        },
+        {
+          "name": "aspectRatio",
+          "label": "比例",
+          "type": "select",
+          "options": [
+            {
+              "v": "16:9",
+              "l": "16:9"
+            },
+            {
+              "v": "9:16",
+              "l": "9:16"
+            },
+            {
+              "v": "1:1",
+              "l": "1:1"
+            },
+            {
+              "v": "3:4",
+              "l": "3:4"
+            },
+            {
+              "v": "4:3",
+              "l": "4:3"
+            },
+            {
+              "v": "21:9",
+              "l": "21:9"
+            }
+          ],
+          "default": "16:9"
+        },
+        {
+          "name": "function_mode",
+          "label": "生成方式",
+          "type": "select",
+          "options": [
+            {
+              "v": "references",
+              "l": "references"
+            },
+            {
+              "v": "first_last_frames",
+              "l": "first_last_frames"
+            }
+          ],
+          "default": "references"
+        },
+        {
+          "name": "imageUrls",
+          "label": "参考图片",
+          "type": "assets",
+          "itemType": "image",
+          "max": 9,
+          "limitSource": "documentation"
+        },
+        {
+          "name": "videoUrls",
+          "label": "参考视频",
+          "type": "assets",
+          "itemType": "video",
+          "max": 3,
+          "limitSource": "documentation"
+        },
+        {
+          "name": "audioUrls",
+          "label": "参考音频",
+          "type": "assets",
+          "itemType": "audio",
+          "max": 3,
+          "limitSource": "documentation"
+        }
+      ],
+      "frames": true,
+      "optionNames": [],
+      "source": "https://api.mai-token.com/docs?category=video&model=sd-mini-480p",
+      "description": "视频生成；分辨率 480p；时长 4–15 秒；参考图片最多 9 张；参考视频最多 3 段；参考音频最多 3 段；支持独立首尾帧。"
+    },
+    "sd-mini-720p-c": {
+      "kind": "video",
+      "parameters": [
+        {
+          "name": "resolution",
+          "label": "分辨率",
+          "type": "select",
+          "options": [
+            {
+              "v": "720p",
+              "l": "720p"
+            }
+          ],
+          "default": "720p"
+        },
+        {
+          "name": "duration",
+          "label": "时长",
+          "type": "number",
+          "integer": true,
+          "min": 4,
+          "max": 15,
+          "default": 5
+        },
+        {
+          "name": "aspectRatio",
+          "label": "比例",
+          "type": "select",
+          "options": [
+            {
+              "v": "16:9",
+              "l": "16:9"
+            },
+            {
+              "v": "9:16",
+              "l": "9:16"
+            },
+            {
+              "v": "1:1",
+              "l": "1:1"
+            },
+            {
+              "v": "4:3",
+              "l": "4:3"
+            },
+            {
+              "v": "3:4",
+              "l": "3:4"
+            },
+            {
+              "v": "21:9",
+              "l": "21:9"
+            }
+          ],
+          "default": "16:9"
+        },
+        {
+          "name": "function_mode",
+          "label": "生成方式",
+          "type": "select",
+          "options": [
+            {
+              "v": "references",
+              "l": "references"
+            },
+            {
+              "v": "first_last_frames",
+              "l": "first_last_frames"
+            }
+          ],
+          "default": "references"
+        },
+        {
+          "name": "imageUrls",
+          "label": "参考图片",
+          "type": "assets",
+          "itemType": "image",
+          "max": 9,
+          "limitSource": "documentation"
+        },
+        {
+          "name": "videoUrls",
+          "label": "参考视频",
+          "type": "assets",
+          "itemType": "video",
+          "max": 3,
+          "limitSource": "documentation"
+        },
+        {
+          "name": "audioUrls",
+          "label": "参考音频",
+          "type": "assets",
+          "itemType": "audio",
+          "max": 3,
+          "limitSource": "documentation"
+        }
+      ],
+      "frames": true,
+      "optionNames": [],
+      "source": "https://api.mai-token.com/docs?category=video&model=sd-mini-720p-c",
+      "description": "视频生成；分辨率 720p；时长 4–15 秒；参考图片最多 9 张；参考视频最多 3 段；参考音频最多 3 段；支持独立首尾帧。"
+    },
+    "sd-mini-720p": {
+      "kind": "video",
+      "parameters": [
+        {
+          "name": "resolution",
+          "label": "分辨率",
+          "type": "select",
+          "options": [
+            {
+              "v": "720p",
+              "l": "720p"
+            }
+          ],
+          "default": "720p"
+        },
+        {
+          "name": "duration",
+          "label": "时长",
+          "type": "number",
+          "integer": true,
+          "min": 4,
+          "max": 15,
+          "default": 5
+        },
+        {
+          "name": "aspectRatio",
+          "label": "比例",
+          "type": "select",
+          "options": [
+            {
+              "v": "16:9",
+              "l": "16:9"
+            },
+            {
+              "v": "9:16",
+              "l": "9:16"
+            },
+            {
+              "v": "1:1",
+              "l": "1:1"
+            },
+            {
+              "v": "3:4",
+              "l": "3:4"
+            },
+            {
+              "v": "4:3",
+              "l": "4:3"
+            },
+            {
+              "v": "21:9",
+              "l": "21:9"
+            }
+          ],
+          "default": "16:9"
+        },
+        {
+          "name": "function_mode",
+          "label": "生成方式",
+          "type": "select",
+          "options": [
+            {
+              "v": "references",
+              "l": "references"
+            },
+            {
+              "v": "first_last_frames",
+              "l": "first_last_frames"
+            }
+          ],
+          "default": "references"
+        },
+        {
+          "name": "imageUrls",
+          "label": "参考图片",
+          "type": "assets",
+          "itemType": "image",
+          "max": 9,
+          "limitSource": "documentation"
+        },
+        {
+          "name": "videoUrls",
+          "label": "参考视频",
+          "type": "assets",
+          "itemType": "video",
+          "max": 3,
+          "limitSource": "documentation"
+        },
+        {
+          "name": "audioUrls",
+          "label": "参考音频",
+          "type": "assets",
+          "itemType": "audio",
+          "max": 3,
+          "limitSource": "documentation"
+        }
+      ],
+      "frames": true,
+      "optionNames": [],
+      "source": "https://api.mai-token.com/docs?category=video&model=sd-mini-720p",
+      "description": "视频生成；分辨率 720p；时长 4–15 秒；参考图片最多 9 张；参考视频最多 3 段；参考音频最多 3 段；支持独立首尾帧。"
+    },
+    "sd2-933-mini": {
+      "kind": "video",
+      "parameters": [
+        {
+          "name": "resolution",
+          "label": "分辨率",
+          "type": "select",
+          "options": [
+            {
+              "v": "480p",
+              "l": "480p"
+            },
+            {
+              "v": "720p",
+              "l": "720p"
+            }
+          ],
+          "default": "480p"
+        },
+        {
+          "name": "duration",
+          "label": "时长",
+          "type": "number",
+          "integer": true,
+          "min": 4,
+          "max": 15,
+          "default": 5
+        },
+        {
+          "name": "aspectRatio",
+          "label": "比例",
+          "type": "select",
+          "options": [
+            {
+              "v": "16:9",
+              "l": "16:9"
+            },
+            {
+              "v": "9:16",
+              "l": "9:16"
+            },
+            {
+              "v": "3:4",
+              "l": "3:4"
+            }
+          ],
+          "default": "16:9"
+        }
+      ],
+      "optionNames": [],
+      "source": "https://api.mai-token.com/docs?category=video&model=sd2-933-mini",
+      "description": "视频生成；分辨率 480p / 720p；时长 4–15 秒。"
+    },
+    "sdg-2.5-1080p": {
+      "kind": "video",
+      "parameters": [
+        {
+          "name": "resolution",
+          "label": "分辨率",
+          "type": "select",
+          "options": [
+            {
+              "v": "1080p",
+              "l": "1080p"
+            }
+          ],
+          "default": "1080p"
+        },
+        {
+          "name": "duration",
+          "label": "时长",
+          "type": "number",
+          "integer": true,
+          "min": 4,
+          "max": 30,
+          "default": 4
+        },
+        {
+          "name": "aspectRatio",
+          "label": "比例",
+          "type": "select",
+          "options": [
+            {
+              "v": "16:9",
+              "l": "16:9"
+            },
+            {
+              "v": "9:16",
+              "l": "9:16"
+            },
+            {
+              "v": "1:1",
+              "l": "1:1"
+            },
+            {
+              "v": "3:4",
+              "l": "3:4"
+            },
+            {
+              "v": "4:3",
+              "l": "4:3"
+            },
+            {
+              "v": "21:9",
+              "l": "21:9"
+            }
+          ],
+          "default": "16:9"
+        },
+        {
+          "name": "imageUrls",
+          "label": "参考图片",
+          "type": "assets",
+          "itemType": "image",
+          "max": 30,
+          "limitSource": "documentation"
+        },
+        {
+          "name": "videoUrls",
+          "label": "参考视频",
+          "type": "assets",
+          "itemType": "video",
+          "max": 10,
+          "limitSource": "documentation"
+        },
+        {
+          "name": "audioUrls",
+          "label": "参考音频",
+          "type": "assets",
+          "itemType": "audio",
+          "max": 10,
+          "limitSource": "documentation"
+        }
+      ],
+      "frames": false,
+      "optionNames": [],
+      "source": "https://api.mai-token.com/docs?category=video&model=sdg-2.5-1080p",
+      "description": "视频生成；分辨率 1080p；时长 4–30 秒；参考图片最多 30 张；参考视频最多 10 段；参考音频最多 10 段。"
+    },
+    "sdg-2.5-480p": {
+      "kind": "video",
+      "parameters": [
+        {
+          "name": "resolution",
+          "label": "分辨率",
+          "type": "select",
+          "options": [
+            {
+              "v": "480p",
+              "l": "480p"
+            }
+          ],
+          "default": "480p"
+        },
+        {
+          "name": "duration",
+          "label": "时长",
+          "type": "number",
+          "integer": true,
+          "min": 4,
+          "max": 30,
+          "default": 4
+        },
+        {
+          "name": "aspectRatio",
+          "label": "比例",
+          "type": "select",
+          "options": [
+            {
+              "v": "16:9",
+              "l": "16:9"
+            },
+            {
+              "v": "9:16",
+              "l": "9:16"
+            },
+            {
+              "v": "1:1",
+              "l": "1:1"
+            },
+            {
+              "v": "3:4",
+              "l": "3:4"
+            },
+            {
+              "v": "4:3",
+              "l": "4:3"
+            },
+            {
+              "v": "21:9",
+              "l": "21:9"
+            }
+          ],
+          "default": "16:9"
+        },
+        {
+          "name": "imageUrls",
+          "label": "参考图片",
+          "type": "assets",
+          "itemType": "image",
+          "max": 30,
+          "limitSource": "documentation"
+        },
+        {
+          "name": "videoUrls",
+          "label": "参考视频",
+          "type": "assets",
+          "itemType": "video",
+          "max": 10,
+          "limitSource": "documentation"
+        },
+        {
+          "name": "audioUrls",
+          "label": "参考音频",
+          "type": "assets",
+          "itemType": "audio",
+          "max": 10,
+          "limitSource": "documentation"
+        }
+      ],
+      "frames": false,
+      "optionNames": [],
+      "source": "https://api.mai-token.com/docs?category=video&model=sdg-2.5-480p",
+      "description": "视频生成；分辨率 480p；时长 4–30 秒；参考图片最多 30 张；参考视频最多 10 段；参考音频最多 10 段。"
+    },
+    "sdg-2.5-720p": {
+      "kind": "video",
+      "parameters": [
+        {
+          "name": "resolution",
+          "label": "分辨率",
+          "type": "select",
+          "options": [
+            {
+              "v": "720p",
+              "l": "720p"
+            }
+          ],
+          "default": "720p"
+        },
+        {
+          "name": "duration",
+          "label": "时长",
+          "type": "number",
+          "integer": true,
+          "min": 4,
+          "max": 30,
+          "default": 4
+        },
+        {
+          "name": "aspectRatio",
+          "label": "比例",
+          "type": "select",
+          "options": [
+            {
+              "v": "16:9",
+              "l": "16:9"
+            },
+            {
+              "v": "9:16",
+              "l": "9:16"
+            },
+            {
+              "v": "1:1",
+              "l": "1:1"
+            },
+            {
+              "v": "3:4",
+              "l": "3:4"
+            },
+            {
+              "v": "4:3",
+              "l": "4:3"
+            },
+            {
+              "v": "21:9",
+              "l": "21:9"
+            }
+          ],
+          "default": "16:9"
+        },
+        {
+          "name": "imageUrls",
+          "label": "参考图片",
+          "type": "assets",
+          "itemType": "image",
+          "max": 30,
+          "limitSource": "documentation"
+        },
+        {
+          "name": "videoUrls",
+          "label": "参考视频",
+          "type": "assets",
+          "itemType": "video",
+          "max": 10,
+          "limitSource": "documentation"
+        },
+        {
+          "name": "audioUrls",
+          "label": "参考音频",
+          "type": "assets",
+          "itemType": "audio",
+          "max": 10,
+          "limitSource": "documentation"
+        }
+      ],
+      "frames": false,
+      "optionNames": [],
+      "source": "https://api.mai-token.com/docs?category=video&model=sdg-2.5-720p",
+      "description": "视频生成；分辨率 720p；时长 4–30 秒；参考图片最多 30 张；参考视频最多 10 段；参考音频最多 10 段。"
+    },
+    "sdtj-2.5-1080p": {
+      "kind": "video",
+      "parameters": [
+        {
+          "name": "resolution",
+          "label": "分辨率",
+          "type": "select",
+          "options": [
+            {
+              "v": "1080p",
+              "l": "1080p"
+            }
+          ],
+          "default": "1080p"
+        },
+        {
+          "name": "duration",
+          "label": "时长",
+          "type": "number",
+          "integer": true,
+          "min": 4,
+          "max": 30,
+          "default": 4
+        },
+        {
+          "name": "aspectRatio",
+          "label": "比例",
+          "type": "select",
+          "options": [
+            {
+              "v": "16:9",
+              "l": "16:9"
+            },
+            {
+              "v": "9:16",
+              "l": "9:16"
+            },
+            {
+              "v": "1:1",
+              "l": "1:1"
+            },
+            {
+              "v": "4:3",
+              "l": "4:3"
+            },
+            {
+              "v": "3:4",
+              "l": "3:4"
+            },
+            {
+              "v": "3:2",
+              "l": "3:2"
+            },
+            {
+              "v": "2:3",
+              "l": "2:3"
+            },
+            {
+              "v": "4:5",
+              "l": "4:5"
+            },
+            {
+              "v": "5:4",
+              "l": "5:4"
+            },
+            {
+              "v": "21:9",
+              "l": "21:9"
+            },
+            {
+              "v": "9:21",
+              "l": "9:21"
+            },
+            {
+              "v": "adaptive",
+              "l": "adaptive"
+            }
+          ],
+          "default": "16:9"
+        },
+        {
+          "name": "function_mode",
+          "label": "生成方式",
+          "type": "select",
+          "options": [
+            {
+              "v": "references",
+              "l": "references"
+            },
+            {
+              "v": "first_last_frames",
+              "l": "first_last_frames"
+            }
+          ],
+          "default": "references"
+        },
+        {
+          "name": "imageUrls",
+          "label": "参考图片",
+          "type": "assets",
+          "itemType": "image",
+          "max": 30,
+          "limitSource": "documentation"
+        },
+        {
+          "name": "videoUrls",
+          "label": "参考视频",
+          "type": "assets",
+          "itemType": "video",
+          "max": 10,
+          "limitSource": "documentation"
+        },
+        {
+          "name": "audioUrls",
+          "label": "参考音频",
+          "type": "assets",
+          "itemType": "audio",
+          "max": 10,
+          "limitSource": "documentation"
+        }
+      ],
+      "frames": true,
+      "optionNames": [],
+      "source": "https://api.mai-token.com/docs?category=video&model=sdtj-2.5-1080p",
+      "description": "视频生成；分辨率 1080p；时长 4–30 秒；参考图片最多 30 张；参考视频最多 10 段；参考音频最多 10 段；支持独立首尾帧。"
+    },
+    "sdtj-2.5-480p": {
+      "kind": "video",
+      "parameters": [
+        {
+          "name": "resolution",
+          "label": "分辨率",
+          "type": "select",
+          "options": [
+            {
+              "v": "480p",
+              "l": "480p"
+            }
+          ],
+          "default": "480p"
+        },
+        {
+          "name": "duration",
+          "label": "时长",
+          "type": "number",
+          "integer": true,
+          "min": 4,
+          "max": 30,
+          "default": 4
+        },
+        {
+          "name": "aspectRatio",
+          "label": "比例",
+          "type": "select",
+          "options": [
+            {
+              "v": "16:9",
+              "l": "16:9"
+            },
+            {
+              "v": "9:16",
+              "l": "9:16"
+            },
+            {
+              "v": "1:1",
+              "l": "1:1"
+            },
+            {
+              "v": "4:3",
+              "l": "4:3"
+            },
+            {
+              "v": "3:4",
+              "l": "3:4"
+            },
+            {
+              "v": "3:2",
+              "l": "3:2"
+            },
+            {
+              "v": "2:3",
+              "l": "2:3"
+            },
+            {
+              "v": "4:5",
+              "l": "4:5"
+            },
+            {
+              "v": "5:4",
+              "l": "5:4"
+            },
+            {
+              "v": "21:9",
+              "l": "21:9"
+            },
+            {
+              "v": "9:21",
+              "l": "9:21"
+            },
+            {
+              "v": "adaptive",
+              "l": "adaptive"
+            }
+          ],
+          "default": "16:9"
+        },
+        {
+          "name": "function_mode",
+          "label": "生成方式",
+          "type": "select",
+          "options": [
+            {
+              "v": "references",
+              "l": "references"
+            },
+            {
+              "v": "first_last_frames",
+              "l": "first_last_frames"
+            }
+          ],
+          "default": "references"
+        },
+        {
+          "name": "imageUrls",
+          "label": "参考图片",
+          "type": "assets",
+          "itemType": "image",
+          "max": 30,
+          "limitSource": "documentation"
+        },
+        {
+          "name": "videoUrls",
+          "label": "参考视频",
+          "type": "assets",
+          "itemType": "video",
+          "max": 10,
+          "limitSource": "documentation"
+        },
+        {
+          "name": "audioUrls",
+          "label": "参考音频",
+          "type": "assets",
+          "itemType": "audio",
+          "max": 10,
+          "limitSource": "documentation"
+        }
+      ],
+      "frames": true,
+      "optionNames": [],
+      "source": "https://api.mai-token.com/docs?category=video&model=sdtj-2.5-480p",
+      "description": "视频生成；分辨率 480p；时长 4–30 秒；参考图片最多 30 张；参考视频最多 10 段；参考音频最多 10 段；支持独立首尾帧。"
+    },
+    "sdtj-2.5-720p": {
+      "kind": "video",
+      "parameters": [
+        {
+          "name": "resolution",
+          "label": "分辨率",
+          "type": "select",
+          "options": [
+            {
+              "v": "720p",
+              "l": "720p"
+            }
+          ],
+          "default": "720p"
+        },
+        {
+          "name": "duration",
+          "label": "时长",
+          "type": "number",
+          "integer": true,
+          "min": 4,
+          "max": 30,
+          "default": 4
+        },
+        {
+          "name": "aspectRatio",
+          "label": "比例",
+          "type": "select",
+          "options": [
+            {
+              "v": "16:9",
+              "l": "16:9"
+            },
+            {
+              "v": "9:16",
+              "l": "9:16"
+            },
+            {
+              "v": "1:1",
+              "l": "1:1"
+            },
+            {
+              "v": "4:3",
+              "l": "4:3"
+            },
+            {
+              "v": "3:4",
+              "l": "3:4"
+            },
+            {
+              "v": "3:2",
+              "l": "3:2"
+            },
+            {
+              "v": "2:3",
+              "l": "2:3"
+            },
+            {
+              "v": "4:5",
+              "l": "4:5"
+            },
+            {
+              "v": "5:4",
+              "l": "5:4"
+            },
+            {
+              "v": "21:9",
+              "l": "21:9"
+            },
+            {
+              "v": "9:21",
+              "l": "9:21"
+            },
+            {
+              "v": "adaptive",
+              "l": "adaptive"
+            }
+          ],
+          "default": "16:9"
+        },
+        {
+          "name": "function_mode",
+          "label": "生成方式",
+          "type": "select",
+          "options": [
+            {
+              "v": "references",
+              "l": "references"
+            },
+            {
+              "v": "first_last_frames",
+              "l": "first_last_frames"
+            }
+          ],
+          "default": "references"
+        },
+        {
+          "name": "imageUrls",
+          "label": "参考图片",
+          "type": "assets",
+          "itemType": "image",
+          "max": 30,
+          "limitSource": "documentation"
+        },
+        {
+          "name": "videoUrls",
+          "label": "参考视频",
+          "type": "assets",
+          "itemType": "video",
+          "max": 10,
+          "limitSource": "documentation"
+        },
+        {
+          "name": "audioUrls",
+          "label": "参考音频",
+          "type": "assets",
+          "itemType": "audio",
+          "max": 10,
+          "limitSource": "documentation"
+        }
+      ],
+      "frames": true,
+      "optionNames": [],
+      "source": "https://api.mai-token.com/docs?category=video&model=sdtj-2.5-720p",
+      "description": "视频生成；分辨率 720p；时长 4–30 秒；参考图片最多 30 张；参考视频最多 10 段；参考音频最多 10 段；支持独立首尾帧。"
+    },
+    "seedream-5-lite": {
+      "kind": "image",
+      "parameters": [
+        {
+          "name": "resolution",
+          "label": "分辨率",
+          "type": "select",
+          "options": [
+            {
+              "v": "2K",
+              "l": "2K"
+            },
+            {
+              "v": "1800p",
+              "l": "1800p"
+            },
+            {
+              "v": "4K",
+              "l": "4K"
+            }
+          ],
+          "default": "2K"
+        },
+        {
+          "name": "aspectRatio",
+          "label": "比例",
+          "type": "select",
+          "options": [
+            {
+              "v": "1:1",
+              "l": "1:1"
+            },
+            {
+              "v": "16:9",
+              "l": "16:9"
+            },
+            {
+              "v": "9:16",
+              "l": "9:16"
+            },
+            {
+              "v": "4:3",
+              "l": "4:3"
+            },
+            {
+              "v": "3:4",
+              "l": "3:4"
+            },
+            {
+              "v": "3:2",
+              "l": "3:2"
+            },
+            {
+              "v": "2:3",
+              "l": "2:3"
+            },
+            {
+              "v": "21:9",
+              "l": "21:9"
+            },
+            {
+              "v": "5:4",
+              "l": "5:4"
+            },
+            {
+              "v": "4:5",
+              "l": "4:5"
+            }
+          ],
+          "default": "1:1"
+        },
+        {
+          "name": "imageUrls",
+          "label": "参考图片",
+          "type": "assets",
+          "itemType": "image",
+          "max": 6,
+          "limitSource": "documentation"
+        }
+      ],
+      "optionNames": [],
+      "source": "https://api.mai-token.com/docs?category=image&model=seedream-5-lite",
+      "description": "图片生成；分辨率 2K / 1800p / 4K；参考图片最多 6 张；当前接入默认单张输出。"
+    },
+    "seedream-5-pro": {
+      "kind": "image",
+      "parameters": [
+        {
+          "name": "resolution",
+          "label": "分辨率",
+          "type": "select",
+          "options": [
+            {
+              "v": "1K",
+              "l": "1K"
+            },
+            {
+              "v": "2K",
+              "l": "2K"
+            }
+          ],
+          "default": "1K"
+        },
+        {
+          "name": "aspectRatio",
+          "label": "比例",
+          "type": "select",
+          "options": [
+            {
+              "v": "1:1",
+              "l": "1:1"
+            },
+            {
+              "v": "16:9",
+              "l": "16:9"
+            },
+            {
+              "v": "9:16",
+              "l": "9:16"
+            },
+            {
+              "v": "4:3",
+              "l": "4:3"
+            },
+            {
+              "v": "3:4",
+              "l": "3:4"
+            },
+            {
+              "v": "3:2",
+              "l": "3:2"
+            },
+            {
+              "v": "2:3",
+              "l": "2:3"
+            },
+            {
+              "v": "21:9",
+              "l": "21:9"
+            },
+            {
+              "v": "5:4",
+              "l": "5:4"
+            },
+            {
+              "v": "4:5",
+              "l": "4:5"
+            }
+          ],
+          "default": "1:1"
+        },
+        {
+          "name": "imageUrls",
+          "label": "参考图片",
+          "type": "assets",
+          "itemType": "image",
+          "max": 8,
+          "limitSource": "documentation"
+        }
+      ],
+      "optionNames": [],
+      "source": "https://api.mai-token.com/docs?category=image&model=seedream-5-pro",
+      "description": "图片生成；分辨率 1K / 2K；参考图片最多 8 张；当前接入默认单张输出。"
+    }
+  }
+}

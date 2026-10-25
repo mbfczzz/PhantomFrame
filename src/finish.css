@@ -1,0 +1,399 @@
+/* Neutral charcoal surfaces with green, pink, and gold accents. */
+.horizontal-shell {
+  position: relative;
+  isolation: isolate;
+  background: var(--bg);
+}
+.app-masthead {
+  background: var(--glass);
+  backdrop-filter: blur(18px);
+  box-shadow:
+    0 1px 0 var(--surface-highlight),
+    0 8px 28px var(--surface-shadow);
+}
+.app-topbar .brand > img {
+  filter: drop-shadow(0 2px 7px var(--accent-soft));
+}
+.primary-nav > a.active {
+  color: var(--accent);
+  background: radial-gradient(
+    ellipse at 50% 100%,
+    var(--accent-soft),
+    transparent 72%
+  );
+}
+.primary-nav > a.active::after,
+.horizontal-shell .mobile-tabs > a.active::after {
+  background: var(--accent);
+  box-shadow: 0 -2px 8px var(--accent-soft);
+}
+.topbar-balance {
+  background: linear-gradient(120deg, var(--panel-light), var(--panel));
+  box-shadow: inset 0 1px var(--surface-highlight);
+  transition:
+    border-color 180ms,
+    box-shadow 180ms;
+}
+.topbar-balance > svg:last-child {
+  color: var(--pink);
+}
+.topbar-account .avatar.small {
+  background: linear-gradient(145deg, var(--accent-soft), var(--input));
+  box-shadow: inset 0 1px var(--surface-highlight);
+  border-color: var(--accent-border);
+  color: var(--accent);
+}
+.creation-heading h1,
+.page-header h1 {
+  color: var(--text);
+  text-shadow: none;
+}
+.creation-page .surface-composer,
+.creation-page .studio-settings {
+  position: relative;
+  background: linear-gradient(155deg, var(--panel-light), var(--panel) 55%);
+  border-color: var(--border-strong);
+  box-shadow:
+    inset 0 1px var(--surface-highlight),
+    0 16px 42px var(--surface-shadow);
+  transition:
+    border-color 220ms,
+    box-shadow 220ms;
+}
+.creation-page .surface-composer:focus-within {
+  border-color: var(--accent-outline);
+  box-shadow:
+    inset 0 1px var(--surface-highlight),
+    0 0 0 3px var(--accent-subtle),
+    0 16px 42px var(--surface-shadow);
+}
+.reactive-surface::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  padding: 1px;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 2;
+  opacity: 0;
+  background: radial-gradient(
+    320px circle at var(--light-x, 50%) var(--light-y, 0px),
+    var(--accent),
+    transparent 80%
+  );
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  transition: opacity 260ms;
+}
+.reactive-surface[data-illuminated="true"]::before {
+  opacity: 0.4;
+}
+.composer-heading,
+.settings-heading {
+  background: linear-gradient(180deg, var(--surface-highlight), transparent);
+  border-radius: 13px 13px 0 0;
+}
+.settings-heading > svg {
+  color: var(--accent);
+}
+.studio-type-badge.video {
+  color: var(--pink);
+}
+.studio-references {
+  background: transparent;
+}
+.composer-note {
+  background: color-mix(in srgb, var(--bg) 24%, transparent);
+  border-radius: 0 0 13px 13px;
+}
+.surface-writing > textarea {
+  color: var(--text);
+}
+.surface-writing > textarea::placeholder {
+  opacity: 1;
+}
+.creation-page .surface-footer {
+  background: transparent;
+  border-radius: 0 0 13px 13px;
+}
+.creation-page .studio-price > strong {
+  font-variant-numeric: tabular-nums;
+}
+.ui-select-trigger,
+.surface-parameters .parameter > input:not([type="checkbox"]) {
+  border-color: var(--border);
+  box-shadow: inset 0 1px 2px var(--surface-shadow);
+  transition:
+    border-color 180ms,
+    background-color 180ms,
+    box-shadow 180ms;
+}
+.surface-field.surface-model .ui-select-trigger {
+  background: var(--input);
+  border-color: var(--border);
+}
+.ui-select-trigger.is-open {
+  background: var(--accent-soft);
+  border-color: var(--accent-outline);
+  box-shadow: 0 0 0 3px var(--accent-subtle);
+}
+.ui-select-popup,
+.workspace-menu,
+.modal {
+  background: linear-gradient(145deg, var(--panel-light), var(--panel) 70%);
+  border-color: var(--border-strong);
+  box-shadow:
+    inset 0 1px var(--surface-highlight),
+    0 18px 60px var(--surface-shadow),
+    0 2px 9px var(--surface-shadow);
+}
+.ui-select-option.is-selected {
+  background: var(--accent-soft);
+}
+.ui-select-option.is-active {
+  background: var(--accent-hover-bg);
+}
+.modal-backdrop {
+  backdrop-filter: blur(5px);
+}
+.button.primary,
+.button.pink,
+.auth-submit,
+.creation-page .studio-generate:not(:disabled) {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(180deg, var(--action), var(--action-end));
+  border-color: var(--action);
+  color: var(--on-action);
+  box-shadow:
+    inset 0 1px var(--action-shine),
+    0 3px 12px var(--accent-soft);
+  transition:
+    box-shadow 220ms,
+    filter 220ms,
+    transform 220ms var(--ease-out);
+}
+.button.primary::after,
+.button.pink::after,
+.auth-submit::after,
+.creation-page .studio-generate::after {
+  content: "";
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    110deg,
+    transparent 25%,
+    var(--action-shine) 48%,
+    transparent 70%
+  );
+  transform: translateX(-110%);
+}
+.button.primary:hover:not(:disabled),
+.button.pink:hover:not(:disabled),
+.auth-submit:hover:not(:disabled),
+.creation-page .studio-generate:hover:not(:disabled) {
+  background: linear-gradient(180deg, var(--action-hover), var(--action));
+  border-color: var(--action);
+  color: var(--on-action);
+  box-shadow:
+    inset 0 1px var(--action-shine),
+    0 4px 20px var(--accent-border);
+}
+.creation-page .studio-generate:disabled::after {
+  display: none;
+}
+.button.auth-submit {
+  background: linear-gradient(
+    180deg,
+    var(--pink-action),
+    var(--pink-action-hover)
+  );
+  border-color: var(--pink-action);
+  color: var(--on-pink);
+  box-shadow:
+    inset 0 1px var(--action-shine),
+    0 3px 12px var(--pink-soft);
+}
+.button.auth-submit:hover:not(:disabled) {
+  background: linear-gradient(
+    180deg,
+    var(--pink-action-hover),
+    var(--pink-action)
+  );
+  border-color: var(--pink-action-hover);
+  color: var(--on-pink);
+  box-shadow:
+    inset 0 1px var(--action-shine),
+    0 4px 16px var(--pink-border);
+}
+.tabs button,
+.icon-button,
+.studio-preview-toggle,
+.studio-reference-add {
+  transition:
+    color 180ms,
+    background-color 180ms,
+    border-color 180ms,
+    box-shadow 180ms;
+}
+.tabs button.active,
+.catalog-categories button[aria-pressed="true"] {
+  background: var(--accent-soft);
+  color: var(--accent);
+  box-shadow: inset 0 0 0 1px var(--accent-border);
+}
+.section-tabs .tabs button.active,
+.admin-nav > a.active {
+  border-color: var(--accent);
+  color: var(--accent);
+  box-shadow: none;
+}
+.panel,
+.stat-card,
+.six .stat-card,
+.profile-summary,
+.catalog-card,
+.platform-endpoint {
+  background: linear-gradient(150deg, var(--panel-light), var(--panel) 65%);
+  box-shadow:
+    inset 0 1px var(--surface-highlight),
+    0 6px 24px var(--surface-shadow);
+}
+.catalog-card,
+.asset-card,
+.job-card {
+  transition:
+    border-color 220ms,
+    box-shadow 220ms;
+}
+.model-glyph {
+  color: var(--accent);
+  background: var(--accent-soft);
+  border-color: var(--accent-border);
+}
+.model-glyph.video {
+  color: var(--pink);
+  background: var(--pink-soft);
+  border-color: var(--pink-border);
+}
+.badge.image {
+  color: var(--accent);
+  background: var(--accent-soft);
+}
+.badge.video {
+  color: var(--pink);
+  background: var(--pink-soft);
+}
+.catalog-use {
+  color: var(--accent);
+}
+.bar-track > div {
+  background: linear-gradient(0deg, var(--action-end), var(--accent));
+}
+.toast {
+  background: var(--panel-light);
+  border-color: var(--border-strong);
+  box-shadow:
+    inset 0 1px var(--surface-highlight),
+    0 10px 28px var(--surface-shadow);
+}
+.auth-page {
+  background: var(--bg);
+}
+.auth-card {
+  border-color: var(--border-strong);
+  box-shadow: 0 30px 90px var(--surface-shadow);
+}
+.auth-form {
+  background: linear-gradient(145deg, var(--panel-light), var(--panel));
+}
+@media (hover: hover) and (pointer: fine) {
+  .topbar-balance:hover,
+  .catalog-card:hover,
+  .asset-card:hover,
+  .job-card:hover {
+    border-color: var(--accent-border);
+    box-shadow:
+      inset 0 1px var(--surface-highlight),
+      0 8px 30px var(--surface-shadow);
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .creation-heading,
+  .creation-page .surface-composer,
+  .creation-page .studio-settings {
+    animation: surface-arrive 400ms var(--ease-out);
+  }
+  .workspace-menu,
+  .ui-select-popup {
+    animation: surface-arrive 160ms ease-out;
+  }
+  .primary-nav > a.active::after {
+    animation: nav-reveal 280ms var(--ease-out);
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .button.primary:hover:not(:disabled)::after,
+    .button.pink:hover:not(:disabled)::after,
+    .auth-submit:hover:not(:disabled)::after,
+    .creation-page .studio-generate:hover:not(:disabled)::after {
+      animation: action-reflection 650ms ease-out;
+    }
+    .button.primary:hover:not(:disabled),
+    .button.pink:hover:not(:disabled),
+    .creation-page .studio-generate:hover:not(:disabled) {
+      transform: translateY(-1px);
+    }
+    .button.primary:active:not(:disabled),
+    .button.pink:active:not(:disabled),
+    .creation-page .studio-generate:active:not(:disabled) {
+      transform: translateY(0);
+    }
+  }
+}
+@keyframes surface-arrive {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes nav-reveal {
+  from {
+    transform: scaleX(0.35);
+    opacity: 0;
+  }
+  to {
+    transform: scaleX(1);
+    opacity: 1;
+  }
+}
+@keyframes action-reflection {
+  to {
+    transform: translateX(110%);
+  }
+}
+@media (max-width: 767px) {
+  .app-masthead {
+    backdrop-filter: blur(12px);
+  }
+  .creation-page .surface-footer {
+    background: var(--glass);
+    backdrop-filter: blur(16px);
+    border-radius: 0;
+    border-top-color: var(--border-strong);
+    box-shadow: 0 -8px 24px var(--surface-shadow);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .reactive-surface::before,
+  .button.primary::after,
+  .button.pink::after,
+  .auth-submit::after,
+  .creation-page .studio-generate::after {
+    display: none;
+  }
+}

@@ -1,0 +1,87 @@
+/* Shared color roles. Layout and component sizing belong in the component styles. */
+:root {
+  --bg: #101113;
+  --panel: #1a1b1f;
+  --input: #202125;
+  --hover: #2d2f34;
+  --border: #ffffff1a;
+  --border-strong: #ffffff29;
+  --text: #f5f6f7;
+  --secondary: #c5c8ce;
+  --muted: #969ba4;
+  --accent: #22c55e;
+  --action: #22c55e;
+  --action-hover: #4ade80;
+  --on-action: #082812;
+  --cyan: #22d3ee;
+  --pink: #f20d7a;
+  --pink-hover: #ff3d96;
+  --pink-action: #db0b69;
+  --pink-action-hover: #c70a5d;
+  --on-pink: #ffffff;
+  --gold: #f5c84b;
+  --purple: #a855f7;
+  --success: #32d47a;
+  --on-ink: #fff;
+  --nav-active-bg: linear-gradient(105deg, #fff8f4, #e8fbff 52%, #d1f5fd);
+  --nav-active-text: #192126;
+  --nav-active-border: #ffffff35;
+  --brand-gradient: linear-gradient(120deg, #4ade80, #22d3ee);
+  --panel-light: #1d1e22;
+  --surface-highlight: #ffffff07;
+  --surface-shadow: #00000024;
+  --action-end: #20bd5a;
+  --action-shine: #ffffff24;
+  --glass: #101113f2;
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  color-scheme: dark;
+
+  /* Tints follow the current theme's accent instead of retaining old hex values. */
+  --sidebar-bg: var(--bg);
+  --green: var(--accent);
+  --green-dim: var(--accent-soft);
+  --accent-soft: color-mix(in srgb, var(--accent) 8%, transparent);
+  --accent-border: color-mix(in srgb, var(--accent) 24%, transparent);
+  --accent-outline: color-mix(in srgb, var(--accent) 52%, transparent);
+  --accent-subtle: color-mix(in srgb, var(--accent) 3%, transparent);
+  --accent-hover-bg: color-mix(in srgb, var(--accent) 10%, transparent);
+  --accent-pressed-bg: color-mix(in srgb, var(--accent) 16%, transparent);
+  --cyan-soft: color-mix(in srgb, var(--cyan) 7%, transparent);
+  --pink-soft: color-mix(in srgb, var(--pink) 7%, transparent);
+  --pink-border: color-mix(in srgb, var(--pink) 24%, transparent);
+  --purple-soft: color-mix(in srgb, var(--purple) 7%, transparent);
+  --success-soft: color-mix(in srgb, var(--success) 7%, transparent);
+  --selection: color-mix(in srgb, var(--accent) 22%, transparent);
+}
+
+:root[data-theme="light"] {
+  --bg: #f4f5f6;
+  --panel: #fff;
+  --input: #f7f8f9;
+  --hover: #eceef0;
+  --border: #18202a1f;
+  --border-strong: #18202a29;
+  --text: #1c2026;
+  --secondary: #4b515c;
+  --muted: #626873;
+  --accent: #16803e;
+  --action: #15803d;
+  --action-hover: #166534;
+  --on-action: #fff;
+  --cyan: #0e7490;
+  --pink: #d80a6a;
+  --pink-hover: #b80759;
+  --gold: #a16207;
+  --purple: #7c3aed;
+  --success: #15803d;
+  --panel-light: #fdfdfe;
+  --surface-highlight: #ffffffd9;
+  --surface-shadow: #18202a0b;
+  --action-end: #16783a;
+  --action-shine: #ffffff24;
+  --glass: #f7f8f9f2;
+  --nav-active-bg: linear-gradient(105deg, #e3f5e8, #def2f5);
+  --nav-active-text: #18382a;
+  --nav-active-border: #16a34a24;
+  color-scheme: light;
+}

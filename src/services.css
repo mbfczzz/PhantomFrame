@@ -1,0 +1,665 @@
+.sidebar .service-nav-label {
+  display: block;
+  padding: 0 11px;
+  margin: 26px 0 10px;
+  font-size: 10px;
+  color: var(--muted);
+  letter-spacing: 0;
+}
+.sidebar nav {
+  flex-shrink: 0;
+}
+.billing-page,
+.support-page {
+  max-width: 1520px;
+}
+.billing-stats {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.billing-stats .stat-card {
+  min-width: 0;
+}
+.billing-stats .stat-card > small {
+  display: block;
+  margin-top: 8px;
+  font-size: 11px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+.billing-stats .stat-card:nth-child(2) > strong {
+  color: var(--accent);
+}
+.billing-stats .stat-card:nth-child(3) > strong {
+  color: var(--pink);
+}
+.ledger-panel {
+  margin-top: 22px;
+}
+.ledger-filters {
+  display: grid;
+  grid-template-columns: minmax(130px, 1fr) minmax(120px, 1fr) minmax(
+      140px,
+      1fr
+    ) minmax(140px, 1fr) auto;
+  gap: 13px;
+  align-items: end;
+}
+.ledger-filter {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  min-width: 0;
+  color: var(--muted);
+  font-size: 12px;
+}
+.ledger-filter > input {
+  width: 100%;
+  min-width: 0;
+  min-height: 38px;
+  font-size: 13px;
+}
+.ledger-search {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin: 20px 0;
+}
+.ledger-search .searchbox {
+  max-width: 400px;
+  flex: 1;
+}
+.ledger-search > span {
+  color: var(--muted);
+  font-size: 11px;
+  white-space: nowrap;
+}
+.ledger-id {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 0;
+  background: none;
+  color: var(--muted);
+  white-space: nowrap;
+}
+.ledger-id:hover {
+  color: var(--accent);
+}
+.ledger-job-link {
+  display: block;
+  font-size: 10px;
+  margin-top: 4px;
+  color: var(--accent);
+}
+.billing-help {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--muted);
+  margin: 18px 0;
+}
+.billing-help a {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--accent);
+}
+.recharge-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(250px, 0.8fr);
+  gap: 22px;
+  margin-bottom: 24px;
+  align-items: start;
+}
+.recharge-balance {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 28px;
+  padding-bottom: 23px;
+  border-bottom: 1px solid var(--border);
+}
+.recharge-balance > span {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--muted);
+  font-size: 13px;
+}
+.recharge-balance > strong {
+  color: var(--gold);
+  font-size: 34px;
+  line-height: 1.2;
+  font-weight: 600;
+}
+.recharge-card .field input {
+  min-height: 46px;
+  font-size: 16px;
+}
+.recharge-card form > .button {
+  min-height: 42px;
+}
+.redeem-error {
+  color: var(--pink);
+  font-size: 13px;
+  line-height: 1.6;
+  margin: -5px 0 15px;
+}
+.redeem-receipt {
+  display: flex;
+  align-items: flex-start;
+  gap: 11px;
+  padding: 16px;
+  border: 1px solid var(--accent-border);
+  border-radius: 10px;
+  background: var(--accent-soft);
+  margin-top: 20px;
+  color: var(--accent);
+}
+.redeem-receipt strong {
+  font-size: 14px;
+  font-weight: 500;
+}
+.redeem-receipt p {
+  color: var(--secondary);
+  font-size: 12px;
+  margin: 6px 0;
+}
+.redeem-receipt button {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+}
+.recharge-guide h2 {
+  font-size: 16px;
+}
+.recharge-guide > p {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.9;
+}
+.recharge-guide > a.button {
+  margin-bottom: 12px;
+}
+.recharge-support {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-top: 20px;
+  margin-top: 22px;
+  border-top: 1px solid var(--border);
+  color: var(--secondary);
+}
+.recharge-support > span {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.recharge-support strong {
+  font-size: 13px;
+  font-weight: 500;
+}
+.recharge-support small {
+  font-size: 11px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+.recharge-support:hover {
+  color: var(--accent);
+}
+.recent-redemptions > div {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  padding: 17px 0;
+  border-bottom: 1px solid var(--border);
+}
+.recent-redemptions > div:last-child {
+  border-bottom: 0;
+}
+.recent-redemptions > div > div {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-right: auto;
+}
+.recent-redemptions strong {
+  font-size: 13px;
+  font-weight: 500;
+}
+.recent-redemptions small,
+.recent-redemptions .muted {
+  color: var(--muted);
+  font-size: 11px;
+}
+.ticket-filters {
+  display: flex;
+  gap: 12px;
+  margin: 22px 0;
+  align-items: center;
+}
+.ticket-filters .searchbox {
+  flex: 1;
+  max-width: 480px;
+}
+.ticket-filters > .ui-select {
+  width: 150px;
+}
+.ticket-list-panel {
+  padding: 8px 22px 18px;
+}
+.ticket-list-item {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 22px 0;
+  border-bottom: 1px solid var(--border);
+}
+.ticket-list-item:last-child {
+  border-bottom: 0;
+}
+.ticket-list-copy {
+  flex: 1;
+  min-width: 0;
+}
+.ticket-list-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+.ticket-list-title > strong {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text);
+}
+.ticket-list-item:hover .ticket-list-title > strong {
+  color: var(--accent);
+}
+.ticket-list-item > svg {
+  color: var(--muted);
+}
+.ticket-list-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 14px;
+  color: var(--muted);
+  font-size: 11px;
+}
+.ticket-list-meta code {
+  font-size: 11px;
+}
+.ticket-state {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 8px;
+  border-radius: 5px;
+  font-size: 11px;
+  line-height: 1.5;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.ticket-state.open {
+  color: var(--gold);
+  background: color-mix(in srgb, var(--gold) 8%, transparent);
+}
+.ticket-state.replied {
+  color: var(--cyan);
+  background: var(--cyan-soft);
+}
+.ticket-state.resolved {
+  color: var(--accent);
+  background: var(--accent-soft);
+}
+.ticket-state.closed {
+  color: var(--muted);
+  background: var(--input);
+}
+.ticket-create-panel {
+  max-width: 880px;
+}
+.ticket-create-panel textarea,
+.ticket-detail-panel textarea {
+  width: 100%;
+  min-height: 130px;
+  resize: vertical;
+  line-height: 1.8;
+}
+.ticket-form-category {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-width: 280px;
+  margin: 0 0 22px;
+}
+.ticket-form-category > span {
+  font-size: 13px;
+  color: var(--secondary);
+  font-weight: 500;
+}
+.ticket-form-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  margin-top: 10px;
+}
+.ticket-form-footer > span {
+  color: var(--muted);
+  font-size: 11px;
+}
+.ticket-detail-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 15px;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 18px;
+  margin-bottom: 22px;
+}
+.ticket-detail-heading h2 {
+  font-size: 19px;
+  font-weight: 500;
+  margin-bottom: 8px;
+  overflow-wrap: anywhere;
+}
+.ticket-detail-heading p {
+  font-size: 12px;
+  color: var(--muted);
+  margin: 0;
+}
+.ticket-related {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  background: var(--input);
+  border: 1px solid var(--border);
+  padding: 12px 14px;
+  border-radius: 9px;
+  margin-bottom: 22px;
+  color: var(--muted);
+  font-size: 12px;
+}
+.ticket-related code {
+  overflow-wrap: anywhere;
+  font-size: 11px;
+}
+.ticket-related .icon-button {
+  width: 26px;
+  height: 26px;
+}
+.ticket-related .text-link {
+  font-size: 11px;
+}
+.ticket-thread {
+  display: flex;
+  flex-direction: column;
+  gap: 17px;
+  margin-bottom: 28px;
+}
+.ticket-message {
+  padding: 17px 18px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--bg);
+}
+.ticket-message.is-staff {
+  background: var(--accent-subtle);
+  border-color: var(--accent-border);
+}
+.ticket-message > header {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin-bottom: 12px;
+}
+.ticket-avatar {
+  display: grid;
+  place-items: center;
+  width: 27px;
+  height: 27px;
+  background: var(--input);
+  color: var(--secondary);
+  border-radius: 7px;
+  font-size: 11px;
+}
+.ticket-message.is-staff .ticket-avatar {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+.ticket-message header strong {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--secondary);
+}
+.ticket-message header time {
+  margin-left: auto;
+  color: var(--muted);
+  font-size: 10px;
+}
+.ticket-message > p {
+  margin: 0;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  color: var(--secondary);
+  font-size: 14px;
+  line-height: 1.9;
+}
+.ticket-finished {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--input);
+  border-radius: 9px;
+  padding: 15px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.7;
+}
+.support-admin-heading {
+  margin-top: 25px;
+}
+.support-admin-heading p {
+  font-size: 12px;
+  margin-bottom: 0;
+}
+@media (max-width: 1100px) {
+  .ledger-filters {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .ledger-filters > button {
+    justify-self: start;
+  }
+  .ledger-search {
+    flex-wrap: wrap;
+  }
+  .recharge-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+@media (max-width: 767px) {
+  .sidebar .service-nav-label {
+    margin-top: 20px;
+  }
+  .billing-page .page-header .header-actions,
+  .support-page .page-header .header-actions {
+    flex-wrap: wrap;
+  }
+  .billing-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+  .billing-stats .stat-card {
+    padding: 16px 12px;
+  }
+  .billing-stats .stat-card:first-child {
+    grid-column: 1 / -1;
+  }
+  .billing-stats .stat-card > strong {
+    font-size: 26px;
+  }
+  .billing-stats .stat-card > small {
+    font-size: 9px;
+  }
+  .ledger-filters {
+    gap: 12px 10px;
+  }
+  .ledger-filter > span {
+    font-size: 11px;
+  }
+  .ledger-filter > input {
+    padding-inline: 8px;
+    font-size: 12px;
+  }
+  .ledger-filter .ui-select-trigger {
+    font-size: 12px;
+    padding-inline: 8px;
+  }
+  .ledger-search {
+    margin: 16px 0;
+    gap: 10px;
+  }
+  .ledger-search .searchbox {
+    flex: 1 1 100%;
+    width: 100%;
+    min-width: 0;
+  }
+  .ledger-search > span {
+    font-size: 10px;
+    white-space: normal;
+  }
+  .billing-help {
+    font-size: 11px;
+  }
+  .recharge-layout {
+    gap: 16px;
+    margin-bottom: 18px;
+  }
+  .recharge-balance {
+    margin-bottom: 22px;
+    padding-bottom: 18px;
+  }
+  .recharge-balance > strong {
+    font-size: 30px;
+  }
+  .redeem-receipt {
+    padding: 13px;
+  }
+  .redeem-receipt strong {
+    font-size: 13px;
+  }
+  .recent-redemptions > div {
+    flex-wrap: wrap;
+    gap: 8px 12px;
+  }
+  .recent-redemptions > div > .muted {
+    flex: 1 1 100%;
+  }
+  .ticket-filters {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .ticket-filters .searchbox {
+    flex: 1 1 100%;
+    width: 100%;
+    min-width: 0;
+  }
+  .ticket-filters > .ui-select {
+    flex: 1;
+    width: auto;
+    min-width: 0;
+  }
+  .ticket-filters .ui-select-trigger {
+    font-size: 12px;
+  }
+  .ticket-list-panel {
+    padding: 4px 15px 12px;
+  }
+  .ticket-list-item {
+    gap: 10px;
+    padding: 18px 0;
+  }
+  .ticket-list-title {
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .ticket-list-title > strong {
+    flex: 1 1 100%;
+    font-size: 13px;
+  }
+  .ticket-list-meta {
+    font-size: 10px;
+    gap: 5px 10px;
+  }
+  .ticket-state {
+    font-size: 10px;
+  }
+  .ticket-form-category {
+    max-width: none;
+  }
+  .ticket-create-panel .field input,
+  .ticket-create-panel .field textarea,
+  .ticket-detail-panel .field textarea {
+    font-size: 16px;
+  }
+  .ticket-create-panel textarea,
+  .ticket-detail-panel textarea {
+    min-height: 120px;
+  }
+  .ticket-form-footer {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .ticket-form-footer > span {
+    font-size: 10px;
+  }
+  .ticket-form-footer > button {
+    margin-left: auto;
+  }
+  .ticket-detail-heading {
+    flex-wrap: wrap;
+  }
+  .ticket-detail-heading h2 {
+    font-size: 17px;
+  }
+  .ticket-related {
+    padding: 11px;
+    font-size: 11px;
+    gap: 7px;
+  }
+  .ticket-message {
+    padding: 14px 12px;
+  }
+  .ticket-message > p {
+    font-size: 13px;
+  }
+  .ticket-message header {
+    gap: 7px;
+    flex-wrap: wrap;
+  }
+  .ticket-message header time {
+    font-size: 9px;
+  }
+  .ticket-message header strong {
+    font-size: 11px;
+  }
+  .ticket-finished {
+    font-size: 11px;
+  }
+  .support-admin-heading {
+    flex-wrap: wrap;
+    gap: 14px;
+  }
+  .support-admin-heading .header-actions {
+    flex-wrap: wrap;
+  }
+}

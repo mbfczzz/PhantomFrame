@@ -1,0 +1,452 @@
+/* A horizontal application shell; all modules share the same content width. */
+.horizontal-shell {
+  min-height: 100dvh;
+}
+.horizontal-shell .main-content {
+  margin-left: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  min-width: 0;
+  outline: none;
+}
+.horizontal-shell .page {
+  max-width: 1520px;
+  margin: 0 auto;
+  padding: 28px 40px 48px;
+}
+.horizontal-shell .page-header {
+  margin-bottom: 26px;
+}
+.app-masthead {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg);
+}
+.app-topbar {
+  display: flex;
+  align-items: center;
+  gap: 35px;
+  height: 72px;
+  max-width: 1680px;
+  margin: auto;
+  padding: 0 32px;
+}
+.app-topbar > .brand {
+  flex-shrink: 0;
+  gap: 10px;
+  max-width: 190px;
+}
+.app-topbar .brand-copy {
+  min-width: 0;
+}
+.app-topbar .brand-copy > strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.app-topbar .brand > img {
+  width: 32px;
+  height: 32px;
+}
+.app-topbar .brand-copy > strong {
+  font-size: 18px;
+  letter-spacing: 0.5px;
+  background: none;
+  color: var(--text);
+  -webkit-text-fill-color: currentColor;
+}
+.app-topbar .brand-copy > small {
+  font-size: 9px;
+  letter-spacing: 0.6px;
+}
+.primary-nav {
+  display: flex;
+  align-self: stretch;
+  align-items: stretch;
+  gap: 27px;
+  flex: 1;
+  min-width: 0;
+}
+.primary-nav > a {
+  position: relative;
+  display: flex;
+  align-items: center;
+  color: var(--muted);
+  font-size: 13px;
+  white-space: nowrap;
+  transition: color 0.15s;
+}
+.primary-nav > a:hover {
+  color: var(--text);
+}
+.primary-nav > a.active {
+  color: var(--text);
+  font-weight: 500;
+}
+.primary-nav > a.active::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 3px;
+  border-radius: 3px 3px 0 0;
+  background: var(--accent);
+}
+.topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-left: auto;
+}
+.topbar-balance {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 10px;
+  min-height: 34px;
+  border: 1px solid var(--border);
+  background: var(--panel);
+  border-radius: 8px;
+  color: var(--muted);
+  white-space: nowrap;
+  font-size: 11px;
+}
+.topbar-balance strong {
+  color: var(--gold);
+  font-weight: 600;
+  font-size: 13px;
+}
+.topbar-balance > svg:last-child {
+  margin-left: 5px;
+  color: var(--pink);
+}
+.topbar-balance:hover {
+  border-color: var(--border-strong);
+}
+.topbar-theme {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 32px;
+  padding: 0;
+  background: none;
+  color: var(--muted);
+  border-radius: 7px;
+}
+.topbar-theme:hover {
+  background: var(--input);
+  color: var(--accent);
+}
+.horizontal-shell .account-switch.topbar-account {
+  padding: 0;
+  gap: 9px;
+  border: 0;
+}
+.topbar-account .avatar.small {
+  width: 31px;
+  height: 31px;
+  border-radius: 50%;
+  font-size: 11px;
+}
+.topbar-account-name {
+  color: var(--secondary);
+  font-size: 12px;
+  max-width: 85px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.navigation-toggle {
+  display: none;
+  place-items: center;
+  width: 32px;
+  height: 34px;
+  padding: 0;
+  color: var(--secondary);
+  background: none;
+  border-radius: 7px;
+}
+.workspace-subbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  min-height: 43px;
+  padding: 0 40px;
+  max-width: 1520px;
+  margin: 0 auto;
+}
+.workspace-location {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 11px;
+  color: var(--muted);
+}
+.workspace-location strong {
+  font-weight: 400;
+  color: var(--secondary);
+}
+.service-nav {
+  display: flex;
+  align-items: center;
+  gap: 23px;
+}
+.service-nav > a {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--muted);
+  font-size: 11px;
+  white-space: nowrap;
+}
+.service-nav > a:hover,
+.service-nav > a.active {
+  color: var(--accent);
+}
+.service-nav > button {
+  display: grid;
+  place-items: center;
+  background: none;
+  color: var(--muted);
+  width: 25px;
+  height: 28px;
+  padding: 0;
+}
+.service-nav > button:hover {
+  color: var(--text);
+}
+.horizontal-shell .mobile-tabs {
+  display: none;
+}
+.workspace-menu-scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 110;
+  background: #0008;
+}
+.workspace-menu {
+  position: fixed;
+  right: 18px;
+  top: 80px;
+  width: min(400px, calc(100vw - 36px));
+  max-height: calc(100dvh - 100px);
+  overflow: auto;
+  z-index: 120;
+  padding: 16px;
+  border: 1px solid var(--border-strong);
+  border-radius: 16px;
+  background: var(--panel);
+  box-shadow: 0 18px 65px #0005;
+}
+.workspace-menu-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 4px 12px;
+  color: var(--muted);
+  font-size: 12px;
+}
+.workspace-menu > nav {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 7px;
+}
+.workspace-menu nav > a {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  min-height: 48px;
+  padding: 12px;
+  border-radius: 9px;
+  background: var(--input);
+  color: var(--secondary);
+  font-size: 13px;
+}
+.workspace-menu nav > a.active {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+.workspace-menu-tools {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 17px;
+  padding: 13px 4px 0;
+  border-top: 1px solid var(--border);
+}
+.workspace-menu-tools > a,
+.workspace-menu-tools > button {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 32px;
+  padding: 0;
+  background: none;
+  color: var(--muted);
+  font-size: 12px;
+  text-align: left;
+}
+.workspace-menu-tools > a:hover,
+.workspace-menu-tools > button:hover {
+  color: var(--accent);
+}
+.skip-to-content {
+  position: fixed;
+  left: 15px;
+  top: -60px;
+  z-index: 300;
+  padding: 9px 13px;
+  color: var(--on-action);
+  background: var(--action);
+  border-radius: 7px;
+}
+.skip-to-content:focus {
+  top: 10px;
+}
+@media (min-width: 768px) and (max-width: 1100px) {
+  .app-topbar {
+    gap: 25px;
+    padding: 0 24px;
+  }
+  .primary-nav {
+    gap: 19px;
+  }
+  .primary-nav > a {
+    font-size: 12px;
+  }
+  .topbar-actions {
+    gap: 9px;
+  }
+  .topbar-account-name,
+  .topbar-balance > span,
+  .app-topbar .brand-copy > small {
+    display: none;
+  }
+  .workspace-subbar {
+    padding: 0 24px;
+  }
+  .service-nav {
+    gap: 17px;
+  }
+  .horizontal-shell .page {
+    padding: 23px 24px 40px;
+  }
+}
+@media (max-width: 767px) {
+  .app-topbar {
+    height: 54px;
+    padding: 0 14px;
+    gap: 12px;
+  }
+  .app-topbar > .brand {
+    gap: 8px;
+  }
+  .app-topbar .brand > img {
+    width: 27px;
+    height: 27px;
+  }
+  .app-topbar .brand-copy > strong {
+    font-size: 17px;
+  }
+  .app-topbar .brand-copy > small,
+  .primary-nav,
+  .topbar-theme,
+  .topbar-account,
+  .topbar-account-name {
+    display: none !important;
+  }
+  .topbar-actions {
+    gap: 9px;
+  }
+  .navigation-toggle {
+    display: grid;
+  }
+  .topbar-balance {
+    padding: 4px 7px;
+    min-height: 29px;
+    gap: 5px;
+    font-size: 10px;
+    border-radius: 6px;
+  }
+  .topbar-balance > span,
+  .topbar-balance > svg:first-child {
+    display: none;
+  }
+  .topbar-balance strong {
+    font-size: 12px;
+  }
+  .topbar-balance > svg:last-child {
+    margin: 0;
+  }
+  .workspace-subbar {
+    display: none;
+  }
+  .horizontal-shell .mobile-tabs {
+    position: static;
+    display: flex;
+    align-items: stretch;
+    justify-content: space-between;
+    height: 39px;
+    padding: 0 8px;
+    border: 0;
+    background: none;
+    box-shadow: none;
+  }
+  .horizontal-shell .mobile-tabs > a {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-width: 0;
+    flex: 1;
+    padding: 0 5px;
+    color: var(--muted);
+    font-size: 11px;
+    white-space: nowrap;
+  }
+  .horizontal-shell .mobile-tabs > a.active {
+    color: var(--text);
+  }
+  .horizontal-shell .mobile-tabs > a.active::after {
+    content: "";
+    position: absolute;
+    bottom: -1px;
+    left: 16%;
+    right: 16%;
+    height: 2px;
+    background: var(--accent);
+    border-radius: 2px 2px 0 0;
+  }
+  .horizontal-shell .page {
+    padding: 20px 16px 30px;
+  }
+  .horizontal-shell .page-header {
+    margin-bottom: 22px;
+  }
+  .workspace-menu {
+    top: 65px;
+    right: 12px;
+    width: calc(100vw - 24px);
+    max-height: calc(100dvh - 82px);
+    padding: 13px;
+    border-radius: 13px;
+  }
+  .workspace-menu nav > a {
+    min-height: 45px;
+    padding: 11px;
+    font-size: 12px;
+    gap: 9px;
+  }
+  .workspace-menu > nav {
+    gap: 6px;
+  }
+  .workspace-menu-tools {
+    margin-top: 13px;
+    padding-top: 11px;
+    gap: 6px;
+  }
+}

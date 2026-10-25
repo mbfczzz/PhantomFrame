@@ -93,6 +93,9 @@ func setupIntegration(t *testing.T) *App {
 		t.Fatal(e)
 	}
 	c.Production = false
+	c.OSS = defaultOSSConfig(false)
+	c.OSS.Enabled = false
+	c.OSS.AccessKey, c.OSS.SecretKey = "", ""
 	c.Demo = true
 	c.CookieSecure = false
 	c.DataDir = t.TempDir()

@@ -385,7 +385,9 @@ export function JobCard({ job, onDetail }: { job: Job; onDetail: () => void }) {
             <a
               className="icon-button"
               title="下载作品"
-              href={job.outputs[0].url + "?download=1"}
+              href={
+                job.outputs[0].downloadUrl || job.outputs[0].url + "?download=1"
+              }
               download
             >
               <Download size={15} />
@@ -473,7 +475,11 @@ export function JobDetail({ job, onClose }: { job: Job; onClose: () => void }) {
         {j.outputs.map((o) => (
           <div key={o.assetId}>
             <Media asset={o} />
-            <a className="button" href={o.url + "?download=1"} download>
+            <a
+              className="button"
+              href={o.downloadUrl || o.url + "?download=1"}
+              download
+            >
               <Download size={15} />
               下载
             </a>
@@ -1104,7 +1110,7 @@ export function Assets() {
                   <a
                     className="icon-button"
                     title="下载素材"
-                    href={a.url + "?download=1"}
+                    href={a.downloadUrl || a.url + "?download=1"}
                     download
                   >
                     <Download size={15} />
@@ -1180,7 +1186,7 @@ export function Assets() {
           </div>
           <div className="modal-footer dialog-actions">
             <a
-              href={preview.url + "?download=1"}
+              href={preview.downloadUrl || preview.url + "?download=1"}
               download
               className="button primary"
             >

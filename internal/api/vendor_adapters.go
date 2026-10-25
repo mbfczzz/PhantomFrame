@@ -214,6 +214,26 @@ func (a *App) hostedReferences(ctx context.Context, provider Row, key string, re
 	if len(refs) == 0 {
 		return result, nil
 	}
+	storage, storageErr := a.storageConfig(a.Store)
+	if storageErr != nil {
+		return nil, storageErr
+	}
+	if storage.Enabled && provider["protocol"] != "suda" && provider["protocol"] != "gway" {
+		for _, ref := range refs {
+			asset, err := a.ensureOSSAsset(ctx, storage, ref)
+			if err != nil {
+				return nil, err
+			}
+			remote := object(asset["remote_storage"])
+			address, err := a.ossURL(remoteOSSConfig(storage, remote), str(remote["objectKey"]), false)
+			if err != nil {
+				return nil, err
+			}
+			kind := str(ref["type"])
+			result[kind] = append(result[kind], address)
+		}
+		return result, nil
+	}
 	uploader := provider
 	uploadKey := key
 	if provider["protocol"] != "suda" && provider["protocol"] != "gway" {

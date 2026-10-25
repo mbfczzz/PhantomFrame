@@ -10,6 +10,40 @@
   border: 1px solid var(--border);
   border-radius: 7px;
 }
+.storage-settings {
+  margin-top: 24px;
+}
+.storage-settings h2 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.storage-switch {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 13px;
+  margin-bottom: 20px;
+}
+.storage-switch input {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--accent);
+}
+.storage-options,
+.storage-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 24px;
+}
+.storage-test-result {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--accent);
+  font-size: 13px;
+  margin-bottom: 20px;
+}
 .model-group-tools {
   display: flex;
   align-items: center;

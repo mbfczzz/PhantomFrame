@@ -116,6 +116,11 @@ func (a *App) processJob(parent context.Context, j Row) {
 		if ctx.Err() != nil {
 			panic(ctx.Err())
 		}
+		out, e = a.storeGeneratedOutputs(ctx, j, out)
+		must(e)
+		if ctx.Err() != nil {
+			panic(ctx.Err())
+		}
 		if a.Store.Exec("UPDATE jobs SET status='succeeded',outputs=?,finished_at=CURRENT_TIMESTAMP(3) WHERE id=? AND status='running'", jsonText(out), j["id"]) == 0 {
 			panic(apiError{409, "任务已经结束"})
 		}
@@ -126,7 +131,7 @@ func (a *App) processJob(parent context.Context, j Row) {
 	message := "生成失败，费用已退还，请联系管理员检查通道配置"
 	if _, ok := err.(apiError); ok {
 		message = errorMessage(err)
-	} else if strings.HasPrefix(err.Error(), "供应商") || strings.HasPrefix(err.Error(), "此视频协议") || strings.HasPrefix(err.Error(), "图片协议") {
+	} else if strings.HasPrefix(err.Error(), "供应商") || strings.HasPrefix(err.Error(), "此视频协议") || strings.HasPrefix(err.Error(), "图片协议") || strings.HasPrefix(err.Error(), "OSS ") {
 		message = err.Error()
 	}
 	if ctx.Err() != nil {
@@ -138,7 +143,14 @@ func (a *App) processJob(parent context.Context, j Row) {
 		if current != nil && current["status"] == "succeeded" {
 			return
 		}
-		for _, f := range a.Store.All("SELECT id,file FROM assets WHERE job_id=?", j["id"]) {
+		for _, f := range a.Store.All("SELECT * FROM assets WHERE job_id=?", j["id"]) {
+			cleanup, stop := context.WithTimeout(context.Background(), 15*time.Second)
+			cleanupErr := a.removeOSSAsset(cleanup, f)
+			stop()
+			if cleanupErr != nil {
+				log.Printf("OSS cleanup deferred asset=%s", str(f["id"]))
+				continue
+			}
 			_ = os.Remove(a.filePath(str(f["file"])))
 			a.Store.Exec("DELETE FROM assets WHERE id=?", f["id"])
 		}

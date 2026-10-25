@@ -199,8 +199,11 @@ print(result)`;
         <li>
           <strong>下载结果</strong>
           <span>
-            <code>outputs[].url</code> 是文件路径，拼接当前站点地址并携带 API
-            Key 下载。失败时查看 <code>error</code> 和 <code>refunded</code>。
+            <code>outputs[].url</code> 为本站 OSS / CDN
+            链接或站内文件路径。HTTPS 链接可直接读取，无需发送平台 API Key；
+            <code>downloadUrl</code> 为站内下载入口，需携带 API
+            Key。签名链接过期后重新查询任务。失败时查看 <code>error</code> 和{" "}
+            <code>refunded</code>。
           </span>
         </li>
       </ol>

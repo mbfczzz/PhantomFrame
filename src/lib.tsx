@@ -92,6 +92,7 @@ export type Asset = {
   mime: string;
   size: number;
   url: string;
+  downloadUrl?: string;
   jobId?: string;
   createdAt: string;
 };
@@ -104,7 +105,15 @@ export type Job = {
   params: RecordData;
   status: string;
   cost: number;
-  outputs: { assetId: string; url: string; type: string; name: string }[];
+  outputs: {
+    assetId: string;
+    url: string;
+    downloadUrl?: string;
+    urlExpiresAt?: string;
+    storage?: string;
+    type: string;
+    name: string;
+  }[];
   error?: string;
   source: string;
   demo: boolean;

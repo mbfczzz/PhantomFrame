@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"math"
 	"net"
+	"net/http"
 	"os"
 	"strconv"
 	"strings"
@@ -29,10 +30,11 @@ type Querier interface {
 }
 type Store struct{ Q Querier }
 type App struct {
-	Config Config
-	DB     *sql.DB
-	Store  Store
-	Redis  *redis.Client
+	Config  Config
+	DB      *sql.DB
+	Store   Store
+	Redis   *redis.Client
+	OSSHTTP *http.Client // Optional transport override for isolated storage tests.
 }
 
 func Open(c Config) (*App, error) {
@@ -121,6 +123,17 @@ func (a *App) Migrate() error {
 	if modelStatusIndexes == 0 {
 		if _, err := a.DB.Exec("ALTER TABLE jobs ADD INDEX jobs_model_finished(model_id,finished_at,seq)"); err != nil {
 			if duplicate, ok := err.(*mysql.MySQLError); !ok || duplicate.Number != 1061 {
+				return err
+			}
+		}
+	}
+	var remoteColumns int
+	if err := a.DB.QueryRow("SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME='assets' AND COLUMN_NAME='remote_storage'").Scan(&remoteColumns); err != nil {
+		return err
+	}
+	if remoteColumns == 0 {
+		if _, err := a.DB.Exec("ALTER TABLE assets ADD COLUMN remote_storage JSON NULL"); err != nil {
+			if duplicate, ok := err.(*mysql.MySQLError); !ok || duplicate.Number != 1060 {
 				return err
 			}
 		}

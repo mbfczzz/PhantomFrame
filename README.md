@@ -10,6 +10,14 @@
 
 模型卡片展示真实调用状态：近 24 小时成功率、成功任务的完成耗时范围，以及最近 10 次成功／失败状态条（左旧右新）。统计基于全站保留的任务记录，网页和 API 调用均计入，取消、进行中和演示任务不计入；删除任务记录后相应统计也会更新。耗时从提交到完成，包含排队和结果下载。无记录显示“暂无调用”，只失败时成功耗时为空。`GET /api/models/status` 仅向登录用户或有效 API Key 返回可见模型的匿名统计，服务端缓存 15 秒，模型页每 30 秒刷新。
 
+## 生成结果存储
+
+生成结果可转存阿里云 OSS，在「管理后台 → 站点设置 → 生成结果存储」配置。默认 Bucket 为 `flowlinght`，Region 为 `cn-shanghai`，文件前缀为 `canvas/uploads/`，上传与读取加速默认开启；CDN 域名由后台填写。生产模式默认使用 OSS，本地开发默认使用本地文件，可用 `STORAGE_DRIVER` 覆盖。启用 OSS 时先完成上传再将任务置为成功，接口返回本站 OSS / CDN 链接。AccessKey ID / Secret 成对填写、加密存储，接口与操作日志不回显；未配置凭据时会在扣费和调用供应商之前阻止提交。
+
+`outputs[].url` 和资产列表的 `url` 返回 OSS / CDN 地址；私有读取使用签名链接，每次查询记录重新签发，并返回 `urlExpiresAt`。`downloadUrl` 是需要当前用户或 API Key 权限的站内下载入口。不要把平台 API Key 发送给 OSS / CDN。公共读模式须与 Bucket / CDN 的实际权限一致，程序不会修改 Bucket ACL。现有本地文件仍可读取，本地缓存继续供文件下载、时长检测和参考素材复用；支持公网素材的通用渠道优先使用 OSS 加速地址，供应商专属上传协议保留。转存失败时不返回上游直链，不会重新提交生成任务，按原失败流程退款并清理本次输出。
+
+存储实现使用 [阿里云 OSS Go SDK V2](https://www.alibabacloud.com/help/en/oss/developer-reference/manual-for-go-sdk-v2/)；后台「测试上传与读取」会校验上传、CDN/OSS 读取及测试文件删除。相关环境变量见 `.env.example`，默认配置文件中的 CDN 和凭据均留空。
+
 ## 本地启动
 
 需要 Node.js 22.13+（前端构建工具）、Go 1.24+、MySQL 8.4+ 和 Redis 7+。当前 Windows 本地实例使用 MySQL 8.4.13 和 Redis 8.10.2 的社区 Windows 构建；容器部署使用官方 MySQL 和 Redis 镜像。

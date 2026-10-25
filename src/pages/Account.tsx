@@ -705,7 +705,9 @@ export function Docs() {
                 生成接口返回 HTTP 202 和任务 ID。使用{" "}
                 <code>GET /api/jobs/:id</code> 轮询，状态为{" "}
                 <code>succeeded</code> 时下载 <code>outputs[].url</code>
-                。文件下载请求也需要携带 API Key。
+                。OSS / CDN 的 HTTPS 链接直接读取，不发送平台 API Key；站内{" "}
+                <code>downloadUrl</code> 下载入口需要 API
+                Key。签名链接过期后重新查询任务获取新链接。
               </p>
             </>
           )}
@@ -741,7 +743,8 @@ export function Docs() {
                 }
               />
               <p>
-                图片统一按次计费，普通图片一次一张；Midjourney 单次可返回多张。视频支持按次或按秒。参数条件更具体的规则优先，后续调价不影响已有任务。
+                图片统一按次计费，普通图片一次一张；Midjourney
+                单次可返回多张。视频支持按次或按秒。参数条件更具体的规则优先，后续调价不影响已有任务。
               </p>
               <p>
                 金额单位为人民币元。提交时预扣费用，生成失败或排队取消时自动退款。已经发送给供应商的任务无法取消。
@@ -749,7 +752,8 @@ export function Docs() {
               <p>
                 接口保留 <code>credits</code> 等既有字段名，数值统一按元计算，1
                 积分 = ¥1。<code>currency</code> 返回 <code>CNY</code>；例如单价
-                0.1 表示 ¥0.1。模型单价最多六位小数，整笔费用按分四舍五入；余额和充值金额最多两位小数。
+                0.1 表示
+                ¥0.1。模型单价最多六位小数，整笔费用按分四舍五入；余额和充值金额最多两位小数。
               </p>
             </>
           )}

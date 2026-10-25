@@ -43,6 +43,13 @@ func detectMime(b []byte) (string, string) {
 func assetView(v Row) Row {
 	return Row{"id": v["id"], "name": v["name"], "type": v["type"], "mime": v["mime"], "size": v["size"], "jobId": v["job_id"], "url": "/api/assets/" + str(v["id"]) + "/file", "createdAt": v["created_at"]}
 }
+func (a *App) storedAssetView(v Row) Row {
+	view := assetView(v)
+	for key, value := range a.assetLinks(a.Store, v) {
+		view[key] = value
+	}
+	return view
+}
 func (a *App) filePath(name string) string {
 	if name == "" || filepath.Base(name) != name || strings.ContainsAny(name, "/\\") {
 		fail(400, "文件路径不正确")
@@ -100,7 +107,7 @@ func (a *App) assetRoutes(m *http.ServeMux) {
 		out, e := a.saveAsset(r.UID(), "", string(name), mt, ext, b)
 		must(e)
 		r.Status = 201
-		return assetView(a.Store.One("SELECT * FROM assets WHERE id=?", out["assetId"]))
+		return a.storedAssetView(a.Store.One("SELECT * FROM assets WHERE id=?", out["assetId"]))
 	})
 	a.route(m, "GET /api/assets", 1, func(r *Request) any {
 		page, limit := r.Page()
@@ -118,7 +125,7 @@ func (a *App) assetRoutes(m *http.ServeMux) {
 		count := a.Store.One("SELECT count(*) n FROM assets WHERE "+clause, args...)["n"]
 		items := []Row{}
 		for _, v := range a.Store.All("SELECT * FROM assets WHERE "+clause+" ORDER BY created_at DESC,seq DESC LIMIT ? OFFSET ?", append(args, limit, (page-1)*limit)...) {
-			items = append(items, assetView(v))
+			items = append(items, a.storedAssetView(v))
 		}
 		return Row{"items": items, "total": count, "page": page, "limit": limit}
 	})
@@ -147,6 +154,9 @@ func (a *App) assetRoutes(m *http.ServeMux) {
 				if strings.Contains(str(j["params"]), r.ID()) {
 					fail(400, "该素材正在生成任务中使用")
 				}
+			}
+			if err := a.removeOSSAsset(r.R.Context(), v); err != nil {
+				fail(502, err.Error())
 			}
 			s.Exec("DELETE FROM assets WHERE id=?", r.ID())
 		})

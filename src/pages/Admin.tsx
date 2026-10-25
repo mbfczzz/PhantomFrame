@@ -72,6 +72,7 @@ import { JobAdmin, TransactionsAdmin, AuditAdmin } from "./AdminRecords";
 import Support from "./Support";
 import { ReferenceSettings } from "../components/ReferenceSettings";
 import ProviderModels from "./ProviderModels";
+import StorageSettings from "./StorageSettings";
 import { SpecificationPricing } from "../components/SpecificationPricing";
 import {
   billingLabel,
@@ -2107,76 +2108,79 @@ function SettingsAdmin() {
   if (!form) return <Loading />;
   const set = (k: string, v: string) => setForm((f) => ({ ...f, [k]: v }));
   return (
-    <section className="panel settings-panel">
-      <h2>站点设置</h2>
-      <p className="muted">更改将同步到登录页面、导航和账户中心。</p>
-      <Form
-        onSubmit={() =>
-          act(async () => {
-            await post("/admin/settings", form, "PUT");
-            refresh("/config", "/admin/settings");
-          }, "站点设置已保存")
-        }
-      >
-        <div className="two-columns">
-          <Field label="站点名称">
+    <>
+      <section className="panel settings-panel">
+        <h2>站点设置</h2>
+        <p className="muted">更改将同步到登录页面、导航和账户中心。</p>
+        <Form
+          onSubmit={() =>
+            act(async () => {
+              await post("/admin/settings", form, "PUT");
+              refresh("/config", "/admin/settings");
+            }, "站点设置已保存")
+          }
+        >
+          <div className="two-columns">
+            <Field label="站点名称">
+              <input
+                value={form.siteName}
+                onChange={(e) => set("siteName", e.target.value)}
+                required
+              />
+            </Field>
+            <Field label="客服联系方式">
+              <input
+                value={form.support}
+                onChange={(e) => set("support", e.target.value)}
+              />
+            </Field>
+            <Field label="开放注册">
+              <select
+                value={form.registrationEnabled}
+                onChange={(e) => set("registrationEnabled", e.target.value)}
+              >
+                <option value="true">开启</option>
+                <option value="false">关闭</option>
+              </select>
+            </Field>
+            <Field label="新用户赠送金额（元）">
+              <input
+                type="number"
+                min={0}
+                step="0.01"
+                value={form.welcomeCredits}
+                onChange={(e) => set("welcomeCredits", e.target.value)}
+              />
+            </Field>
+          </div>
+          <Field label="站点副标题">
             <input
-              value={form.siteName}
-              onChange={(e) => set("siteName", e.target.value)}
-              required
+              value={form.subtitle}
+              onChange={(e) => set("subtitle", e.target.value)}
             />
           </Field>
-          <Field label="客服联系方式">
+          <Field label="充值购买链接">
             <input
-              value={form.support}
-              onChange={(e) => set("support", e.target.value)}
+              type="url"
+              value={form.purchaseUrl}
+              onChange={(e) => set("purchaseUrl", e.target.value)}
+              placeholder="https://…"
             />
           </Field>
-          <Field label="开放注册">
-            <select
-              value={form.registrationEnabled}
-              onChange={(e) => set("registrationEnabled", e.target.value)}
-            >
-              <option value="true">开启</option>
-              <option value="false">关闭</option>
-            </select>
-          </Field>
-          <Field label="新用户赠送金额（元）">
-            <input
-              type="number"
-              min={0}
-              step="0.01"
-              value={form.welcomeCredits}
-              onChange={(e) => set("welcomeCredits", e.target.value)}
+          <Field label="首页公告">
+            <textarea
+              value={form.announcement}
+              onChange={(e) => set("announcement", e.target.value)}
+              rows={4}
+              placeholder="留空不显示公告"
             />
           </Field>
-        </div>
-        <Field label="站点副标题">
-          <input
-            value={form.subtitle}
-            onChange={(e) => set("subtitle", e.target.value)}
-          />
-        </Field>
-        <Field label="充值购买链接">
-          <input
-            type="url"
-            value={form.purchaseUrl}
-            onChange={(e) => set("purchaseUrl", e.target.value)}
-            placeholder="https://…"
-          />
-        </Field>
-        <Field label="首页公告">
-          <textarea
-            value={form.announcement}
-            onChange={(e) => set("announcement", e.target.value)}
-            rows={4}
-            placeholder="留空不显示公告"
-          />
-        </Field>
-        <button className="button primary" disabled={busy}>
-          保存设置
-        </button>
-      </Form>
-    </section>
+          <button className="button primary" disabled={busy}>
+            保存设置
+          </button>
+        </Form>
+      </section>
+      <StorageSettings />
+    </>
   );
 }

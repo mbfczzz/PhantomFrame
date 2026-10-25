@@ -231,7 +231,7 @@ func (a *App) submit(r *Request) any {
 		}
 		if key != "" {
 			if j := s.One("SELECT * FROM jobs WHERE user_id=? AND idempotency_key=?", r.UID(), key); j != nil {
-				result = s.JobView(j)
+				result = a.jobView(s, j)
 				return
 			}
 		}
@@ -240,6 +240,15 @@ func (a *App) submit(r *Request) any {
 		}
 		s.One("SELECT id FROM models WHERE id=? FOR UPDATE", mid)
 		q := a.quote(s, mid, r.UID(), params)
+		storage, storageErr := a.storageConfig(s)
+		if storageErr != nil {
+			fail(400, storageErr.Error())
+		}
+		if storage.Enabled {
+			if err := validateOSS(storage, true); err != nil {
+				fail(400, err.Error())
+			}
+		}
 		if hasExpected && units(expected) != q.Cost {
 			fail(409, "价格已更新，请确认最新报价后重新提交")
 		}
@@ -267,7 +276,7 @@ func (a *App) submit(r *Request) any {
 			idem = key
 		}
 		s.Exec("INSERT INTO jobs(id,user_id,model_id,prompt,params,cost,source,idempotency_key,provider_snapshot,outputs) VALUES(?,?,?,?,?,?,?,?,?,'[]')", jid, r.UID(), mid, prompt, jsonText(q.Params), q.Cost, source, idem, jsonText(snapshot))
-		result = s.JobView(s.One("SELECT * FROM jobs WHERE id=?", jid))
+		result = a.jobView(s, s.One("SELECT * FROM jobs WHERE id=?", jid))
 	})
 	a.wake()
 	r.Status = 202
@@ -368,7 +377,7 @@ func (a *App) creationRoutes(m *http.ServeMux) {
 		total := a.Store.One("SELECT count(*) n FROM jobs j JOIN models m ON m.id=j.model_id WHERE "+clause, args...)["n"]
 		v := []Row{}
 		for _, j := range a.Store.All("SELECT j.* FROM jobs j JOIN models m ON m.id=j.model_id WHERE "+clause+" ORDER BY j.created_at DESC,j.seq DESC LIMIT ? OFFSET ?", append(args, limit, (page-1)*limit)...) {
-			v = append(v, a.Store.JobView(j))
+			v = append(v, a.jobView(a.Store, j))
 		}
 		return Row{"items": v, "total": total, "page": page, "limit": limit}
 	})
@@ -377,7 +386,7 @@ func (a *App) creationRoutes(m *http.ServeMux) {
 		if j == nil {
 			fail(404, "任务不存在")
 		}
-		return a.Store.JobView(j)
+		return a.jobView(a.Store, j)
 	})
 	a.route(m, "POST /api/jobs/{id}/cancel", 1, func(r *Request) any {
 		a.Tx(func(s Store) {

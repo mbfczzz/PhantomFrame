@@ -226,6 +226,7 @@ func (a *App) Handler() http.Handler {
 	a.assetRoutes(mux)
 	a.projectRoutes(mux)
 	a.adminRoutes(mux)
+	a.storageRoutes(mux)
 	a.route(mux, "GET /api/health", 0, func(r *Request) any {
 		ctx, cancel := context.WithTimeout(r.R.Context(), 2*time.Second)
 		defer cancel()

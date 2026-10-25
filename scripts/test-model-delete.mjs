@@ -14,7 +14,7 @@ const checks = [], errors = [];
 try {
   execFileSync('go', ['run', './cmd/testdb', 'create', database], { stdio: 'pipe', windowsHide: true });
   server = spawn(resolve('bin/phantomframe' + (process.platform === 'win32' ? '.exe' : '')), [], {
-    env: { ...process.env, PORT: String(port), HOST: '127.0.0.1', APP_URL: base, DATA_DIR: dataDir, MYSQL_DATABASE: database, REDIS_PREFIX: database + ':', DEMO_MODE: 'true', ADMIN_USERNAME: 'delete-admin', ADMIN_PASSWORD: 'Delete-test-only-2026', ENCRYPTION_KEY: 'b'.repeat(64), APP_ENV: 'test', COOKIE_SECURE: 'false' },
+    env: { ...process.env, PORT: String(port), HOST: '127.0.0.1', APP_URL: base, DATA_DIR: dataDir, MYSQL_DATABASE: database, REDIS_PREFIX: database + ':', DEMO_MODE: 'true', STORAGE_DRIVER: 'local', ADMIN_USERNAME: 'delete-admin', ADMIN_PASSWORD: 'Delete-test-only-2026', ENCRYPTION_KEY: 'b'.repeat(64), APP_ENV: 'test', COOKIE_SECURE: 'false' },
     windowsHide: true, stdio: 'ignore',
   });
   let started = false;

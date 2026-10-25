@@ -344,7 +344,7 @@ function AdminJobDetail({ id, onClose }: { id: string; onClose: () => void }) {
                     <Media asset={output} />
                     <a
                       className="button"
-                      href={output.url + "?download=1"}
+                      href={output.downloadUrl || output.url + "?download=1"}
                       download
                     >
                       <Download size={15} />

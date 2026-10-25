@@ -31,6 +31,7 @@ const start = async () => {
         MYSQL_DATABASE: database,
         REDIS_PREFIX: redisPrefix,
         DEMO_MODE: "true",
+        STORAGE_DRIVER: "local",
         ADMIN_USERNAME: "ui-admin",
         ADMIN_PASSWORD: "UITest-password-2026",
         ENCRYPTION_KEY: "b".repeat(64),

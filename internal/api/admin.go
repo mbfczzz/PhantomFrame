@@ -284,7 +284,7 @@ func (a *App) adminRoutes(m *http.ServeMux) {
 		v["daily"] = a.Store.All("SELECT date(created_at) date,count(*) count,sum(status='succeeded') succeeded,sum(CASE WHEN refunded=0 THEN cost ELSE 0 END)/100.0 credits FROM jobs WHERE created_at>=DATE_SUB(UTC_TIMESTAMP(),INTERVAL 14 DAY) GROUP BY date(created_at)")
 		recent := []Row{}
 		for _, j := range a.Store.All("SELECT j.*,u.username FROM jobs j JOIN users u ON u.id=j.user_id ORDER BY j.seq DESC LIMIT 8") {
-			p := a.Store.JobView(j)
+			p := a.jobView(a.Store, j)
 			p["username"] = j["username"]
 			recent = append(recent, p)
 		}

@@ -65,7 +65,7 @@ func adminQueryID(r *Request, name, column string, where *[]string, args *[]any)
 	}
 }
 func (a *App) adminJobView(j Row) Row {
-	item := a.Store.JobView(j)
+	item := a.jobView(a.Store, j)
 	item["username"], item["displayName"] = j["username"], j["display_name"]
 	snapshot := object(j["provider_snapshot"])
 	item["providerName"], item["upstreamId"] = snapshot["name"], j["upstream_id"]
@@ -73,7 +73,11 @@ func (a *App) adminJobView(j Row) Row {
 	outputs := []Row{}
 	for _, value := range array(item["outputs"]) {
 		output := clone(object(value))
-		output["url"] = "/api/admin/jobs/" + url.PathEscape(str(j["id"])) + "/outputs/" + url.PathEscape(str(output["assetId"]))
+		protectedURL := "/api/admin/jobs/" + url.PathEscape(str(j["id"])) + "/outputs/" + url.PathEscape(str(output["assetId"]))
+		if output["storage"] != "oss" {
+			output["url"] = protectedURL
+		}
+		output["downloadUrl"] = protectedURL + "?download=1"
 		outputs = append(outputs, output)
 	}
 	item["outputs"] = outputs

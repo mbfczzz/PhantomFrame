@@ -3571,3 +3571,14 @@ td code {
     scroll-behavior: auto !important;
   }
 }
+
+.money-recovery { display:flex; flex-wrap:wrap; align-items:center; gap:12px; padding:16px; background:var(--panel); color:var(--text); border:1px solid var(--border); margin:16px; }
+.money-recovery span { flex:1 1 240px; overflow-wrap:anywhere; }
+
+.text-output { width:100%; text-align:start; padding:16px; background:var(--panel); color:var(--text); }
+.text-output pre { white-space:pre-wrap; overflow-wrap:anywhere; max-height:55vh; overflow:auto; font:inherit; line-height:1.7; }
+.text-output-toolbar { display:flex; justify-content:space-between; gap:12px; align-items:center; }
+.text-output-summary { display:flex; flex-direction:column; gap:14px; align-items:center; justify-content:center; min-height:140px; color:var(--muted); }
+.inventory-upstream-id { max-width:280px; overflow-wrap:anywhere; }
+
+.tabs { max-width:100%; overflow-x:auto; }

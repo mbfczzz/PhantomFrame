@@ -44,6 +44,26 @@ func (a *App) StartWorker(ctx context.Context) <-chan struct{} {
 					a.refund(str(j["id"]), "服务重启或调度连接中断，费用已退回，请联系管理员核对上游任务")
 				}
 				var wg sync.WaitGroup
+				wg.Add(1)
+				go func() {
+					defer wg.Done()
+					for leader.Err() == nil {
+						a.retryRefunds()
+						if wait(leader, 2*time.Second) != nil {
+							return
+						}
+					}
+				}()
+				wg.Add(1)
+				go func() {
+					defer wg.Done()
+					for leader.Err() == nil {
+						a.retryCleanups(leader)
+						if wait(leader, 2*time.Second) != nil {
+							return
+						}
+					}
+				}()
 				for i := 0; i < 2; i++ {
 					wg.Add(1)
 					go func() { defer wg.Done(); a.consume(leader) }()
@@ -98,17 +118,24 @@ func (a *App) consume(ctx context.Context) {
 	}
 }
 func (a *App) processJob(parent context.Context, j Row) {
+	a.beginUpstreamCall(j)
 	timeout := 12 * time.Minute
+	if object(j["provider_snapshot"])["protocol"] == "inventory" {
+		timeout = 20 * time.Minute
+	}
 	if object(j["provider_snapshot"])["protocol"] == "rolldek" || object(j["provider_snapshot"])["protocol"] == "maitoken" {
 		timeout = 20 * time.Minute
 	}
 	ctx, cancel := context.WithTimeout(parent, timeout)
 	defer cancel()
+	ctx = upstreamContext(ctx, a, str(j["id"]))
 	err := try(func() {
 		var out []Row
 		var e error
 		if object(j["provider_snapshot"])["protocol"] == "demo" {
 			out, e = a.demo(ctx, j)
+		} else if object(j["provider_snapshot"])["protocol"] == "inventory" {
+			out, e = a.inventoryUpstream(ctx, j)
 		} else {
 			out, e = a.upstream(ctx, j)
 		}
@@ -116,6 +143,7 @@ func (a *App) processJob(parent context.Context, j Row) {
 		if ctx.Err() != nil {
 			panic(ctx.Err())
 		}
+		upstreamPhase(ctx, "storing")
 		out, e = a.storeGeneratedOutputs(ctx, j, out)
 		must(e)
 		if ctx.Err() != nil {
@@ -126,6 +154,7 @@ func (a *App) processJob(parent context.Context, j Row) {
 		}
 	})
 	if err == nil {
+		a.syncUpstreamCall(str(j["id"]))
 		return
 	}
 	message := "生成失败，费用已退还，请联系管理员检查通道配置"
@@ -137,13 +166,35 @@ func (a *App) processJob(parent context.Context, j Row) {
 	if ctx.Err() != nil {
 		message = "生成请求超时或服务停止，费用已退还，请核对上游任务"
 	}
-	if e := try(func() {
-		a.refund(str(j["id"]), message)
-		current := a.Store.One("SELECT status FROM jobs WHERE id=?", j["id"])
-		if current != nil && current["status"] == "succeeded" {
+	a.noteUpstreamFailure(j, message)
+	// If the database itself is temporarily offline, keep trying to durably record
+	// the obligation. On shutdown the next dispatcher recovers remaining running jobs.
+	for {
+		e := try(func() { a.refund(str(j["id"]), message) })
+		if e == nil {
+			a.cleanupFailedJob(str(j["id"]))
+			break
+		}
+		var persisted bool
+		_ = try(func() {
+			current := a.Store.One("SELECT status FROM jobs WHERE id=?", j["id"])
+			persisted = current != nil && current["status"] != "running"
+		})
+		log.Printf("job refund deferred id=%s type=%T", str(j["id"]), e)
+		if persisted || wait(parent, 2*time.Second) != nil {
 			return
 		}
-		for _, f := range a.Store.All("SELECT * FROM assets WHERE job_id=?", j["id"]) {
+	}
+}
+
+// Called after immediate refunds, retry completion and restart recovery alike.
+func (a *App) cleanupFailedJob(jid string) {
+	if e := try(func() {
+		current := a.Store.One("SELECT status FROM jobs WHERE id=?", jid)
+		if current == nil || current["status"] != "failed" {
+			return
+		}
+		for _, f := range a.Store.All("SELECT * FROM assets WHERE job_id=?", jid) {
 			cleanup, stop := context.WithTimeout(context.Background(), 15*time.Second)
 			cleanupErr := a.removeOSSAsset(cleanup, f)
 			stop()
@@ -151,10 +202,50 @@ func (a *App) processJob(parent context.Context, j Row) {
 				log.Printf("OSS cleanup deferred asset=%s", str(f["id"]))
 				continue
 			}
-			_ = os.Remove(a.filePath(str(f["file"])))
+			if err := os.Remove(a.filePath(str(f["file"]))); err != nil && !os.IsNotExist(err) {
+				log.Printf("local output cleanup deferred asset=%s", str(f["id"]))
+				continue
+			}
 			a.Store.Exec("DELETE FROM assets WHERE id=?", f["id"])
 		}
+		if integer(a.Store.One("SELECT count(*) n FROM assets WHERE job_id=?", jid)["n"]) == 0 {
+			a.Store.Exec("DELETE FROM job_cleanups WHERE job_id=?", jid)
+		} else {
+			a.Store.Exec("UPDATE job_cleanups SET attempts=attempts+1,next_attempt_at=DATE_ADD(CURRENT_TIMESTAMP(3),INTERVAL 30 SECOND) WHERE job_id=?", jid)
+		}
 	}); e != nil {
-		log.Printf("job recovery deferred id=%s type=%T", str(j["id"]), e)
+		log.Printf("job output cleanup deferred id=%s type=%T", jid, e)
+	}
+}
+
+func (a *App) retryCleanups(ctx context.Context) {
+	if err := try(func() {
+		for _, row := range a.Store.All("SELECT c.job_id FROM job_cleanups c JOIN jobs j ON j.id=c.job_id WHERE j.status='failed' AND c.next_attempt_at<=CURRENT_TIMESTAMP(3) ORDER BY c.next_attempt_at LIMIT 25") {
+			if ctx.Err() != nil {
+				return
+			}
+			a.cleanupFailedJob(str(row["job_id"]))
+		}
+	}); err != nil {
+		log.Printf("output cleanup scan deferred type=%T", err)
+	}
+}
+
+// Runs independently of generation workers, so long upstream requests cannot
+// starve compensation. The locked job and wallet transaction make retries unique.
+func (a *App) retryRefunds() {
+	if err := try(func() {
+		for _, j := range a.Store.All("SELECT id,error,refund_attempts FROM jobs WHERE status='refund_pending' AND (refund_next_at IS NULL OR refund_next_at<=CURRENT_TIMESTAMP(3)) ORDER BY seq LIMIT 100") {
+			jid := str(j["id"])
+			if err := try(func() { a.refund(jid, str(j["error"])) }); err != nil {
+				delay := min(int64(60), 2<<min(integer(j["refund_attempts"]), 5))
+				_ = try(func() {
+					a.Store.Exec("UPDATE jobs SET refund_attempts=refund_attempts+1,refund_next_at=DATE_ADD(CURRENT_TIMESTAMP(3),INTERVAL ? SECOND) WHERE id=? AND status='refund_pending'", delay, jid)
+				})
+				log.Printf("refund retry deferred id=%s type=%T", jid, err)
+			}
+		}
+	}); err != nil {
+		log.Printf("refund scan deferred type=%T", err)
 	}
 }

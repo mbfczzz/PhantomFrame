@@ -1,3 +1,4 @@
+import { generationLabels, generationOptions } from "../lib";
 import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import {
@@ -251,7 +252,7 @@ export default function ProviderModels({
                     <td>
                       {entry.type ? (
                         <Badge status={entry.type}>
-                          {entry.type === "image" ? "图片" : "视频"}
+                          {generationLabels[entry.type] || entry.type}
                         </Badge>
                       ) : (
                         <span className="muted small">发布时选择</span>
@@ -365,7 +366,7 @@ export default function ProviderModels({
       <div className="channel-model-pagination" inert={updating || undefined}>
         <Pagination
           page={data?.page || page}
-          total={data?.total || 0}
+          total={data?.total}
           limit={20}
           onChange={setPage}
         />
@@ -641,6 +642,9 @@ function ChannelModelForm({
           >
             <option value="image">图片生成</option>
             <option value="video">视频生成</option>
+                <option value="text">文本生成</option>
+                <option value="audio">音频生成</option>
+                <option value="upscale">视频超分</option>
           </select>
         </Field>
         <Field label="模型说明">
@@ -769,6 +773,9 @@ function PublishModel({
             </option>
             <option value="image">图片生成</option>
             <option value="video">视频生成</option>
+                <option value="text">文本生成</option>
+                <option value="audio">音频生成</option>
+                <option value="upscale">视频超分</option>
           </select>
         </Field>
         <Field label="模型分组">

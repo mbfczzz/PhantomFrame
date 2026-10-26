@@ -9,6 +9,7 @@ import (
 	"math"
 	"net"
 	"net/http"
+	"net/netip"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -187,12 +188,14 @@ func (a *App) route(mux *http.ServeMux, pattern string, access int, fn func(*Req
 		}
 		if r.Method == "POST" {
 			switch r.URL.Path {
-			case "/api/auth/login", "/api/redeem":
+			case "/api/auth/login":
 				a.limit(r, "login", 30, 15*time.Minute)
+			case "/api/redeem":
+				a.limitIdentity(r, "redeem", "user:"+req.UID(), 30, 15*time.Minute)
 			case "/api/auth/register", "/api/auth/demo":
 				a.limit(r, "register", 10, time.Hour)
 			case "/api/jobs":
-				a.limit(r, "jobs", 30, time.Minute)
+				a.limitIdentity(r, "jobs", "user:"+req.UID(), 30, time.Minute)
 			}
 		}
 		if result := fn(req); result != nil {
@@ -206,8 +209,55 @@ func send(w http.ResponseWriter, status int, data any) {
 	_ = json.NewEncoder(w).Encode(data)
 }
 func (a *App) limit(r *http.Request, group string, limit int, window time.Duration) {
-	host, _, _ := net.SplitHostPort(r.RemoteAddr)
-	key := a.Config.RedisPrefix + "limit:" + group + ":" + hash(host)
+	a.limitIdentity(r, group, "ip:"+a.clientIP(r), limit, window)
+}
+
+func (a *App) clientIP(r *http.Request) string {
+	host, _, err := net.SplitHostPort(r.RemoteAddr)
+	if err != nil {
+		host = r.RemoteAddr
+	}
+	peer, err := netip.ParseAddr(host)
+	if err != nil {
+		return host
+	}
+	peer = peer.Unmap()
+	trusted := func(addr netip.Addr) bool {
+		for _, value := range a.Config.TrustedProxies {
+			if prefix, err := netip.ParsePrefix(value); err == nil && prefix.Contains(addr) {
+				return true
+			}
+			if ip, err := netip.ParseAddr(value); err == nil && ip.Unmap() == addr {
+				return true
+			}
+		}
+		return false
+	}
+	if !trusted(peer) {
+		return peer.String()
+	}
+	forwarded := strings.Join(r.Header.Values("X-Forwarded-For"), ",")
+	if forwarded == "" {
+		forwarded = r.Header.Get("X-Real-IP")
+	}
+	if len(forwarded) > 4096 {
+		return peer.String()
+	}
+	chain := strings.Split(forwarded, ",")
+	current := peer
+	// Walk from the TCP peer towards the client; never trust client-supplied leftmost entries.
+	for i := len(chain) - 1; i >= 0 && trusted(current); i-- {
+		addr, err := netip.ParseAddr(strings.TrimSpace(chain[i]))
+		if err != nil {
+			return peer.String()
+		}
+		current = addr.Unmap()
+	}
+	return current.String()
+}
+
+func (a *App) limitIdentity(r *http.Request, group, identity string, limit int, window time.Duration) {
+	key := a.Config.RedisPrefix + "limit:" + group + ":" + hash(identity)
 	script := `local n=redis.call('INCR',KEYS[1]); if n==1 then redis.call('PEXPIRE',KEYS[1],ARGV[1]) end; return n`
 	n, e := a.Redis.Eval(r.Context(), script, []string{key}, window.Milliseconds()).Int()
 	if e != nil {
@@ -219,6 +269,8 @@ func (a *App) limit(r *http.Request, group string, limit int, window time.Durati
 }
 func (a *App) Handler() http.Handler {
 	mux := http.NewServeMux()
+	a.upstreamLogRoutes(mux)
+	a.inventoryRoutes(mux)
 	a.authRoutes(mux)
 	a.creationRoutes(mux)
 	a.accountRoutes(mux)

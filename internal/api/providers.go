@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/base64"
+	"encoding/binary"
 	"encoding/json"
 	"fmt"
 	"html"
@@ -31,7 +32,7 @@ func wait(ctx context.Context, d time.Duration) error {
 	}
 }
 func upstreamClient() *http.Client {
-	return &http.Client{Timeout: 60 * time.Second, CheckRedirect: func(*http.Request, []*http.Request) error { return fmt.Errorf("供应商请求不允许重定向") }}
+	return &http.Client{Transport: upstreamTransport{http.DefaultTransport}, Timeout: 60 * time.Second, CheckRedirect: func(*http.Request, []*http.Request) error { return fmt.Errorf("供应商请求不允许重定向") }}
 }
 func boundedBody(res *http.Response, limit int64) ([]byte, error) {
 	defer res.Body.Close()
@@ -178,16 +179,38 @@ func outputClient() *http.Client {
 		}
 		return nil, last
 	}
-	return &http.Client{Transport: transport, Timeout: 90 * time.Second, CheckRedirect: func(*http.Request, []*http.Request) error { return fmt.Errorf("供应商文件不允许重定向") }}
+	return &http.Client{Transport: upstreamTransport{transport}, Timeout: 90 * time.Second, CheckRedirect: func(*http.Request, []*http.Request) error { return fmt.Errorf("供应商文件不允许重定向") }}
 }
 func (a *App) demo(ctx context.Context, j Row) ([]Row, error) {
 	if e := wait(ctx, 1200*time.Millisecond); e != nil {
 		return nil, e
 	}
 	snapshot := object(j["provider_snapshot"])
-	if snapshot["type"] == "video" {
+	if snapshot["type"] == "video" || snapshot["type"] == "upscale" {
 		o, e := a.saveAsset(str(j["user_id"]), str(j["id"]), "演示视频 · 非模型生成.webm", "video/webm", "webm", assets.DemoVideo)
 		return []Row{o}, e
+	}
+	if snapshot["type"] == "text" {
+		out, e := a.saveAsset(str(j["user_id"]), str(j["id"]), "演示文本.txt", "text/plain", "txt", []byte("本地演示 · 非 AI 模型生成\n"+str(j["prompt"])))
+		return []Row{out}, e
+	}
+	if snapshot["type"] == "audio" {
+		var wav bytes.Buffer
+		wav.WriteString("RIFF")
+		_ = binary.Write(&wav, binary.LittleEndian, uint32(16036))
+		wav.WriteString("WAVEfmt ")
+		_ = binary.Write(&wav, binary.LittleEndian, uint32(16))
+		_ = binary.Write(&wav, binary.LittleEndian, uint16(1))
+		_ = binary.Write(&wav, binary.LittleEndian, uint16(1))
+		_ = binary.Write(&wav, binary.LittleEndian, uint32(8000))
+		_ = binary.Write(&wav, binary.LittleEndian, uint32(16000))
+		_ = binary.Write(&wav, binary.LittleEndian, uint16(2))
+		_ = binary.Write(&wav, binary.LittleEndian, uint16(16))
+		wav.WriteString("data")
+		_ = binary.Write(&wav, binary.LittleEndian, uint32(16000))
+		wav.Write(make([]byte, 16000))
+		out, e := a.saveAsset(str(j["user_id"]), str(j["id"]), "演示静音音频.wav", "audio/wav", "wav", wav.Bytes())
+		return []Row{out}, e
 	}
 	prompt := []rune(str(j["prompt"]))
 	if len(prompt) > 38 {
@@ -213,6 +236,7 @@ func (a *App) upstream(ctx context.Context, j Row) ([]Row, error) {
 	if key == "" {
 		return nil, fmt.Errorf("供应商尚未配置 API Key")
 	}
+	ctx = upstreamContext(ctx, a, str(j["id"]), key)
 	client := providerRequest{ctx, strings.TrimRight(str(p["base_url"]), "/"), key}
 	refs := []Row{}
 	fields := []Row{}
@@ -303,7 +327,7 @@ func (a *App) upstream(ctx context.Context, j Row) ([]Row, error) {
 			if len(str(upID)) > 255 {
 				return nil, fmt.Errorf("供应商任务 ID 过长")
 			}
-			a.Store.Exec("UPDATE jobs SET upstream_id=? WHERE id=?", upID, j["id"])
+			a.setUpstreamTaskID(j["id"], upID)
 			complete := false
 			interval := time.Duration(num(first(config["pollInterval"], 3000))) * time.Millisecond
 			if interval < 20*time.Millisecond {
@@ -340,6 +364,7 @@ func (a *App) upstream(ctx context.Context, j Row) ([]Row, error) {
 				return nil, fmt.Errorf("供应商任务查询超时，请联系管理员核对上游任务")
 			}
 			if p["protocol"] == "openai-video" && result["url"] == nil && result["video_url"] == nil {
+				upstreamPhase(ctx, "receiving")
 				res, err := client.bytes("/videos/"+url.PathEscape(str(upID))+"/content", nil, "")
 				if err != nil {
 					return nil, err
@@ -372,6 +397,7 @@ func (a *App) upstream(ctx context.Context, j Row) ([]Row, error) {
 	return a.saveProviderOutputs(ctx, j, outputs, "", "")
 }
 func (a *App) saveProviderOutputs(ctx context.Context, j Row, outputs []any, trustedBase, key string) ([]Row, error) {
+	upstreamPhase(ctx, "receiving")
 	var e error
 	if len(outputs) == 0 {
 		return nil, fmt.Errorf("供应商未返回生成结果")
@@ -439,6 +465,9 @@ func (a *App) saveProviderOutputs(ctx context.Context, j Row, outputs []any, tru
 	return saved, nil
 }
 func downloadVendorOutput(ctx context.Context, address, trustedBase, key string) ([]byte, error) {
+	return downloadVendorOutputAuth(ctx, address, trustedBase, key, "Authorization")
+}
+func downloadVendorOutputAuth(ctx context.Context, address, trustedBase, key, authHeader string) ([]byte, error) {
 	trusted, _ := url.Parse(trustedBase)
 	for redirects := 0; redirects <= 4; redirects++ {
 		u, e := url.Parse(address)
@@ -457,7 +486,11 @@ func downloadVendorOutput(ctx context.Context, address, trustedBase, key string)
 			return nil, e
 		}
 		if sameOrigin && key != "" {
-			req.Header.Set("Authorization", "Bearer "+key)
+			value := key
+			if authHeader == "Authorization" {
+				value = "Bearer " + key
+			}
+			req.Header.Set(authHeader, value)
 		}
 		res, e := client.Do(req)
 		if e != nil {

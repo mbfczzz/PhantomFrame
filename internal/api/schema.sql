@@ -11,6 +11,14 @@ CREATE TABLE IF NOT EXISTS models (
  id VARCHAR(100) PRIMARY KEY, name VARCHAR(120) NOT NULL, type VARCHAR(16) NOT NULL, provider_id VARCHAR(100) NOT NULL, upstream_model VARCHAR(160) NOT NULL, description TEXT NOT NULL,
  category VARCHAR(80) NOT NULL DEFAULT '', enabled BOOLEAN NOT NULL DEFAULT TRUE, sort_order INT NOT NULL DEFAULT 0, tags JSON NOT NULL, parameters JSON NOT NULL, created_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3), FOREIGN KEY(provider_id) REFERENCES providers(id)
 ) ENGINE=InnoDB;
+CREATE TABLE IF NOT EXISTS inventory_routes (
+ id VARCHAR(100) PRIMARY KEY, provider_id VARCHAR(100) NOT NULL, vendor VARCHAR(80) NOT NULL,
+ model VARCHAR(160) NOT NULL, upstream_model VARCHAR(160) NOT NULL, modality VARCHAR(16) NOT NULL,
+ base_url VARCHAR(500) NOT NULL, api_key TEXT NOT NULL, source_enabled BOOLEAN NOT NULL,
+ is_primary BOOLEAN NOT NULL, priority INT NOT NULL, weight INT NOT NULL, config JSON NOT NULL,
+ updated_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3), KEY inventory_provider(provider_id),
+ FOREIGN KEY(provider_id) REFERENCES providers(id)
+) ENGINE=InnoDB;
 CREATE TABLE IF NOT EXISTS prices (
  id VARCHAR(100) PRIMARY KEY, model_id VARCHAR(100) NOT NULL, label VARCHAR(80) NOT NULL, unit VARCHAR(16) NOT NULL DEFAULT 'request', credits BIGINT NOT NULL, unit_price_micros BIGINT NULL, billing_extras JSON NULL, conditions JSON NOT NULL, enabled BOOLEAN NOT NULL DEFAULT TRUE,
  FOREIGN KEY(model_id) REFERENCES models(id), CONSTRAINT prices_positive CHECK(credits>=0)
@@ -24,6 +32,7 @@ CREATE TABLE IF NOT EXISTS provider_models (
 CREATE TABLE IF NOT EXISTS jobs (
  id VARCHAR(100) PRIMARY KEY, seq BIGINT UNSIGNED NOT NULL AUTO_INCREMENT UNIQUE, user_id VARCHAR(100) NOT NULL, model_id VARCHAR(100) NOT NULL, prompt TEXT NOT NULL, params JSON NOT NULL,
  status VARCHAR(16) NOT NULL DEFAULT 'queued', cost BIGINT NOT NULL, outputs JSON NOT NULL, error TEXT, source VARCHAR(16) NOT NULL DEFAULT 'web', idempotency_key VARCHAR(128), upstream_id VARCHAR(255), provider_snapshot JSON NOT NULL, refunded BOOLEAN NOT NULL DEFAULT FALSE,
+ hidden_at DATETIME(3), request_hash CHAR(64), refund_attempts INT NOT NULL DEFAULT 0, refund_next_at DATETIME(3),
  created_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3), finished_at DATETIME(3), FOREIGN KEY(user_id) REFERENCES users(id), FOREIGN KEY(model_id) REFERENCES models(id), UNIQUE KEY job_idempotency(user_id,idempotency_key), KEY jobs_user_created(user_id,created_at), KEY jobs_status(status,seq), KEY jobs_model_finished(model_id,finished_at,seq)
 ) ENGINE=InnoDB;
 CREATE TABLE IF NOT EXISTS transactions (
@@ -44,6 +53,29 @@ CREATE TABLE IF NOT EXISTS redeem_codes (
 CREATE TABLE IF NOT EXISTS settings (`key` VARCHAR(100) PRIMARY KEY, value TEXT NOT NULL) ENGINE=InnoDB;
 CREATE TABLE IF NOT EXISTS object_storage (id TINYINT PRIMARY KEY, config JSON NOT NULL, credentials TEXT NOT NULL) ENGINE=InnoDB;
 CREATE TABLE IF NOT EXISTS migrations (name VARCHAR(120) PRIMARY KEY, applied_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3)) ENGINE=InnoDB;
+CREATE TABLE IF NOT EXISTS invariant_locks (name VARCHAR(100) PRIMARY KEY) ENGINE=InnoDB;
+CREATE TABLE IF NOT EXISTS job_cleanups (
+ job_id VARCHAR(100) PRIMARY KEY, attempts INT NOT NULL DEFAULT 0,
+ next_attempt_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3), KEY cleanup_due(next_attempt_at)
+) ENGINE=InnoDB;
+INSERT IGNORE INTO invariant_locks(name) VALUES('administrators');
+CREATE TABLE IF NOT EXISTS money_operations (
+ user_id VARCHAR(100) NOT NULL, operation_key VARCHAR(128) NOT NULL, request_hash CHAR(64) NOT NULL, result JSON NOT NULL,
+ created_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3), PRIMARY KEY(user_id,operation_key)
+) ENGINE=InnoDB;
+CREATE TABLE IF NOT EXISTS upstream_calls (
+ id VARCHAR(100) PRIMARY KEY, seq BIGINT UNSIGNED NOT NULL AUTO_INCREMENT UNIQUE,
+ user_id VARCHAR(100) NOT NULL, username VARCHAR(40) NOT NULL, display_name VARCHAR(50) NOT NULL,
+ provider_id VARCHAR(100) NOT NULL DEFAULT '', provider_name VARCHAR(80) NOT NULL DEFAULT '', protocol VARCHAR(32) NOT NULL DEFAULT '',
+ model_id VARCHAR(100) NOT NULL, model_name VARCHAR(120) NOT NULL, model_type VARCHAR(16) NOT NULL, upstream_model VARCHAR(160) NOT NULL DEFAULT '',
+ source VARCHAR(16) NOT NULL, status VARCHAR(16) NOT NULL, phase VARCHAR(24) NOT NULL, failure_phase VARCHAR(24) NOT NULL DEFAULT '', params JSON NOT NULL,
+ cost BIGINT NOT NULL, refunded BOOLEAN NOT NULL DEFAULT FALSE, upstream_id VARCHAR(255), error TEXT NOT NULL,
+ request_count INT UNSIGNED NOT NULL DEFAULT 0, last_http_status INT, last_method VARCHAR(10) NOT NULL DEFAULT '', last_url VARCHAR(700) NOT NULL DEFAULT '',
+ last_request_ms BIGINT, last_request_id VARCHAR(255) NOT NULL DEFAULT '', last_request_error VARCHAR(160) NOT NULL DEFAULT '', legacy BOOLEAN NOT NULL DEFAULT FALSE,
+ created_at DATETIME(3) NOT NULL, started_at DATETIME(3), finished_at DATETIME(3), updated_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+ KEY upstream_calls_created(created_at,seq), KEY upstream_calls_provider(provider_id,created_at), KEY upstream_calls_user(user_id,created_at),
+ KEY upstream_calls_status(status,created_at), KEY upstream_calls_task(upstream_id), KEY upstream_calls_model(model_id,created_at)
+) ENGINE=InnoDB;
 CREATE TABLE IF NOT EXISTS audit_log (id VARCHAR(100) PRIMARY KEY, user_id VARCHAR(100) NOT NULL, action VARCHAR(100) NOT NULL, detail JSON NOT NULL, created_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3)) ENGINE=InnoDB;
 CREATE TABLE IF NOT EXISTS support_tickets (
  id VARCHAR(100) PRIMARY KEY, seq BIGINT UNSIGNED NOT NULL AUTO_INCREMENT UNIQUE, user_id VARCHAR(100) NOT NULL,

@@ -165,7 +165,42 @@ func (a *App) Migrate() error {
 			}
 		}
 	}
-	return a.migrateImageRequests()
+	if err := a.migrateImageRequests(); err != nil {
+		return err
+	}
+	for _, column := range []struct{ name, definition string }{
+		{"hidden_at", "DATETIME(3) NULL"},
+		{"request_hash", "CHAR(64) NULL"},
+		{"refund_attempts", "INT NOT NULL DEFAULT 0"},
+		{"refund_next_at", "DATETIME(3) NULL"},
+	} {
+		var count int
+		if err := a.DB.QueryRow("SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME='jobs' AND COLUMN_NAME=?", column.name).Scan(&count); err != nil {
+			return err
+		}
+		if count == 0 {
+			if _, err := a.DB.Exec("ALTER TABLE jobs ADD COLUMN " + column.name + " " + column.definition); err != nil {
+				if duplicate, ok := err.(*mysql.MySQLError); !ok || duplicate.Number != 1060 {
+					return err
+				}
+			}
+		}
+	}
+	var routeColumns int
+	if err := a.DB.QueryRow("SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME='models' AND COLUMN_NAME='inventory_route_id'").Scan(&routeColumns); err != nil {
+		return err
+	}
+	if routeColumns == 0 {
+		if _, err := a.DB.Exec("ALTER TABLE models ADD COLUMN inventory_route_id VARCHAR(100) NULL"); err != nil {
+			if duplicate, ok := err.(*mysql.MySQLError); !ok || duplicate.Number != 1060 {
+				return err
+			}
+		}
+	}
+	if _, err := a.DB.Exec("INSERT IGNORE INTO job_cleanups(job_id) SELECT DISTINCT j.id FROM jobs j JOIN assets a ON a.job_id=j.id WHERE j.status IN ('failed','refund_pending')"); err != nil {
+		return err
+	}
+	return a.backfillUpstreamCalls()
 }
 func must(e error) {
 	if e != nil {
@@ -363,7 +398,8 @@ func passwordHash(s string) string {
 }
 func (a *App) Seed() {
 	a.Tx(func(s Store) {
-		if s.One("SELECT id FROM users WHERE role='admin' LIMIT 1") == nil {
+		s.One("SELECT name FROM invariant_locks WHERE name='administrators' FOR UPDATE")
+		if s.One("SELECT id FROM users WHERE role='admin' AND status='active' LIMIT 1") == nil {
 			username := env("ADMIN_USERNAME", "admin")
 			pass := env("ADMIN_PASSWORD", "")
 			generated := pass == ""
@@ -374,7 +410,13 @@ func (a *App) Seed() {
 			if a.Config.Demo {
 				balance = 100000
 			}
-			s.Exec("INSERT INTO users(id,username,display_name,password,role,balance) VALUES(?,?,?,?,?,?)", id(), username, "管理员", passwordHash(pass), "admin", balance)
+			if existing := s.One("SELECT id FROM users WHERE username=? FOR UPDATE", username); existing != nil {
+				// Recovery resets credentials from the trusted bootstrap environment, never reuses a user's password.
+				s.Exec("UPDATE users SET role='admin',status='active',password=?,auth_version=auth_version+1 WHERE id=?", passwordHash(pass), existing["id"])
+				s.Audit(str(existing["id"]), "admin.recover", Row{"username": username})
+			} else {
+				s.Exec("INSERT INTO users(id,username,display_name,password,role,balance) VALUES(?,?,?,?,?,?)", id(), username, "管理员", passwordHash(pass), "admin", balance)
+			}
 			if generated {
 				must(os.WriteFile(".local-credentials.json", []byte(jsonText(Row{"username": username, "password": pass, "note": "本地管理员凭据，请妥善保管"})), 0600))
 			}

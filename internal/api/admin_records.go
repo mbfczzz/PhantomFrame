@@ -87,7 +87,7 @@ func (a *App) listAdminJobs(r *Request) any {
 	page, limit := r.Page()
 	where, args := []string{"1=1"}, []any{}
 	for name, column := range map[string]string{"status": "j.status", "source": "j.source", "type": "COALESCE(JSON_UNQUOTE(JSON_EXTRACT(j.provider_snapshot,'$.type')),m.type)"} {
-		allowed := map[string][]string{"status": {"queued", "running", "succeeded", "failed", "cancelled"}, "source": {"web", "api"}, "type": {"image", "video"}}
+		allowed := map[string][]string{"status": {"queued", "running", "refund_pending", "succeeded", "failed", "cancelled"}, "source": {"web", "api"}, "type": {"image", "video", "text", "audio", "upscale"}}
 		if value := adminQueryChoice(r, name, allowed[name]...); value != "" {
 			where = append(where, column+"=?")
 			args = append(args, value)
@@ -98,7 +98,7 @@ func (a *App) listAdminJobs(r *Request) any {
 	adminQueryDates(r, "j.created_at", &where, &args)
 	adminQuerySearch(r, []string{"j.id", "u.username", "u.display_name", "m.name", "j.model_id", "j.prompt", "JSON_UNQUOTE(JSON_EXTRACT(j.provider_snapshot,'$.modelName'))"}, &where, &args)
 	from := " FROM jobs j JOIN users u ON u.id=j.user_id JOIN models m ON m.id=j.model_id WHERE " + strings.Join(where, " AND ")
-	summary := a.Store.One("SELECT count(*) total,coalesce(sum(j.status='succeeded'),0) succeeded,coalesce(sum(j.status='failed'),0) failed,coalesce(sum(j.status IN ('queued','running')),0) active,coalesce(sum(CASE WHEN j.refunded=0 THEN j.cost ELSE 0 END),0) spent"+from, args...)
+	summary := a.Store.One("SELECT count(*) total,coalesce(sum(j.status='succeeded'),0) succeeded,coalesce(sum(j.status='failed'),0) failed,coalesce(sum(j.status IN ('queued','running','refund_pending')),0) active,coalesce(sum(CASE WHEN j.refunded=0 THEN j.cost ELSE 0 END),0) spent"+from, args...)
 	items := []Row{}
 	for _, job := range a.Store.All("SELECT j.*,u.username,u.display_name"+from+" ORDER BY j.created_at DESC,j.seq DESC LIMIT ? OFFSET ?", append(args, limit, (page-1)*limit)...) {
 		items = append(items, a.adminJobView(job))

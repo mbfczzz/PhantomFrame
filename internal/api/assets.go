@@ -2,7 +2,6 @@ package api
 
 import (
 	"bytes"
-	"fmt"
 	"io"
 	"mime"
 	"net/http"
@@ -158,11 +157,11 @@ func (a *App) assetRoutes(m *http.ServeMux) {
 			if err := a.removeOSSAsset(r.R.Context(), v); err != nil {
 				fail(502, err.Error())
 			}
+			if err := os.Remove(a.filePath(str(v["file"]))); err != nil && !os.IsNotExist(err) {
+				fail(502, "素材文件删除未完成，请稍后重试；删除记录已保留")
+			}
 			s.Exec("DELETE FROM assets WHERE id=?", r.ID())
 		})
-		if e := os.Remove(a.filePath(str(v["file"]))); e != nil && !os.IsNotExist(e) {
-			return Row{"ok": true, "message": fmt.Sprint("素材记录已移除，文件等待清理")}
-		}
 		return Row{"ok": true}
 	})
 }

@@ -61,7 +61,7 @@ export function ModelCapabilities({ model }: { model: Model }) {
     { kind: "audio", label: "音频", unit: "段", Icon: Music },
   ].filter(
     (item) =>
-      item.kind === "image" ||
+      (item.kind === "image" && model.type === "image") ||
       model.type === "video" ||
       model.parameters.some(
         (p) => p.type === "assets" && p.itemType === item.kind,
@@ -81,6 +81,10 @@ export function ModelCapabilities({ model }: { model: Model }) {
     "mode",
     "faceEnabled",
     "generate_audio",
+    "maxOutputTokens",
+    "voice",
+    "instrumental",
+    "fps",
   ];
   const specs = fieldOrder.flatMap((name) => {
     const parameter = model.parameters.find(

@@ -11,6 +11,9 @@ import (
 )
 
 func (s Store) ensureProviderModel(m Row) {
+	if str(m["inventory_route_id"]) != "" {
+		return
+	}
 	s.Exec("INSERT IGNORE INTO provider_models(id,provider_id,upstream_model,name,type,description,parameters,origin) VALUES(?,?,?,?,?,?,?,'existing')", id(), m["provider_id"], m["upstream_model"], m["name"], m["type"], str(m["description"]), jsonText(array(m["parameters"])))
 }
 func (a *App) backfillProviderModels() {
@@ -92,7 +95,7 @@ func providerModelType(p Row) string {
 	if p["type"] == nil || p["type"] == "" {
 		return ""
 	}
-	return enumField(p, "type", "image", "video")
+	return enumField(p, "type", "image", "video", "text", "audio", "upscale")
 }
 func (a *App) saveProviderModel(r *Request) any {
 	p := r.Body()
@@ -167,7 +170,7 @@ func (a *App) publishProviderModel(r *Request) any {
 		fail(400, "站内模型 ID 格式不正确")
 	}
 	name := trimField(p, "name", 1, 120)
-	kind := enumField(p, "type", "image", "video")
+	kind := enumField(p, "type", "image", "video", "text", "audio", "upscale")
 	category := textField(p, "category", 0, 80, "默认分组")
 	var model Row
 	alreadyPublished := false

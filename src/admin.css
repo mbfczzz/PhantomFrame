@@ -10,6 +10,116 @@
   border: 1px solid var(--border);
   border-radius: 7px;
 }
+.upstream-log-table table {
+  min-width: 1100px;
+}
+.upstream-log-table td {
+  vertical-align: top;
+}
+.upstream-log-table td > strong {
+  display: block;
+  font-weight: 500;
+}
+.upstream-log-table td small {
+  display: block;
+  color: var(--muted);
+  font-size: 12px;
+  margin-top: 5px;
+}
+.upstream-model-name,
+.upstream-parameter-summary {
+  max-width: 190px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: block;
+}
+.upstream-task-id {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  max-width: 240px;
+  font-size: 12px;
+  text-align: left;
+}
+.upstream-task-id > span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+}
+.upstream-no-id {
+  font-size: 12px;
+}
+.upstream-log-table td .upstream-http-error,
+.upstream-http-error {
+  color: var(--pink);
+}
+.upstream-trace {
+  margin: 20px 0;
+  min-width: 0;
+}
+.upstream-trace-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+.upstream-trace-heading h3 {
+  margin: 0;
+}
+.upstream-trace-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px 24px;
+  margin: 0;
+}
+.upstream-trace-grid > div {
+  min-width: 0;
+}
+.upstream-trace-grid dt {
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 5px;
+}
+.upstream-trace-grid dd {
+  margin: 0;
+  font-size: 14px;
+  overflow-wrap: anywhere;
+}
+.upstream-trace-grid dd small {
+  display: block;
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 12px;
+}
+.upstream-trace-wide {
+  grid-column: 1 / -1;
+}
+.upstream-trace-grid .upstream-task-id {
+  max-width: 100%;
+}
+.upstream-params {
+  margin-top: 20px;
+}
+.upstream-params pre {
+  max-height: 280px;
+  overflow: auto;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.upstream-timing-note {
+  margin-top: 16px;
+}
+@media (max-width: 600px) {
+  .upstream-trace-grid {
+    gap: 16px;
+  }
+  .upstream-trace-grid dd {
+    font-size: 13px;
+  }
+}
 .storage-settings {
   margin-top: 24px;
 }

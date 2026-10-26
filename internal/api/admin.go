@@ -25,12 +25,12 @@ func validBaseURL(s string) bool {
 func (a *App) saveProvider(r *Request) any {
 	p := r.Body()
 	name := trimField(p, "name", 1, 80)
-	protocol := enumField(p, "protocol", "demo", "openai-image", "openai-video", "json-async", "openvideo", "suda", "modelhub", "gway", "catcoder", "wxart", "rolldek", "maitoken", "media-upload")
+	protocol := enumField(p, "protocol", "demo", "openai-image", "openai-video", "json-async", "openvideo", "suda", "modelhub", "gway", "catcoder", "wxart", "rolldek", "maitoken", "media-upload", "inventory")
 	base := textField(p, "base_url", 0, 500, "")
 	key := textField(p, "apiKey", 0, 4096, "")
 	enabled := boolField(p, "enabled", true)
 	config := mapField(p, "config")
-	if protocol != "demo" && !validBaseURL(base) {
+	if protocol != "demo" && !(protocol == "inventory" && base == "") && !validBaseURL(base) {
 		fail(400, "请输入有效的 API 基础地址")
 	}
 	if protocol == "demo" && !a.Config.Demo && enabled {
@@ -43,6 +43,9 @@ func (a *App) saveProvider(r *Request) any {
 	}
 	a.Tx(func(s Store) {
 		old := s.One("SELECT * FROM providers WHERE id=? FOR UPDATE", pid)
+		if old != nil && old["protocol"] == "inventory" && (protocol != "inventory" || key != "") {
+			fail(400, "清单渠道的协议与密钥由独立路由管理，请前往供应商路由页")
+		}
 		if update && old == nil {
 			fail(404, "供应商不存在")
 		}
@@ -162,7 +165,7 @@ func (a *App) saveModel(r *Request) any {
 		fail(400, "模型 ID 格式不正确")
 	}
 	name := textField(p, "name", 1, 120)
-	kind := enumField(p, "type", "image", "video")
+	kind := enumField(p, "type", "image", "video", "text", "audio", "upscale")
 	pid := textField(p, "provider_id", 1, 100)
 	upstream := textField(p, "upstream_model", 1, 160)
 	desc := textField(p, "description", 0, 2000, "")
@@ -190,7 +193,16 @@ func (a *App) saveModel(r *Request) any {
 		if provider["protocol"] == "media-upload" {
 			fail(400, "素材上传服务不能绑定生成模型")
 		}
-		old := s.One("SELECT id FROM models WHERE id=? FOR UPDATE", mid)
+		if kind != "image" && kind != "video" && provider["protocol"] != "inventory" && provider["protocol"] != "demo" {
+			fail(400, "此类型需要清单路由或本地演示通道")
+		}
+		old := s.One("SELECT * FROM models WHERE id=? FOR UPDATE", mid)
+		if old != nil && str(old["inventory_route_id"]) != "" && (pid != str(old["provider_id"]) || upstream != str(old["upstream_model"]) || kind != str(old["type"])) {
+			fail(409, "清单模型的路由绑定不能直接修改，请更新供应商清单后重新导入")
+		}
+		if !update && provider["protocol"] == "inventory" {
+			fail(400, "清单渠道请通过 CSV 新增独立路由")
+		}
 		if update && old == nil {
 			fail(404, "模型不存在")
 		}
@@ -278,7 +290,7 @@ func (a *App) adminRoutes(m *http.ServeMux) {
 		for _, name := range []string{"users", "models", "jobs"} {
 			v[name] = a.Store.One("SELECT count(*) n FROM " + name)["n"]
 		}
-		v["activeJobs"] = a.Store.One("SELECT count(*) n FROM jobs WHERE status IN ('queued','running')")["n"]
+		v["activeJobs"] = a.Store.One("SELECT count(*) n FROM jobs WHERE status IN ('queued','running','refund_pending')")["n"]
 		v["consumed"] = credits(a.Store.One("SELECT coalesce(sum(-amount),0) n FROM transactions WHERE kind IN ('generation','refund')")["n"])
 		v["providers"] = a.Store.One("SELECT count(*) n FROM providers WHERE enabled=1")["n"]
 		v["daily"] = a.Store.All("SELECT date(created_at) date,count(*) count,sum(status='succeeded') succeeded,sum(CASE WHEN refunded=0 THEN cost ELSE 0 END)/100.0 credits FROM jobs WHERE created_at>=DATE_SUB(UTC_TIMESTAMP(),INTERVAL 14 DAY) GROUP BY date(created_at)")
@@ -293,7 +305,7 @@ func (a *App) adminRoutes(m *http.ServeMux) {
 	})
 	a.route(m, "GET /api/admin/providers", 3, func(r *Request) any {
 		v := []Row{}
-		for _, p := range a.Store.All("SELECT p.*,(SELECT count(*) FROM provider_models c WHERE c.provider_id=p.id) supported_count,(SELECT count(*) FROM provider_models c WHERE c.provider_id=p.id AND EXISTS(SELECT 1 FROM models m WHERE m.provider_id=c.provider_id AND m.upstream_model=c.upstream_model)) published_count FROM providers p ORDER BY p.created_at") {
+		for _, p := range a.Store.All("SELECT p.*,((SELECT count(*) FROM provider_models c WHERE c.provider_id=p.id)+(SELECT count(*) FROM inventory_routes r WHERE r.provider_id=p.id)) supported_count,(CASE WHEN p.protocol='inventory' THEN (SELECT count(*) FROM models im WHERE im.provider_id=p.id) ELSE (SELECT count(*) FROM provider_models c WHERE c.provider_id=p.id AND EXISTS(SELECT 1 FROM models m WHERE m.provider_id=c.provider_id AND m.upstream_model=c.upstream_model)) END) published_count FROM providers p ORDER BY p.created_at") {
 			v = append(v, providerView(p))
 		}
 		return v
@@ -318,6 +330,9 @@ func (a *App) adminRoutes(m *http.ServeMux) {
 		}
 		if p["protocol"] == "demo" {
 			return Row{"ok": a.Config.Demo, "message": "本地演示通道"}
+		}
+		if p["protocol"] == "inventory" {
+			return Row{"ok": false, "message": "此渠道使用独立路由配置，请在供应商路由页检查地址、密钥与模型价格"}
 		}
 		ctx, cancel := context.WithTimeout(r.R.Context(), 15*time.Second)
 		defer cancel()
@@ -353,7 +368,10 @@ func (a *App) adminRoutes(m *http.ServeMux) {
 	a.route(m, "PUT /api/admin/models/{id}", 3, a.saveModel)
 	a.route(m, "DELETE /api/admin/models/{id}", 3, func(r *Request) any {
 		a.Tx(func(s Store) {
-			s.One("SELECT id FROM models WHERE id=? FOR UPDATE", r.ID())
+			model := s.One("SELECT id,inventory_route_id FROM models WHERE id=? FOR UPDATE", r.ID())
+			if model != nil && str(model["inventory_route_id"]) != "" {
+				fail(400, "清单模型请使用停用功能，以保留独立路由配置")
+			}
 			if s.One("SELECT id FROM jobs WHERE model_id=? LIMIT 1", r.ID()) != nil {
 				fail(400, "该模型有关联任务，请使用停用功能保留历史记录")
 			}
@@ -393,6 +411,11 @@ func (a *App) adminRoutes(m *http.ServeMux) {
 	a.route(m, "PATCH /api/admin/users/{id}", 3, func(r *Request) any {
 		p := r.Body()
 		a.Tx(func(s Store) {
+			s.One("SELECT name FROM invariant_locks WHERE name='administrators' FOR UPDATE")
+			actor := s.One("SELECT role,status,auth_version FROM users WHERE id=? FOR UPDATE", r.UID())
+			if actor == nil || actor["role"] != "admin" || actor["status"] != "active" || integer(actor["auth_version"]) != integer(r.User["auth_version"]) {
+				fail(403, "管理员权限已变更，请刷新后重试")
+			}
 			u := s.One("SELECT * FROM users WHERE id=? FOR UPDATE", r.ID())
 			if u == nil {
 				fail(404, "用户不存在")
@@ -407,6 +430,9 @@ func (a *App) adminRoutes(m *http.ServeMux) {
 			if r.ID() == r.UID() && (status == "disabled" || role == "user") {
 				fail(400, "不能停用或降级当前管理员")
 			}
+			if u["role"] == "admin" && u["status"] == "active" && (role != "admin" || status != "active") && integer(s.One("SELECT count(*) n FROM users WHERE role='admin' AND status='active'")["n"]) <= 1 {
+				fail(409, "必须保留至少一名启用的管理员")
+			}
 			s.Exec("UPDATE users SET status=?,role=?,auth_version=auth_version+? WHERE id=?", status, role, status != u["status"] || role != u["role"], r.ID())
 			s.Audit(r.UID(), "user.update", Row{"id": r.ID(), "status": status, "role": role})
 		})
@@ -416,14 +442,14 @@ func (a *App) adminRoutes(m *http.ServeMux) {
 		p := r.Body()
 		amount := units(moneyField(p, "amount", -1000000, 1000000))
 		reason := trimField(p, "reason", 2, 200)
-		a.Tx(func(s Store) {
+		return a.moneyOperation(r, Row{"amount": amount, "reason": reason}, func(s Store) Row {
 			if s.One("SELECT id FROM users WHERE id=? FOR UPDATE", r.ID()) == nil {
 				fail(404, "用户不存在")
 			}
-			s.Wallet(r.ID(), amount, "adjustment", reason, nil)
+			transaction := s.Wallet(r.ID(), amount, "adjustment", reason, nil)
 			s.Audit(r.UID(), "credits.adjust", Row{"userId": r.ID(), "amount": credits(amount), "reason": reason})
+			return Row{"ok": true, "transactionId": transaction}
 		})
-		return Row{"ok": true}
 	})
 	a.route(m, "GET /api/admin/jobs", 3, a.listAdminJobs)
 	a.route(m, "GET /api/admin/jobs/{id}", 3, a.adminJobDetail)

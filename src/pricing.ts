@@ -21,7 +21,7 @@ export function priceExtraLabels(price: Pick<Price, "extras">): string[] {
 }
 
 export const billingOptions = (kind: string) =>
-  kind === "image"
+  kind !== "video"
     ? [{ value: "request", label: "按次" }]
     : [
         { value: "request", label: "按次" },

@@ -1,3 +1,5 @@
+import GenerationTypeIcon from "../components/GenerationTypeIcon";
+import { generationLabels, generationOptions } from "../lib";
 import { useState, useEffect, useRef } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import {
@@ -530,8 +532,9 @@ export default function Studio() {
   const filteredJobs =
     jobs?.items.filter((job) => filter === "all" || job.type === filter) || [];
   const activeJobs =
-    jobs?.items.filter((job) => ["queued", "running"].includes(job.status))
-      .length || 0;
+    jobs?.items.filter((job) =>
+      ["queued", "running", "refund_pending"].includes(job.status),
+    ).length || 0;
   const options = available(kind, billing)
     .map(modelOption)
     .sort((a, b) => (a.group || "").localeCompare(b.group || "", "zh-CN"));
@@ -559,7 +562,7 @@ export default function Studio() {
       <header className="creation-heading">
         <div>
           <h1>创作</h1>
-          <p>图片与视频，从一个清晰的描述开始。</p>
+          <p>图片、视频、文本与音频，从一个清晰的描述开始。</p>
         </div>
         <button
           ref={previewToggle}
@@ -616,10 +619,16 @@ export default function Studio() {
           }}
         >
           <header className="composer-heading">
-            <h2>{kind === "image" ? "画面描述" : "镜头描述"}</h2>
+            <h2>
+              {kind === "image"
+                ? "画面描述"
+                : kind === "video"
+                  ? "镜头描述"
+                  : "任务说明"}
+            </h2>
             <span className={`studio-type-badge ${kind}`}>
-              {kind === "image" ? <Image size={13} /> : <Video size={13} />}{" "}
-              {kind === "image" ? "图片创作" : "视频创作"}
+              {<GenerationTypeIcon kind={kind} size={13} />}{" "}
+              {`${generationLabels[kind]}创作`}
             </span>
           </header>
           <div className="surface-editor">
@@ -754,6 +763,9 @@ export default function Studio() {
                 options={[
                   { value: "image", label: "图片生成" },
                   { value: "video", label: "视频生成" },
+                  { value: "text", label: "文本生成" },
+                  { value: "audio", label: "音频生成" },
+                  { value: "upscale", label: "视频超分" },
                 ]}
               />
             </div>
@@ -762,7 +774,7 @@ export default function Studio() {
               <Select
                 label="计费模式"
                 value={billing}
-                disabled={uploading || kind === "image"}
+                disabled={uploading || kind !== "video"}
                 onChange={(value) => changeFilter(kind, value)}
                 options={billingOptions(kind)}
               />
@@ -931,9 +943,9 @@ export default function Studio() {
                     ? "提交中"
                     : uploading
                       ? "上传中"
-                      : kind === "image"
-                        ? "生成图片"
-                        : "生成视频"}
+                      : kind === "upscale"
+                        ? "开始超分"
+                        : `生成${generationLabels[kind]}`}
                 </span>
               </button>
             </div>
@@ -970,6 +982,9 @@ export default function Studio() {
                 { value: "all", label: "全部" },
                 { value: "image", label: "图片" },
                 { value: "video", label: "视频" },
+                { value: "text", label: "文本" },
+                { value: "audio", label: "音频" },
+                { value: "upscale", label: "超分" },
               ]}
             />
             <Link to="/history" className="text-link">
@@ -1010,7 +1025,7 @@ export default function Studio() {
                 <h3>
                   {filter === "all"
                     ? "生成的作品会排列在这里"
-                    : `暂无${filter === "image" ? "图片" : "视频"}记录`}
+                    : `暂无${generationLabels[filter] || "生成"}记录`}
                 </h3>
                 <p>提交任务后，即可查看进度、预览和下载。</p>
               </div>

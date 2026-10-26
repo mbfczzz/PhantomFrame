@@ -62,6 +62,9 @@ func (a *App) login(r *Request, u Row) any {
 func (s Store) Settings() Row {
 	result := Row{}
 	for _, v := range s.All("SELECT `key`,value FROM settings") {
+		if str(v["key"]) == "_inventoryStartupFingerprint" {
+			continue
+		}
 		result[str(v["key"])] = v["value"]
 	}
 	return result

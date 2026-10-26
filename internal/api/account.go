@@ -7,6 +7,13 @@ import (
 )
 
 func (a *App) accountRoutes(m *http.ServeMux) {
+	a.route(m, "GET /api/money-operations/{id}", 2, func(r *Request) any {
+		operation := a.Store.One("SELECT result FROM money_operations WHERE user_id=? AND operation_key=?", r.UID(), r.ID())
+		if operation == nil {
+			fail(404, "操作尚未确认，可以沿用原操作编号重试")
+		}
+		return object(operation["result"])
+	})
 	a.route(m, "GET /api/transactions", 1, a.listTransactions)
 	a.route(m, "GET /api/usage", 1, func(r *Request) any {
 		where, args := "user_id=?", []any{r.UID()}
@@ -80,16 +87,15 @@ func (a *App) accountRoutes(m *http.ServeMux) {
 	})
 	a.route(m, "POST /api/sub-users/{id}/transfer", 2, func(r *Request) any {
 		amount := units(moneyField(r.Body(), "credits", 0.01, 1000000))
-		a.Tx(func(s Store) {
-			s.One("SELECT id FROM users WHERE id=? FOR UPDATE", r.UID())
+		return a.moneyOperation(r, Row{"credits": amount}, func(s Store) Row {
 			u := s.One("SELECT id FROM users WHERE id=? AND parent_id=? AND status='active' FOR UPDATE", r.ID(), r.UID())
 			if u == nil {
 				fail(404, "子账户不存在")
 			}
-			s.Wallet(r.UID(), -amount, "transfer", "向子账户转账", nil)
-			s.Wallet(r.ID(), amount, "transfer", "主账户转入", nil)
+			debit := s.Wallet(r.UID(), -amount, "transfer", "向子账户转账", nil)
+			credit := s.Wallet(r.ID(), amount, "transfer", "主账户转入", nil)
+			return Row{"ok": true, "debitId": debit, "creditId": credit, "balance": credits(s.One("SELECT balance FROM users WHERE id=?", r.UID())["balance"])}
 		})
-		return Row{"ok": true}
 	})
 	a.route(m, "DELETE /api/sub-users/{id}", 2, func(r *Request) any {
 		a.Store.Exec("UPDATE users SET parent_id=NULL WHERE id=? AND parent_id=?", r.ID(), r.UID())

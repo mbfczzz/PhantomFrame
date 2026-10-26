@@ -68,6 +68,7 @@ export type Price = {
   };
 };
 export type Model = {
+  inventory_route_id?: string;
   id: string;
   name: string;
   type: string;
@@ -149,10 +150,15 @@ export async function api<T = any>(
         : {}),
       ...options.headers,
     },
+  }).catch(() => {
+    throw new ApiError("网络连接中断，请检查网络后重试", 0);
   });
-  const result = await res
-    .json()
-    .catch(() => ({ message: "服务器暂时不可用" }));
+  const result = await res.json().catch(() => {
+    throw new ApiError(
+      "服务器返回了无效响应，请稍后重试",
+      res.ok ? 502 : res.status,
+    );
+  });
   if (!res.ok) throw new ApiError(result.message || "请求失败", res.status);
   return result;
 }
@@ -219,9 +225,20 @@ export const unitLabel: Record<string, string> = {
   second: "秒",
   image: "张",
 };
+export const generationLabels: Record<string, string> = {
+  image: "图片",
+  video: "视频",
+  text: "文本",
+  audio: "音频",
+  upscale: "视频超分",
+};
+export const generationOptions = Object.entries(generationLabels).map(
+  ([value, label]) => ({ value, label }),
+);
 export const statusLabel: Record<string, string> = {
   queued: "排队中",
   running: "生成中",
+  refund_pending: "退款处理中",
   succeeded: "已完成",
   failed: "失败",
   cancelled: "已取消",
@@ -256,9 +273,13 @@ export function ToastProvider({ children }: { children: ReactNode }) {
   return (
     <ToastContext.Provider value={toast}>
       {children}
-      <div className="toast-stack" aria-live="polite">
+      <div className="toast-stack">
         {toasts.map((t) => (
-          <div className={"toast " + (t.error ? "error" : "")} key={t.id}>
+          <div
+            className={"toast " + (t.error ? "error" : "")}
+            role={t.error ? "alert" : "status"}
+            key={t.id}
+          >
             {t.error ? <AlertCircle size={18} /> : <Check size={18} />}
             <span>{t.text}</span>
           </div>
@@ -287,11 +308,14 @@ export function useTheme() {
   return theme;
 }
 export function useAction() {
+  const pending = useRef(false);
   const [busy, setBusy] = useState(false);
   const toast = useToast();
   return {
     busy,
     act: async (action: () => Promise<unknown>, message?: string) => {
+      if (pending.current) return false;
+      pending.current = true;
       setBusy(true);
       try {
         await action();
@@ -301,6 +325,7 @@ export function useAction() {
         toast((e as Error).message, true);
         return false;
       } finally {
+        pending.current = false;
         setBusy(false);
       }
     },
@@ -649,18 +674,48 @@ export function Tabs({
   value,
   onChange,
   items,
+  panelId,
 }: {
   value: string;
   onChange: (v: string) => void;
   items: { value: string; label: ReactNode }[];
+  panelId?: string;
 }) {
+  const root = useRef<HTMLDivElement>(null);
   return (
-    <div className="tabs" role="tablist">
+    <div
+      className="tabs"
+      ref={root}
+      role={panelId ? "tablist" : "group"}
+      aria-label={panelId ? "内容分页" : "筛选选项"}
+    >
       {items.map((i) => (
         <button
           type="button"
-          role="tab"
-          aria-selected={value === i.value}
+          role={panelId ? "tab" : undefined}
+          id={panelId ? `${panelId}-tab-${i.value}` : undefined}
+          aria-controls={panelId}
+          aria-selected={panelId ? value === i.value : undefined}
+          aria-pressed={panelId ? undefined : value === i.value}
+          tabIndex={panelId && value !== i.value ? -1 : 0}
+          onKeyDown={(event) => {
+            if (!panelId) return;
+            const index = items.findIndex((item) => item.value === i.value);
+            const rtl =
+              getComputedStyle(event.currentTarget).direction === "rtl";
+            let next = index;
+            if (event.key === "ArrowRight") next += rtl ? -1 : 1;
+            else if (event.key === "ArrowLeft") next += rtl ? 1 : -1;
+            else if (event.key === "Home") next = 0;
+            else if (event.key === "End") next = items.length - 1;
+            else return;
+            event.preventDefault();
+            next = (next + items.length) % items.length;
+            onChange(items[next].value);
+            root.current
+              ?.querySelectorAll<HTMLButtonElement>("button")
+              [next]?.focus();
+          }}
           className={value === i.value ? "active" : ""}
           key={i.value}
           onClick={() => onChange(i.value)}
@@ -712,10 +767,16 @@ export function Pagination({
   onChange,
 }: {
   page: number;
-  total: number;
+  total?: number;
   limit?: number;
   onChange: (p: number) => void;
 }) {
+  const last =
+    total === undefined ? undefined : Math.max(1, Math.ceil(total / limit));
+  useEffect(() => {
+    if (last !== undefined && page > last) onChange(last);
+  }, [last, page, onChange]);
+  if (total === undefined) return null;
   return total > limit ? (
     <div className="pagination">
       <span>共 {total} 条</span>

@@ -1,3 +1,4 @@
+import { generationLabels, generationOptions } from "../lib";
 import { useState } from "react";
 import { Copy, Download, ListChecks, RefreshCw } from "lucide-react";
 import { Select } from "../components/Select";
@@ -32,7 +33,7 @@ type AdminJob = Job & {
   upstreamId?: string;
 };
 const limit = 20;
-function DateFilters({
+export function DateFilters({
   from,
   to,
   onChange,
@@ -64,7 +65,7 @@ function DateFilters({
     </>
   );
 }
-function UserFilter({
+export function UserFilter({
   value,
   onChange,
 }: {
@@ -91,7 +92,7 @@ function UserFilter({
     </label>
   );
 }
-function useRecordFilters(initial: Record<string, string>) {
+export function useRecordFilters(initial: Record<string, string>) {
   const [filters, setFilters] = useState(initial),
     [page, setPage] = useState(1);
   const update = (name: string, value: string) => {
@@ -190,6 +191,7 @@ export function JobAdmin() {
                   [
                     "queued",
                     "running",
+                    "refund_pending",
                     "succeeded",
                     "failed",
                     "cancelled",
@@ -209,6 +211,9 @@ export function JobAdmin() {
               { value: "all", label: "全部类型" },
               { value: "image", label: "图片" },
               { value: "video", label: "视频" },
+              { value: "text", label: "文本" },
+              { value: "audio", label: "音频" },
+              { value: "upscale", label: "视频超分" },
             ]}
           />
         </label>
@@ -259,7 +264,7 @@ export function JobAdmin() {
       )}
       <Pagination
         page={page}
-        total={data?.total || 0}
+        total={data?.total}
         limit={limit}
         onChange={setPage}
       />
@@ -267,7 +272,13 @@ export function JobAdmin() {
     </section>
   );
 }
-function AdminJobDetail({ id, onClose }: { id: string; onClose: () => void }) {
+export function AdminJobDetail({
+  id,
+  onClose,
+}: {
+  id: string;
+  onClose: () => void;
+}) {
   const {
     data: job,
     isLoading,
@@ -458,7 +469,7 @@ export function TransactionsAdmin() {
       )}
       <Pagination
         page={page}
-        total={data?.total || 0}
+        total={data?.total}
         limit={limit}
         onChange={setPage}
       />
@@ -533,7 +544,7 @@ export function AuditAdmin() {
       )}
       <Pagination
         page={page}
-        total={data?.total || 0}
+        total={data?.total}
         limit={limit}
         onChange={setPage}
       />

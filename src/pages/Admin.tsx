@@ -1,4 +1,7 @@
-import { useState, useEffect, useRef } from "react";
+import ProviderInventory from "./ProviderInventory";
+import { generationLabels, generationOptions } from "../lib";
+import { useMoneyMutation } from "../components/MoneyRecovery";
+import { useState, useEffect, useRef, useId } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import {
   NavLink,
@@ -73,6 +76,7 @@ import Support from "./Support";
 import { ReferenceSettings } from "../components/ReferenceSettings";
 import ProviderModels from "./ProviderModels";
 import StorageSettings from "./StorageSettings";
+import UpstreamLogs from "./UpstreamLogs";
 import { SpecificationPricing } from "../components/SpecificationPricing";
 import {
   billingLabel,
@@ -85,10 +89,12 @@ const sections = [
   ["overview", "数据概览", LayoutDashboard],
   ["models", "模型管理", Boxes],
   ["providers", "渠道管理", Cable],
+  ["inventory", "供应商路由", Cable],
   ["users", "用户管理", Users],
   ["codes", "兑换码管理", Ticket],
   ["tickets", "工单管理", LifeBuoy],
   ["jobs", "全站调用", ListChecks],
+  ["upstream", "上游日志", Cable],
   ["transactions", "全站流水", Coins],
   ["settings", "站点设置", Settings],
   ["audit", "操作日志", ScrollText],
@@ -132,6 +138,8 @@ export default function Admin() {
         <Overview />
       ) : active === "models" ? (
         <ModelAdmin />
+      ) : active === "inventory" ? (
+        <ProviderInventory />
       ) : active === "providers" ? (
         <ProviderAdmin />
       ) : active === "users" ? (
@@ -140,6 +148,8 @@ export default function Admin() {
         <CodeAdmin />
       ) : active === "tickets" ? (
         <Support admin />
+      ) : active === "upstream" ? (
+        <UpstreamLogs />
       ) : active === "settings" ? (
         <SettingsAdmin />
       ) : active === "audit" ? (
@@ -459,7 +469,7 @@ function ModelAdmin() {
                           </td>
                           <td>
                             <Badge status={m.type}>
-                              {m.type === "image" ? "图片" : "视频"}
+                              {generationLabels[m.type] || m.type}
                             </Badge>
                           </td>
                           <td>{m.category}</td>
@@ -675,6 +685,7 @@ function ModelForm({
   );
   const [tab, setTab] = useState(initialTab);
   const pricingTab = useRef<HTMLButtonElement>(null);
+  const panelId = useId();
   useEffect(() => {
     if (tab === "pricing") pricingTab.current?.focus({ preventScroll: true });
   }, [tab]);
@@ -733,11 +744,42 @@ function ModelForm({
       wide
       className="model-editor-dialog"
     >
-      <div className="model-editor-tabs" role="tablist" aria-label="模型配置">
+      <div
+        className="model-editor-tabs"
+        role="tablist"
+        aria-label="模型配置"
+        onKeyDown={(event) => {
+          if (!["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key))
+            return;
+          event.preventDefault();
+          const buttons = Array.from(
+            event.currentTarget.querySelectorAll<HTMLButtonElement>(
+              "button:not(:disabled)",
+            ),
+          );
+          const index = buttons.indexOf(
+            document.activeElement as HTMLButtonElement,
+          );
+          const next =
+            event.key === "Home"
+              ? 0
+              : event.key === "End"
+                ? buttons.length - 1
+                : (index +
+                    (event.key === "ArrowLeft" ? -1 : 1) +
+                    buttons.length) %
+                  buttons.length;
+          buttons[next]?.click();
+          buttons[next]?.focus();
+        }}
+      >
         <button
           type="button"
           role="tab"
           aria-selected={tab === "basic"}
+          id={`${panelId}-basic-tab`}
+          aria-controls={`${panelId}-basic`}
+          tabIndex={tab === "basic" ? 0 : -1}
           className={tab === "basic" ? "active" : ""}
           onClick={() => setTab("basic")}
         >
@@ -748,6 +790,9 @@ function ModelForm({
           type="button"
           role="tab"
           aria-selected={tab === "pricing"}
+          id={`${panelId}-pricing-tab`}
+          aria-controls={`${panelId}-pricing`}
+          tabIndex={tab === "pricing" ? 0 : -1}
           className={tab === "pricing" ? "active" : ""}
           disabled={!savedModel}
           title={!savedModel ? "保存模型后可配置计费规则" : undefined}
@@ -756,7 +801,13 @@ function ModelForm({
           计费规则
         </button>
       </div>
-      <div hidden={tab !== "basic"}>
+      <div
+        hidden={tab !== "basic"}
+        role="tabpanel"
+        id={`${panelId}-basic`}
+        aria-labelledby={`${panelId}-basic-tab`}
+        tabIndex={0}
+      >
         <Form
           onSubmit={() =>
             act(
@@ -796,11 +847,15 @@ function ModelForm({
             </Field>
             <Field label="模型类型">
               <select
+                disabled={!!savedModel?.inventory_route_id}
                 value={form.type}
                 onChange={(e) => set("type", e.target.value)}
               >
                 <option value="image">图片生成</option>
                 <option value="video">视频生成</option>
+                <option value="text">文本生成</option>
+                <option value="audio">音频生成</option>
+                <option value="upscale">视频超分</option>
               </select>
             </Field>
             <Field label="供应商渠道">
@@ -892,9 +947,17 @@ function ModelForm({
           </div>
         </Form>
       </div>
-      {tab === "pricing" && savedModel && (
-        <ModelPricing savedModel={savedModel} onClose={onClose} />
-      )}
+      <div
+        hidden={tab !== "pricing"}
+        role="tabpanel"
+        id={`${panelId}-pricing`}
+        aria-labelledby={`${panelId}-pricing-tab`}
+        tabIndex={0}
+      >
+        {tab === "pricing" && savedModel && (
+          <ModelPricing savedModel={savedModel} onClose={onClose} />
+        )}
+      </div>
     </Modal>
   );
 }
@@ -1146,7 +1209,7 @@ function PriceForm({
           <Field label="计费方式">
             <select
               value={form.unit}
-              disabled={model.type === "image"}
+              disabled={model.type !== "video"}
               onChange={(e) => set("unit", e.target.value)}
             >
               {billingOptions(model.type).map((option) => (
@@ -1343,6 +1406,7 @@ function ProviderAdmin() {
   const toast = useToast();
   const refresh = useRefresh();
   const protocols: RecordData = {
+    inventory: "供应商清单 · 独立路由",
     demo: "本地演示",
     "openai-image": "OpenAI 兼容 · 图片",
     "openai-video": "OpenAI 兼容 · 视频",
@@ -1400,14 +1464,21 @@ function ProviderAdmin() {
                 </header>
                 <div className="provider-meta">
                   <span>API 地址</span>
-                  <code>{p.base_url || "本地演示，无需外部连接"}</code>
+                  <code>
+                    {p.base_url ||
+                      (p.protocol === "inventory"
+                        ? "由各路由独立配置"
+                        : "本地演示，无需外部连接")}
+                  </code>
                   <span>密钥状态</span>
                   <strong className={p.hasKey ? "green" : "muted"}>
-                    {p.hasKey
-                      ? "已配置 · 加密保存"
-                      : p.protocol === "demo"
-                        ? "无需密钥"
-                        : "未配置"}
+                    {p.protocol === "inventory"
+                      ? "由各路由独立加密保存"
+                      : p.hasKey
+                        ? "已配置 · 加密保存"
+                        : p.protocol === "demo"
+                          ? "无需密钥"
+                          : "未配置"}
                   </strong>
                   <span>
                     {p.protocol === "media-upload" ? "服务用途" : "支持模型"}
@@ -1426,16 +1497,22 @@ function ProviderAdmin() {
                   </strong>
                 </div>
                 <footer>
-                  {p.protocol !== "media-upload" && (
-                    <button
-                      className="button primary"
-                      aria-label={"管理模型 " + p.name}
-                      onClick={() => setCatalog(p)}
-                    >
-                      <Boxes size={15} />
-                      管理模型
-                    </button>
+                  {p.protocol === "inventory" && (
+                    <Link className="button primary" to="/admin/inventory">
+                      管理独立路由
+                    </Link>
                   )}
+                  {p.protocol !== "media-upload" &&
+                    p.protocol !== "inventory" && (
+                      <button
+                        className="button primary"
+                        aria-label={"管理模型 " + p.name}
+                        onClick={() => setCatalog(p)}
+                      >
+                        <Boxes size={15} />
+                        管理模型
+                      </button>
+                    )}
                   <button
                     className="button"
                     disabled={busy}
@@ -1657,6 +1734,7 @@ function ProviderForm({
   );
 }
 function UserAdmin() {
+  const moneyPost = useMoneyMutation();
   const confirm = useConfirm();
   const { data, isLoading, error, refetch } = useApi<User[]>("/admin/users");
   const [search, setSearch] = useState("");
@@ -1796,7 +1874,7 @@ function UserAdmin() {
           <Form
             onSubmit={() =>
               act(async () => {
-                await post("/admin/users/" + adjust.id + "/credits", {
+                await moneyPost("/admin/users/" + adjust.id + "/credits", {
                   amount,
                   reason,
                 });
@@ -2027,7 +2105,7 @@ function CodeAdmin() {
       )}
       <Pagination
         page={page}
-        total={data?.total || 0}
+        total={data?.total}
         limit={20}
         onChange={setPage}
       />

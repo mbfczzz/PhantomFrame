@@ -30,6 +30,12 @@ func (a *App) quote(s Store, mid, uid string, raw Row) Quote {
 	if provider == nil || (provider["protocol"] == "demo" && !a.Config.Demo) {
 		fail(400, "模型通道未启用")
 	}
+	if m["type"] != "image" && m["type"] != "video" && provider["protocol"] != "inventory" && provider["protocol"] != "demo" {
+		fail(400, "此类型需要使用供应商独立路由")
+	}
+	if provider["protocol"] == "inventory" {
+		provider = a.inventoryProvider(s, m, provider)
+	}
 	defs := imageRequestParameters(str(m["type"]), array(m["parameters"]))
 	known := map[string]bool{}
 	assetFields := map[string]bool{}
@@ -161,6 +167,9 @@ func (a *App) quote(s Store, mid, uid string, raw Row) Quote {
 			fail(400, "参考素材合计最多 "+str(p["maxTotal"])+" 个")
 		}
 	}
+	if provider["protocol"] == "inventory" {
+		a.validateInventoryQuote(s, m, provider, params, uid)
+	}
 	matches := []Row{}
 	for _, p := range s.All("SELECT * FROM prices WHERE model_id=? AND enabled=1", mid) {
 		match := true
@@ -224,13 +233,27 @@ func (a *App) submit(r *Request) any {
 		fail(400, "Idempotency-Key 不能超过 128 字节")
 	}
 	var result Row
+	fingerprint := hash(jsonText(Row{"modelId": mid, "prompt": prompt, "params": params}))
 	a.Tx(func(s Store) {
-		u := s.One("SELECT id FROM users WHERE id=? FOR UPDATE", r.UID())
-		if u == nil {
+		u := s.One("SELECT id,status,auth_version FROM users WHERE id=? FOR UPDATE", r.UID())
+		if u == nil || u["status"] != "active" || integer(u["auth_version"]) != integer(r.User["auth_version"]) {
 			fail(401, "请先登录")
 		}
 		if key != "" {
 			if j := s.One("SELECT * FROM jobs WHERE user_id=? AND idempotency_key=?", r.UID(), key); j != nil {
+				if j["request_hash"] != nil && str(j["request_hash"]) != fingerprint {
+					fail(409, "该幂等编号已用于不同的生成请求")
+				}
+				if j["request_hash"] == nil {
+					if j["model_id"] != mid || j["prompt"] != prompt {
+						fail(409, "该幂等编号已用于不同的生成请求")
+					}
+					for name, value := range params {
+						if jsonText(value) != jsonText(object(j["params"])[name]) {
+							fail(409, "该幂等编号已用于不同的生成参数")
+						}
+					}
+				}
 				result = a.jobView(s, j)
 				return
 			}
@@ -261,7 +284,7 @@ func (a *App) submit(r *Request) any {
 		snapshot := clone(q.Provider)
 		// Capture the effective encrypted credential once. Submissions, polling and
 		// downloads keep using this snapshot even if an administrator rotates a key.
-		if entry := s.One("SELECT api_key FROM provider_models WHERE provider_id=? AND upstream_model=?", q.Model["provider_id"], q.Model["upstream_model"]); entry != nil && str(entry["api_key"]) != "" {
+		if entry := s.One("SELECT api_key FROM provider_models WHERE provider_id=? AND upstream_model=?", q.Model["provider_id"], q.Model["upstream_model"]); q.Provider["protocol"] != "inventory" && entry != nil && str(entry["api_key"]) != "" {
 			snapshot["api_key"] = entry["api_key"]
 		}
 		snapshot["modelName"] = q.Model["name"]
@@ -276,7 +299,10 @@ func (a *App) submit(r *Request) any {
 			idem = key
 		}
 		s.Exec("INSERT INTO jobs(id,user_id,model_id,prompt,params,cost,source,idempotency_key,provider_snapshot,outputs) VALUES(?,?,?,?,?,?,?,?,?,'[]')", jid, r.UID(), mid, prompt, jsonText(q.Params), q.Cost, source, idem, jsonText(snapshot))
-		result = a.jobView(s, s.One("SELECT * FROM jobs WHERE id=?", jid))
+		s.Exec("UPDATE jobs SET request_hash=? WHERE id=?", fingerprint, jid)
+		job := s.One("SELECT * FROM jobs WHERE id=?", jid)
+		a.archiveUpstreamCall(s, job, false)
+		result = a.jobView(s, job)
 	})
 	a.wake()
 	r.Status = 202
@@ -293,12 +319,13 @@ func (a *App) wake() {
 	_, _ = pipe.Exec(ctx)
 }
 func (s Store) refundLocked(j Row, message, status string) {
-	if j == nil || (j["status"] != "queued" && j["status"] != "running") {
+	if j == nil || (j["status"] != "queued" && j["status"] != "running" && j["status"] != "refund_pending") {
 		return
 	}
 	if !truth(j["refunded"]) {
 		s.Wallet(str(j["user_id"]), integer(j["cost"]), "refund", "生成结束 · 退款", j["id"])
 	}
+	message = strings.ReplaceAll(message, "退款处理中", "费用已退回")
 	msg := []rune(message)
 	if len(msg) > 1000 {
 		msg = msg[:1000]
@@ -306,9 +333,20 @@ func (s Store) refundLocked(j Row, message, status string) {
 	s.Exec("UPDATE jobs SET status=?,error=?,refunded=1,finished_at=CURRENT_TIMESTAMP(3) WHERE id=?", status, string(msg), j["id"])
 }
 func (a *App) refund(jid, message string) {
+	// Persist the obligation separately: a failed wallet transaction must not erase it.
+	pendingMessage := strings.NewReplacer("费用已退还", "退款处理中", "费用已退回", "退款处理中").Replace(message)
+	a.Tx(func(s Store) {
+		j := s.One("SELECT status FROM jobs WHERE id=? FOR UPDATE", jid)
+		if j == nil || (j["status"] != "running" && j["status"] != "queued" && j["status"] != "refund_pending" && j["status"] != "failed") {
+			return
+		}
+		s.Exec("UPDATE jobs SET status='refund_pending',error=?,refund_next_at=CURRENT_TIMESTAMP(3) WHERE id=? AND status IN ('running','queued')", string([]rune(pendingMessage)[:min(len([]rune(pendingMessage)), 1000)]), jid)
+		s.Exec("INSERT IGNORE INTO job_cleanups(job_id) VALUES(?)", jid)
+	})
 	a.Tx(func(s Store) {
 		s.refundLocked(s.One("SELECT * FROM jobs WHERE id=? FOR UPDATE", jid), message, "failed")
 	})
+	a.syncUpstreamCall(jid)
 }
 func jobSource(r *Request) string {
 	source := r.R.URL.Query().Get("source")
@@ -339,7 +377,7 @@ func (a *App) creationRoutes(m *http.ServeMux) {
 	})
 	a.route(m, "POST /api/jobs", 1, a.submit)
 	a.route(m, "GET /api/jobs", 1, func(r *Request) any {
-		where, args := []string{"j.user_id=?"}, []any{r.UID()}
+		where, args := []string{"j.user_id=?", "j.hidden_at IS NULL"}, []any{r.UID()}
 		q := r.R.URL.Query()
 		if source := jobSource(r); source != "" {
 			where = append(where, "j.source=?")
@@ -382,7 +420,7 @@ func (a *App) creationRoutes(m *http.ServeMux) {
 		return Row{"items": v, "total": total, "page": page, "limit": limit}
 	})
 	a.route(m, "GET /api/jobs/{id}", 1, func(r *Request) any {
-		j := a.Store.One("SELECT * FROM jobs WHERE id=? AND user_id=?", r.ID(), r.UID())
+		j := a.Store.One("SELECT * FROM jobs WHERE id=? AND user_id=? AND hidden_at IS NULL", r.ID(), r.UID())
 		if j == nil {
 			fail(404, "任务不存在")
 		}
@@ -399,6 +437,7 @@ func (a *App) creationRoutes(m *http.ServeMux) {
 			}
 			s.refundLocked(j, "用户取消", "cancelled")
 		})
+		a.syncUpstreamCall(r.ID())
 		return Row{"ok": true}
 	})
 	a.route(m, "DELETE /api/jobs/{id}", 1, func(r *Request) any {
@@ -407,10 +446,11 @@ func (a *App) creationRoutes(m *http.ServeMux) {
 			if j == nil {
 				fail(404, "任务不存在")
 			}
-			if j["status"] == "queued" || j["status"] == "running" {
+			if j["status"] == "queued" || j["status"] == "running" || j["status"] == "refund_pending" {
 				fail(400, "请等待任务结束后删除")
 			}
-			s.Exec("DELETE FROM jobs WHERE id=?", r.ID())
+			a.archiveUpstreamCall(s, j, true)
+			s.Exec("UPDATE jobs SET hidden_at=CURRENT_TIMESTAMP(3) WHERE id=?", r.ID())
 		})
 		return Row{"ok": true}
 	})

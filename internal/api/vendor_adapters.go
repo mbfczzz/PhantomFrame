@@ -31,6 +31,9 @@ type vendorFile struct {
 }
 
 func (a *App) vendorForm(values Row, files []vendorFile) (*bytes.Buffer, string, error) {
+	return a.vendorFormRepeated(values, files, nil)
+}
+func (a *App) vendorFormRepeated(values Row, files []vendorFile, repeated map[string][]string) (*bytes.Buffer, string, error) {
 	body := new(bytes.Buffer)
 	w := multipart.NewWriter(body)
 	for name, value := range values {
@@ -41,6 +44,13 @@ func (a *App) vendorForm(values Row, files []vendorFile) (*bytes.Buffer, string,
 		}
 		if e := w.WriteField(name, s); e != nil {
 			return nil, "", e
+		}
+	}
+	for name, values := range repeated {
+		for _, value := range values {
+			if e := w.WriteField(name, value); e != nil {
+				return nil, "", e
+			}
 		}
 	}
 	for _, file := range files {
@@ -542,7 +552,7 @@ func (a *App) vendorUpstream(ctx context.Context, j, p Row, key string, refs []R
 	if upID == "" || len(upID) > 255 {
 		return nil, fmt.Errorf("供应商未返回有效任务 ID，请核对上游记录")
 	}
-	a.Store.Exec("UPDATE jobs SET upstream_id=? WHERE id=?", upID, j["id"])
+	a.setUpstreamTaskID(j["id"], upID)
 	interval := time.Duration(num(first(config["pollInterval"], 5000))) * time.Millisecond
 	if interval < 20*time.Millisecond {
 		interval = 20 * time.Millisecond

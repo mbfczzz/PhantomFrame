@@ -267,7 +267,7 @@ function TicketList({ admin }: { admin: boolean }) {
         )}
         <Pagination
           page={page}
-          total={data?.total || 0}
+          total={data?.total}
           limit={20}
           onChange={setPage}
         />

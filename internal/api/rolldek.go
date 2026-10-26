@@ -285,7 +285,7 @@ func (a *App) rolldekUpstream(ctx context.Context, j, p Row, key string, refs []
 	if taskID == "" || len(taskID) > 255 {
 		return nil, fmt.Errorf("供应商未返回有效任务 ID，请核对上游记录")
 	}
-	a.Store.Exec("UPDATE jobs SET upstream_id=? WHERE id=?", taskID, j["id"])
+	a.setUpstreamTaskID(j["id"], taskID)
 	poll := "/v1/videos/" + url.PathEscape(taskID)
 	if adapter == "ark" {
 		poll = "/api/v3/contents/generations/tasks/" + url.PathEscape(taskID)

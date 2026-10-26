@@ -1,0 +1,679 @@
+[
+  {
+    "id": "gpt-image-2",
+    "name": "GPT Image 2",
+    "kind": "image",
+    "profile": "gpt",
+    "aliases": [
+      "gpt-image-2-official",
+      "gpt-image-2-LD",
+      "gpt-image-2-Mk",
+      "gpt-image-2-CA",
+      "gpt-image-2",
+      "gpt-image-2-APIYI",
+      "gpt-image-2-vip-APIYI",
+      "gpt-image-2-openrouter",
+      "gpt-image-2-ccgo-adobe",
+      "gpt-image-2-ccgo-az",
+      "gpt_image-2-dimesio"
+    ],
+    "upstreams": [
+      "gpt-image-2",
+      "gpt-image-2.5"
+    ],
+    "aspects": [
+      "auto",
+      "1:1",
+      "4:3",
+      "3:4",
+      "16:9",
+      "9:16"
+    ],
+    "resolutions": [
+      "1k",
+      "2k",
+      "4k"
+    ],
+    "maxImages": -1,
+    "maxVideos": 0,
+    "maxAudios": 0,
+    "minDuration": 0,
+    "maxDuration": 0,
+    "maxPrompt": 5000,
+    "defaults": {
+      "resolution": "1k"
+    }
+  },
+  {
+    "id": "midjourney-v8",
+    "name": "Midjourney V8",
+    "kind": "image",
+    "profile": "mj",
+    "aliases": [],
+    "upstreams": [
+      "midjourney-v8"
+    ],
+    "aspects": [
+      "16:9",
+      "9:16",
+      "4:3",
+      "3:4",
+      "1:1",
+      "21:9",
+      "3:2",
+      "2:3",
+      "2:1",
+      "1:2"
+    ],
+    "resolutions": [],
+    "maxImages": 1,
+    "maxVideos": 0,
+    "maxAudios": 0,
+    "minDuration": 0,
+    "maxDuration": 0,
+    "maxPrompt": 5000,
+    "defaults": {}
+  },
+  {
+    "id": "midjourney-v7-niji",
+    "name": "Midjourney Niji V7",
+    "kind": "image",
+    "profile": "mj",
+    "aliases": [],
+    "upstreams": [
+      "midjourney-v7-niji"
+    ],
+    "aspects": [
+      "16:9",
+      "9:16",
+      "4:3",
+      "3:4",
+      "1:1",
+      "21:9",
+      "3:2",
+      "2:3",
+      "2:1",
+      "1:2"
+    ],
+    "resolutions": [],
+    "maxImages": 1,
+    "maxVideos": 0,
+    "maxAudios": 0,
+    "minDuration": 0,
+    "maxDuration": 0,
+    "maxPrompt": 5000,
+    "defaults": {}
+  },
+  {
+    "id": "nanobanana2",
+    "name": "Nano Banana 2",
+    "kind": "image",
+    "profile": "banana",
+    "aliases": [
+      "nano-banana-2",
+      "nano-banana-2-2k",
+      "nano-banana-2-4k"
+    ],
+    "upstreams": [
+      "nanobanana2"
+    ],
+    "aspects": [
+      "16:9",
+      "9:16",
+      "4:3",
+      "3:4",
+      "1:1"
+    ],
+    "resolutions": [
+      "2k",
+      "4k"
+    ],
+    "maxImages": -1,
+    "maxVideos": 0,
+    "maxAudios": 0,
+    "minDuration": 0,
+    "maxDuration": 0,
+    "maxPrompt": 5000,
+    "defaults": {
+      "resolution": "2k"
+    }
+  },
+  {
+    "id": "nanobanana-pro",
+    "name": "Nano Banana Pro",
+    "kind": "image",
+    "profile": "banana",
+    "aliases": [
+      "nano-banana-2-ccgo"
+    ],
+    "upstreams": [
+      "nanobanana-pro"
+    ],
+    "aspects": [
+      "auto",
+      "1:1",
+      "4:3",
+      "3:4",
+      "16:9",
+      "9:16",
+      "3:2",
+      "2:3",
+      "21:9"
+    ],
+    "resolutions": [
+      "1k",
+      "2k",
+      "4k"
+    ],
+    "maxImages": -1,
+    "maxVideos": 0,
+    "maxAudios": 0,
+    "minDuration": 0,
+    "maxDuration": 0,
+    "maxPrompt": 5000,
+    "defaults": {
+      "resolution": "2k"
+    }
+  },
+  {
+    "id": "seedream-5.0-pro",
+    "name": "Seedream 5.0 Pro",
+    "kind": "image",
+    "profile": "seedream",
+    "aliases": [
+      "seedream-5.0-pro-bytedance"
+    ],
+    "upstreams": [
+      "seedream-5.0-pro"
+    ],
+    "aspects": [
+      "auto",
+      "1:1",
+      "4:3",
+      "3:4",
+      "16:9",
+      "9:16",
+      "3:2",
+      "2:3",
+      "21:9"
+    ],
+    "resolutions": [
+      "1k",
+      "2k"
+    ],
+    "maxImages": 14,
+    "maxVideos": 0,
+    "maxAudios": 0,
+    "minDuration": 0,
+    "maxDuration": 0,
+    "maxPrompt": 10000,
+    "defaults": {
+      "resolution": "2k"
+    }
+  },
+  {
+    "id": "seedance-20",
+    "name": "Seedance 2.0",
+    "kind": "video",
+    "profile": "seedance20",
+    "aliases": [
+      "seedance-v2",
+      "seedance-v2-beta",
+      "seedance-v2-beta-face",
+      "seedance-v2-official",
+      "seedance-v2-official2",
+      "seedance-v2-intl",
+      "seedance-v2-intl-xl",
+      "seedance-2-afti",
+      "seedance-2-runware",
+      "seedance-2-bytedance",
+      "jimeng-video-seedance-2.0-vip-Dimensio",
+      "jimeng-video-seedance-2.0-vip",
+      "seedance-2-ultra-afti",
+      "ld-sd-2-1",
+      "ld-sd-2-2",
+      "ld-sd-2-4",
+      "ld-sd-2-7"
+    ],
+    "upstreams": [
+      "seedance-20"
+    ],
+    "aspects": [
+      "16:9",
+      "9:16",
+      "4:3",
+      "3:4",
+      "1:1",
+      "21:9"
+    ],
+    "resolutions": [
+      "480p",
+      "720p",
+      "1080p",
+      "4k"
+    ],
+    "maxImages": 9,
+    "maxVideos": 3,
+    "maxAudios": 3,
+    "minDuration": 4,
+    "maxDuration": 15,
+    "maxPrompt": 10000,
+    "defaults": {
+      "outputResolution": "720p"
+    }
+  },
+  {
+    "id": "seedance2-fast",
+    "name": "Seedance 2.0 Fast",
+    "kind": "video",
+    "profile": "seedanceFast",
+    "aliases": [
+      "seedance-v2-fast",
+      "seedance-v2-fast-beta",
+      "seedance-v2-fast-beta-face",
+      "seedance-v2-official2-fast",
+      "seedance-v2-intl-fast",
+      "seedance-v2-intl-xl-fast",
+      "seedance-2-fast-afti",
+      "seedance-2-fast-runware",
+      "seedance-2-fast-bytedance",
+      "jimeng-video-seedance-2.0-fast-vip-Dimensio"
+    ],
+    "upstreams": [
+      "seedance2-fast"
+    ],
+    "aspects": [
+      "16:9",
+      "9:16",
+      "4:3",
+      "3:4",
+      "1:1",
+      "21:9",
+      "9:21"
+    ],
+    "resolutions": [
+      "480p",
+      "720p"
+    ],
+    "maxImages": 9,
+    "maxVideos": 3,
+    "maxAudios": 0,
+    "minDuration": 4,
+    "maxDuration": 15,
+    "maxPrompt": 10000,
+    "defaults": {
+      "outputResolution": "720p"
+    }
+  },
+  {
+    "id": "seedance2.0-mini",
+    "name": "Seedance 2.0 Mini",
+    "kind": "video",
+    "profile": "seedance20",
+    "aliases": [
+      "jimeng-video-seedance-2.0-mini-Dimensio"
+    ],
+    "upstreams": [
+      "seedance2.0-mini"
+    ],
+    "aspects": [
+      "16:9",
+      "9:16",
+      "4:3",
+      "3:4",
+      "1:1",
+      "21:9"
+    ],
+    "resolutions": [
+      "480p",
+      "720p"
+    ],
+    "maxImages": 9,
+    "maxVideos": 3,
+    "maxAudios": 3,
+    "minDuration": 4,
+    "maxDuration": 15,
+    "maxPrompt": 10000,
+    "defaults": {
+      "outputResolution": "720p"
+    }
+  },
+  {
+    "id": "seedance2-5",
+    "name": "Seedance 2.5",
+    "kind": "video",
+    "profile": "seedance25",
+    "aliases": [
+      "jmg-video-seedance-2.5",
+      "jmg-video-seedance-2.5-Dimensio"
+    ],
+    "upstreams": [
+      "seedance2-5",
+      "seedance2-5-preview"
+    ],
+    "aspects": [
+      "16:9",
+      "9:16",
+      "4:3",
+      "3:4",
+      "1:1",
+      "21:9"
+    ],
+    "resolutions": [
+      "480p",
+      "720p",
+      "1080p"
+    ],
+    "maxImages": 30,
+    "maxVideos": 10,
+    "maxAudios": 10,
+    "minDuration": 4,
+    "maxDuration": 30,
+    "maxPrompt": 30000,
+    "defaults": {
+      "outputResolution": "720p"
+    }
+  },
+  {
+    "id": "seedance2-5-edit",
+    "name": "Seedance 2.5 Video Edit",
+    "kind": "video",
+    "profile": "seedanceEdit",
+    "aliases": [],
+    "upstreams": [
+      "seedance2-5-edit"
+    ],
+    "aspects": [],
+    "resolutions": [
+      "480p",
+      "720p",
+      "1080p"
+    ],
+    "maxImages": 30,
+    "maxVideos": 10,
+    "maxAudios": 10,
+    "minDuration": 0,
+    "maxDuration": 0,
+    "maxPrompt": 30000,
+    "defaults": {
+      "outputResolution": "480p"
+    }
+  },
+  {
+    "id": "seedance2-5-extend",
+    "name": "Seedance 2.5 Video Extend",
+    "kind": "video",
+    "profile": "seedanceExtend",
+    "aliases": [],
+    "upstreams": [
+      "seedance2-5-extend"
+    ],
+    "aspects": [],
+    "resolutions": [
+      "480p",
+      "720p"
+    ],
+    "maxImages": 30,
+    "maxVideos": 10,
+    "maxAudios": 10,
+    "minDuration": 4,
+    "maxDuration": 30,
+    "maxPrompt": 30000,
+    "defaults": {
+      "outputResolution": "480p"
+    }
+  },
+  {
+    "id": "happyhorse1.0",
+    "name": "HappyHorse 1.0",
+    "kind": "video",
+    "profile": "happyhorse",
+    "aliases": [
+      "happyhorse-1-runware"
+    ],
+    "upstreams": [
+      "happyhorse1.0"
+    ],
+    "aspects": [
+      "16:9",
+      "9:16",
+      "4:3",
+      "3:4",
+      "1:1",
+      "21:9"
+    ],
+    "resolutions": [
+      "720p",
+      "1080p"
+    ],
+    "maxImages": 9,
+    "maxVideos": 1,
+    "maxAudios": 0,
+    "minDuration": 3,
+    "maxDuration": 15,
+    "maxPrompt": 5000,
+    "defaults": {
+      "outputResolution": "720p"
+    }
+  },
+  {
+    "id": "minimax-h3-turbo-i2v",
+    "name": "MiniMax H3 Turbo",
+    "kind": "video",
+    "profile": "minimax",
+    "aliases": [],
+    "upstreams": [
+      "minimax-h3-turbo-i2v"
+    ],
+    "aspects": [
+      "16:9",
+      "9:16"
+    ],
+    "resolutions": [
+      "480p",
+      "768p"
+    ],
+    "maxImages": 9,
+    "maxVideos": 0,
+    "maxAudios": 3,
+    "minDuration": 1,
+    "maxDuration": 15,
+    "maxPrompt": 10000,
+    "defaults": {
+      "outputResolution": "480p"
+    }
+  },
+  {
+    "id": "kling3",
+    "name": "Kling 3.0",
+    "kind": "video",
+    "profile": "kling",
+    "aliases": [
+      "kling-video-3-standard-runware",
+      "kling-video-3-pro-runware",
+      "kling-video-3-4k-runware"
+    ],
+    "upstreams": [
+      "kling3"
+    ],
+    "aspects": [
+      "16:9",
+      "9:16",
+      "1:1"
+    ],
+    "resolutions": [
+      "720p",
+      "1080p",
+      "4k"
+    ],
+    "maxImages": 5,
+    "maxVideos": 0,
+    "maxAudios": 3,
+    "minDuration": 3,
+    "maxDuration": 15,
+    "maxPrompt": 5000,
+    "defaults": {
+      "outputResolution": "720p"
+    }
+  },
+  {
+    "id": "wan3.0-video",
+    "name": "Wan 3.0",
+    "kind": "video",
+    "profile": "wan",
+    "aliases": [],
+    "upstreams": [
+      "wan3.0-text-to-video",
+      "wan3.0-image-to-video",
+      "wan3.0-ref-to-video"
+    ],
+    "aspects": [
+      "16:9",
+      "9:16",
+      "4:3",
+      "3:4",
+      "1:1",
+      "adaptive"
+    ],
+    "resolutions": [
+      "480p",
+      "720p",
+      "1080p"
+    ],
+    "maxImages": 10,
+    "maxVideos": 5,
+    "maxAudios": 5,
+    "minDuration": 2,
+    "maxDuration": 30,
+    "maxPrompt": 20000,
+    "defaults": {
+      "outputResolution": "720p",
+      "audio": true
+    }
+  },
+  {
+    "id": "wan3.0-video-prime",
+    "name": "Wan 3.0 Prime",
+    "kind": "video",
+    "profile": "wan",
+    "aliases": [],
+    "upstreams": [
+      "wan3.0-prime-text-to-video",
+      "wan3.0-prime-image-to-video",
+      "wan3.0-prime-ref-to-video"
+    ],
+    "aspects": [
+      "16:9",
+      "9:16",
+      "4:3",
+      "3:4",
+      "1:1",
+      "adaptive"
+    ],
+    "resolutions": [
+      "480p",
+      "720p",
+      "1080p"
+    ],
+    "maxImages": 10,
+    "maxVideos": 5,
+    "maxAudios": 5,
+    "minDuration": 2,
+    "maxDuration": 30,
+    "maxPrompt": 20000,
+    "defaults": {
+      "outputResolution": "720p",
+      "audio": true
+    }
+  },
+  {
+    "id": "suno-music",
+    "name": "Suno Music",
+    "kind": "audio",
+    "profile": "suno",
+    "aliases": [
+      "suno-v5-5-mxapi"
+    ],
+    "upstreams": [
+      "suno-music"
+    ],
+    "aspects": [],
+    "resolutions": [],
+    "maxImages": 0,
+    "maxVideos": 0,
+    "maxAudios": 0,
+    "minDuration": 0,
+    "maxDuration": 0,
+    "maxPrompt": 5000,
+    "defaults": {
+      "mv": "chirp-v5-5",
+      "isStorage": true
+    }
+  },
+  {
+    "id": "suno-sample",
+    "name": "Suno Sample",
+    "kind": "audio",
+    "profile": "suno",
+    "aliases": [],
+    "upstreams": [
+      "suno-sample"
+    ],
+    "aspects": [],
+    "resolutions": [],
+    "maxImages": 0,
+    "maxVideos": 0,
+    "maxAudios": 1,
+    "minDuration": 0,
+    "maxDuration": 0,
+    "maxPrompt": 5000,
+    "defaults": {
+      "mv": "chirp-v5-5",
+      "isStorage": true
+    }
+  },
+  {
+    "id": "suno-remix",
+    "name": "Suno Remix",
+    "kind": "audio",
+    "profile": "suno",
+    "aliases": [],
+    "upstreams": [
+      "suno-remix"
+    ],
+    "aspects": [],
+    "resolutions": [],
+    "maxImages": 0,
+    "maxVideos": 0,
+    "maxAudios": 1,
+    "minDuration": 0,
+    "maxDuration": 0,
+    "maxPrompt": 5000,
+    "defaults": {
+      "mv": "chirp-v5-5",
+      "isStorage": true
+    }
+  },
+  {
+    "id": "suno-sounds",
+    "name": "Suno Sounds",
+    "kind": "audio",
+    "profile": "suno",
+    "aliases": [],
+    "upstreams": [
+      "suno-sounds"
+    ],
+    "aspects": [],
+    "resolutions": [],
+    "maxImages": 0,
+    "maxVideos": 0,
+    "maxAudios": 0,
+    "minDuration": 0,
+    "maxDuration": 0,
+    "maxPrompt": 3000,
+    "defaults": {
+      "mv": "chirp-v5-5",
+      "isStorage": true
+    }
+  }
+]

@@ -1,9 +1,13 @@
+import GenerationTypeIcon from "../components/GenerationTypeIcon";
+import TextOutput from "../components/TextOutput";
+import { generationLabels, generationOptions } from "../lib";
 import { useState, useEffect, useRef } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { Select } from "../components/Select";
 import { referenceLimitLabel, isImageCountParameter } from "../model-config";
 import { specificationRates, priceExtraLabels } from "../pricing";
 import { ModelCapabilities } from "../components/ModelCapabilities";
+import { UpstreamTrace } from "../components/UpstreamTrace";
 import {
   ModelStatus,
   type ModelStatusResponse,
@@ -71,14 +75,21 @@ const types = [
   { value: "all", label: "全部" },
   { value: "image", label: "图片" },
   { value: "video", label: "视频" },
+  { value: "text", label: "文本" },
+  { value: "audio", label: "音频" },
+  { value: "upscale", label: "视频超分" },
 ];
 export function Media({
   asset,
   controls = true,
 }: {
-  asset: { url: string; type: string; name?: string };
+  asset: { url: string; type: string; name?: string; downloadUrl?: string };
   controls?: boolean;
 }) {
+  if (asset.type === "text")
+    return (
+      <TextOutput url={asset.downloadUrl || asset.url} compact={!controls} />
+    );
   if (asset.type === "video")
     return <video src={asset.url} controls={controls} preload="metadata" />;
   if (asset.type === "audio")
@@ -250,7 +261,7 @@ export function AssetPicker({
           </button>
         </Empty>
       )}
-      <Pagination page={page} total={data?.total || 0} onChange={setPage} />
+      <Pagination page={page} total={data?.total} onChange={setPage} />
       <div className="modal-footer">
         <span className="muted">已选择 {selected.length} 个</span>
         <div>
@@ -353,18 +364,26 @@ export function JobCard({ job, onDetail }: { job: Job; onDetail: () => void }) {
       <button className="job-preview" onClick={onDetail}>
         {job.outputs[0] ? (
           <Media asset={job.outputs[0]} controls={false} />
-        ) : ["queued", "running"].includes(job.status) ? (
+        ) : ["queued", "running", "refund_pending"].includes(job.status) ? (
           <div className="dreaming job-processing">
             {job.status === "queued" ? (
               <Clock3 size={25} />
             ) : (
               <Loader2 size={25} className="spin" />
             )}
-            <strong>{job.status === "queued" ? "正在排队" : "正在生成"}</strong>
+            <strong>
+              {job.status === "refund_pending"
+                ? "退款处理中"
+                : job.status === "queued"
+                  ? "正在排队"
+                  : "正在生成"}
+            </strong>
             <span>
-              {job.status === "queued"
-                ? "轮到此任务后会自动开始"
-                : "完成后会自动显示在这里"}
+              {job.status === "refund_pending"
+                ? "生成未完成，系统正在自动重试退款，无需重复提交。"
+                : job.status === "queued"
+                  ? "轮到此任务后会自动开始"
+                  : "完成后会自动显示在这里"}
             </span>
           </div>
         ) : (
@@ -430,7 +449,11 @@ export function JobDetail({ job, onClose }: { job: Job; onClose: () => void }) {
   const { act, busy } = useAction();
   const refresh = useRefresh();
   const { data: current } = useApi<Job>("/jobs/" + job.id, {
-    refetchInterval: ["running", "queued"].includes(job.status) ? 2000 : false,
+    refetchInterval: ["running", "queued", "refund_pending"].includes(
+      job.status,
+    )
+      ? 2000
+      : false,
   });
   const j = current || job;
   return (
@@ -465,6 +488,7 @@ export function JobDetail({ job, onClose }: { job: Job; onClose: () => void }) {
       <Field label="提示词">
         <div className="read-block">{j.prompt}</div>
       </Field>
+      <UpstreamTrace id={job.id} />
       {j.demo && (
         <div className="notice">
           <Info size={16} />
@@ -500,7 +524,9 @@ export function JobDetail({ job, onClose }: { job: Job; onClose: () => void }) {
       <div className="modal-footer">
         <button
           className="button danger"
-          disabled={busy || ["queued", "running"].includes(j.status)}
+          disabled={
+            busy || ["queued", "running", "refund_pending"].includes(j.status)
+          }
           onClick={async () => {
             if (
               await confirm("确定删除此生成记录？", {
@@ -627,14 +653,10 @@ export function Models() {
               <article className={"catalog-card " + m.type} key={m.id}>
                 <div className="catalog-card-top">
                   <span className={"model-glyph " + m.type}>
-                    {m.type === "image" ? (
-                      <Image size={20} strokeWidth={1.5} />
-                    ) : (
-                      <Video size={20} strokeWidth={1.5} />
-                    )}
+                    {<GenerationTypeIcon kind={m.type} />}
                   </span>
                   <Badge status={m.type}>
-                    {m.type === "image" ? "图片生成" : "视频生成"}
+                    {`${generationLabels[m.type] || m.type}生成`}
                   </Badge>
                 </div>
                 <span className="catalog-channel">
@@ -715,20 +737,14 @@ export function Models() {
         <Modal
           title={selected.name}
           description="查看规格价格与支持的创作参数。"
-          icon={
-            selected.type === "image" ? (
-              <Image size={20} />
-            ) : (
-              <Video size={20} />
-            )
-          }
+          icon={<GenerationTypeIcon kind={selected.type} />}
           onClose={() => setSelectedId(null)}
           wide
           className="model-detail-dialog"
         >
           <div className="toolbar">
             <Badge status={selected.type}>
-              {selected.type === "image" ? "图片生成" : "视频生成"}
+              {`${generationLabels[selected.type] || selected.type}生成`}
             </Badge>
             <code className="muted small">{selected.id}</code>
           </div>
@@ -1026,7 +1042,7 @@ export function HistoryPage() {
           )}
         </Empty>
       )}
-      <Pagination page={page} total={data?.total || 0} onChange={setPage} />
+      <Pagination page={page} total={data?.total} onChange={setPage} />
       {detail && <JobDetail job={detail} onClose={() => setDetail(null)} />}
     </div>
   );
@@ -1082,7 +1098,7 @@ export function Assets() {
         <Tabs
           value={type}
           onChange={setType}
-          items={[...types, { value: "audio", label: "音频" }]}
+          items={types.filter((item) => item.value !== "upscale")}
         />
         <SearchBox
           value={search}
@@ -1172,7 +1188,7 @@ export function Assets() {
           )}
         </Empty>
       )}
-      <Pagination page={page} total={data?.total || 0} onChange={setPage} />
+      <Pagination page={page} total={data?.total} onChange={setPage} />
       {preview && (
         <Modal
           title={preview.name}

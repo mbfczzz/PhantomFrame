@@ -1,5 +1,7 @@
+import { generationLabels, generationOptions } from "../lib";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { useMoneyMutation } from "../components/MoneyRecovery";
 import { Brand } from "../components/Brand";
 import {
   Wallet,
@@ -157,6 +159,7 @@ export function TransactionTable({
   );
 }
 export function Profile() {
+  const moneyPost = useMoneyMutation();
   const confirm = useConfirm();
   const { data: user } = useApi<User>("/me");
   const { data: usage } = useApi<RecordData>("/usage");
@@ -220,6 +223,7 @@ export function Profile() {
       </section>
       <div className="section-tabs">
         <Tabs
+          panelId="profile-panel"
           value={tab}
           onChange={setTab}
           items={[
@@ -230,213 +234,220 @@ export function Profile() {
           ]}
         />
       </div>
-      {tab === "redeem" && (
-        <section className="panel redeem-panel">
-          <div className="redeem-symbol">
-            <Wallet size={34} />
-          </div>
-          <h2>兑换充值</h2>
-          <p className="muted">使用兑换码为账户充值，生成按实际费用扣款。</p>
-          <Form
-            onSubmit={() =>
-              act(async () => {
-                await post("/redeem", { code });
-                setCode("");
-                refresh("/me", "/usage", "/transactions");
-              }, "兑换成功，金额已到账")
-            }
-          >
-            <div className="redeem-input">
-              <input
-                aria-label="兑换码"
-                placeholder="输入兑换码…"
-                value={code}
-                onChange={(e) => setCode(e.target.value)}
-                required
-              />
-              <button className="button primary" disabled={busy}>
-                兑换
-              </button>
+      <div
+        role="tabpanel"
+        id="profile-panel"
+        aria-labelledby={`profile-panel-tab-${tab}`}
+        tabIndex={0}
+      >
+        {tab === "redeem" && (
+          <section className="panel redeem-panel">
+            <div className="redeem-symbol">
+              <Wallet size={34} />
             </div>
-          </Form>
-          {config?.purchaseUrl && (
-            <a
-              className="text-link"
-              href={config.purchaseUrl}
-              rel="noreferrer"
-              target="_blank"
-            >
-              购买兑换码 <ArrowUpRight size={14} />
-            </a>
-          )}
-        </section>
-      )}
-      {tab === "transactions" && (
-        <section className="panel">
-          <TransactionTable items={transactions?.items || []} />
-          <Pagination
-            page={page}
-            total={transactions?.total || 0}
-            onChange={setPage}
-          />
-        </section>
-      )}
-      {tab === "edit" && (
-        <div className="two-columns">
-          <section className="panel">
-            <h2>个人资料</h2>
+            <h2>兑换充值</h2>
+            <p className="muted">使用兑换码为账户充值，生成按实际费用扣款。</p>
             <Form
               onSubmit={() =>
                 act(async () => {
-                  await post(
-                    "/me",
-                    { displayName: displayName || user.displayName },
-                    "PATCH",
-                  );
-                  refresh("/me");
-                }, "资料已更新")
+                  await post("/redeem", { code });
+                  setCode("");
+                  refresh("/me", "/usage", "/transactions");
+                }, "兑换成功，金额已到账")
               }
             >
-              <Field label="用户名">
-                <input value={user.username} disabled />
-              </Field>
-              <Field label="昵称">
+              <div className="redeem-input">
                 <input
-                  placeholder={user.displayName}
-                  value={displayName}
-                  onChange={(e) => setDisplayName(e.target.value)}
-                  maxLength={50}
+                  aria-label="兑换码"
+                  placeholder="输入兑换码…"
+                  value={code}
+                  onChange={(e) => setCode(e.target.value)}
+                  required
                 />
-              </Field>
-              <button className="button primary" disabled={busy}>
-                保存资料
-              </button>
+                <button className="button primary" disabled={busy}>
+                  兑换
+                </button>
+              </div>
             </Form>
+            {config?.purchaseUrl && (
+              <a
+                className="text-link"
+                href={config.purchaseUrl}
+                rel="noreferrer"
+                target="_blank"
+              >
+                购买兑换码 <ArrowUpRight size={14} />
+              </a>
+            )}
           </section>
+        )}
+        {tab === "transactions" && (
           <section className="panel">
-            <h2>修改密码</h2>
-            <Form
-              onSubmit={() =>
-                act(async () => {
-                  await post("/me/password", {
-                    currentPassword,
-                    password: newPassword,
-                  });
-                  setCurrentPassword("");
-                  setNewPassword("");
-                }, "密码已修改，其他登录会话已退出")
-              }
-            >
-              <Field label="原密码">
-                <input
-                  type="password"
-                  value={currentPassword}
-                  onChange={(e) => setCurrentPassword(e.target.value)}
-                  autoComplete="current-password"
-                  required
-                />
-              </Field>
-              <Field label="新密码">
-                <input
-                  type="password"
-                  value={newPassword}
-                  onChange={(e) => setNewPassword(e.target.value)}
-                  minLength={8}
-                  autoComplete="new-password"
-                  required
-                  placeholder="至少 8 位"
-                />
-              </Field>
-              <button className="button" disabled={busy}>
-                更新密码
-              </button>
-            </Form>
-          </section>
-        </div>
-      )}
-      {tab === "children" && (
-        <section className="panel">
-          <div className="section-header">
-            <div>
-              <h2>我的子账户</h2>
-              <p className="muted">为团队成员分配独立账号和余额。</p>
-            </div>
-            <button
-              className="button primary"
-              onClick={() => setAddUser(true)}
-              disabled={!!user.parentId}
-            >
-              <UserPlus size={16} />
-              添加子账户
-            </button>
-          </div>
-          {children?.length ? (
-            <div className="table-wrap">
-              <table>
-                <thead>
-                  <tr>
-                    <th>账号</th>
-                    <th>昵称</th>
-                    <th>账户余额</th>
-                    <th>状态</th>
-                    <th>操作</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {children.map((c) => (
-                    <tr key={c.id}>
-                      <td>{c.username}</td>
-                      <td>{c.displayName}</td>
-                      <td className="gold">{money(c.balance)}</td>
-                      <td>
-                        <Badge status={c.status} />
-                      </td>
-                      <td>
-                        <div className="row-actions">
-                          <button
-                            className="text-link"
-                            onClick={() => setTransfer(c)}
-                          >
-                            转账
-                          </button>
-                          <button
-                            className="text-link danger"
-                            onClick={async () => {
-                              if (
-                                await confirm(
-                                  "解除关联后，此账户将成为独立账户。确定继续？",
-                                  {
-                                    title: "解除子账户关联",
-                                    confirmLabel: "解除关联",
-                                  },
-                                )
-                              )
-                                act(async () => {
-                                  await api("/sub-users/" + c.id, {
-                                    method: "DELETE",
-                                  });
-                                  refresh("/sub-users");
-                                }, "已解除关联");
-                            }}
-                          >
-                            解除关联
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          ) : (
-            <Empty
-              title="还没有子账户"
-              text="创建子账户，与团队一起协作创作。"
-              icon={<UserPlus size={28} />}
+            <TransactionTable items={transactions?.items || []} />
+            <Pagination
+              page={page}
+              total={transactions?.total}
+              onChange={setPage}
             />
-          )}
-        </section>
-      )}
+          </section>
+        )}
+        {tab === "edit" && (
+          <div className="two-columns">
+            <section className="panel">
+              <h2>个人资料</h2>
+              <Form
+                onSubmit={() =>
+                  act(async () => {
+                    await post(
+                      "/me",
+                      { displayName: displayName || user.displayName },
+                      "PATCH",
+                    );
+                    refresh("/me");
+                  }, "资料已更新")
+                }
+              >
+                <Field label="用户名">
+                  <input value={user.username} disabled />
+                </Field>
+                <Field label="昵称">
+                  <input
+                    placeholder={user.displayName}
+                    value={displayName}
+                    onChange={(e) => setDisplayName(e.target.value)}
+                    maxLength={50}
+                  />
+                </Field>
+                <button className="button primary" disabled={busy}>
+                  保存资料
+                </button>
+              </Form>
+            </section>
+            <section className="panel">
+              <h2>修改密码</h2>
+              <Form
+                onSubmit={() =>
+                  act(async () => {
+                    await post("/me/password", {
+                      currentPassword,
+                      password: newPassword,
+                    });
+                    setCurrentPassword("");
+                    setNewPassword("");
+                  }, "密码已修改，其他登录会话已退出")
+                }
+              >
+                <Field label="原密码">
+                  <input
+                    type="password"
+                    value={currentPassword}
+                    onChange={(e) => setCurrentPassword(e.target.value)}
+                    autoComplete="current-password"
+                    required
+                  />
+                </Field>
+                <Field label="新密码">
+                  <input
+                    type="password"
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    minLength={8}
+                    autoComplete="new-password"
+                    required
+                    placeholder="至少 8 位"
+                  />
+                </Field>
+                <button className="button" disabled={busy}>
+                  更新密码
+                </button>
+              </Form>
+            </section>
+          </div>
+        )}
+        {tab === "children" && (
+          <section className="panel">
+            <div className="section-header">
+              <div>
+                <h2>我的子账户</h2>
+                <p className="muted">为团队成员分配独立账号和余额。</p>
+              </div>
+              <button
+                className="button primary"
+                onClick={() => setAddUser(true)}
+                disabled={!!user.parentId}
+              >
+                <UserPlus size={16} />
+                添加子账户
+              </button>
+            </div>
+            {children?.length ? (
+              <div className="table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>账号</th>
+                      <th>昵称</th>
+                      <th>账户余额</th>
+                      <th>状态</th>
+                      <th>操作</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {children.map((c) => (
+                      <tr key={c.id}>
+                        <td>{c.username}</td>
+                        <td>{c.displayName}</td>
+                        <td className="gold">{money(c.balance)}</td>
+                        <td>
+                          <Badge status={c.status} />
+                        </td>
+                        <td>
+                          <div className="row-actions">
+                            <button
+                              className="text-link"
+                              onClick={() => setTransfer(c)}
+                            >
+                              转账
+                            </button>
+                            <button
+                              className="text-link danger"
+                              onClick={async () => {
+                                if (
+                                  await confirm(
+                                    "解除关联后，此账户将成为独立账户。确定继续？",
+                                    {
+                                      title: "解除子账户关联",
+                                      confirmLabel: "解除关联",
+                                    },
+                                  )
+                                )
+                                  act(async () => {
+                                    await api("/sub-users/" + c.id, {
+                                      method: "DELETE",
+                                    });
+                                    refresh("/sub-users");
+                                  }, "已解除关联");
+                              }}
+                            >
+                              解除关联
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            ) : (
+              <Empty
+                title="还没有子账户"
+                text="创建子账户，与团队一起协作创作。"
+                icon={<UserPlus size={28} />}
+              />
+            )}
+          </section>
+        )}
+      </div>
       {addUser && (
         <Modal
           title="添加子账户"
@@ -500,7 +511,7 @@ export function Profile() {
           <Form
             onSubmit={() =>
               act(async () => {
-                await post(`/sub-users/${transfer.id}/transfer`, {
+                await moneyPost(`/sub-users/${transfer.id}/transfer`, {
                   credits: amount,
                 });
                 setTransfer(null);
@@ -570,7 +581,7 @@ export function JobsTable({
             <tr key={j.id}>
               <td>
                 <Badge status={j.type}>
-                  {j.type === "image" ? "图片" : "视频"}
+                  {generationLabels[j.type] || j.type}
                 </Badge>
               </td>
               <td>{j.modelName}</td>
@@ -680,7 +691,7 @@ export function Docs() {
               <span className="eyebrow">GET STARTED</span>
               <h1>让创作，融入你的应用</h1>
               <p className="lead">
-                通过统一 API 调用图片与视频模型，管理素材与生成任务。
+                通过统一 API 调用创作模型，管理素材与生成任务。
               </p>
               <h2>1. 创建 API Key</h2>
               <p>

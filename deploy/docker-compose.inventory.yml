@@ -1,0 +1,11 @@
+# Merge with deploy/docker-compose.yml after building an image with inventory support.
+# The CSV stays on the host; it is never copied into the image.
+services:
+  phantomframe:
+    environment:
+      PROVIDER_INVENTORY_FILE: /run/phantomframe/provider-routes.csv
+    volumes:
+      - type: bind
+        source: ${PROVIDER_INVENTORY_SOURCE:-./provider-routes.csv}
+        target: /run/phantomframe/provider-routes.csv
+        read_only: true

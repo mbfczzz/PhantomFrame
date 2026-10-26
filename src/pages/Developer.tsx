@@ -290,7 +290,7 @@ export default function Developer() {
     <div className="page developer-page">
       <PageHeader
         title="开放平台"
-        description="通过 API Key 调用图片与视频模型，与网页创作共用账户余额。"
+        description="通过 API Key 调用图片、视频、文本、音频与超分模型，与网页创作共用账户余额。"
       >
         <Link className="button" to="/docs">
           <BookOpen size={15} />
@@ -358,6 +358,7 @@ export default function Developer() {
       </div>
       <div className="platform-tabs">
         <Tabs
+          panelId="developer-panel"
           value={tab}
           onChange={setTab}
           items={[
@@ -370,148 +371,157 @@ export default function Developer() {
           <span className="platform-demo-note">演示通道输出会标注 demo</span>
         )}
       </div>
-      {tab === "keys" && (
-        <section className="panel">
-          <div className="section-header">
-            <div>
-              <h2>我的 API Keys</h2>
-              <p>完整密钥仅在创建时展示一次，最多可创建 20 个。</p>
-            </div>
-            <span className="count-badge">{keys?.length || 0} / 20</span>
-          </div>
-          {isLoading ? (
-            <Loading />
-          ) : keyError ? (
-            <ErrorState error={keyError} retry={refetchKeys} />
-          ) : keys?.length ? (
-            <div className="table-wrap">
-              <table>
-                <thead>
-                  <tr>
-                    <th>名称</th>
-                    <th>API Key</th>
-                    <th>创建时间</th>
-                    <th>最近使用</th>
-                    <th>操作</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {keys.map((key) => (
-                    <tr key={key.id}>
-                      <td>{key.name}</td>
-                      <td>
-                        <code>{key.prefix}••••••••••••</code>
-                      </td>
-                      <td>{date(key.created_at)}</td>
-                      <td>
-                        {key.last_used_at ? date(key.last_used_at) : "尚未使用"}
-                      </td>
-                      <td>
-                        <button
-                          type="button"
-                          className="icon-button danger"
-                          aria-label={`撤销 ${key.name}`}
-                          disabled={busy}
-                          onClick={async () => {
-                            if (
-                              await confirm(
-                                "撤销后此 API Key 将立即失效，使用它的应用将无法继续调用。",
-                                {
-                                  title: "撤销 API Key",
-                                  confirmLabel: "确认撤销",
-                                },
-                              )
-                            )
-                              void act(async () => {
-                                await api(`/keys/${key.id}`, {
-                                  method: "DELETE",
-                                });
-                                refresh("/keys");
-                              }, "API Key 已撤销");
-                          }}
-                        >
-                          <Trash2 size={16} />
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          ) : (
-            <Empty
-              title="创建你的第一个 API Key"
-              text="为应用或脚本创建密钥，即可调用模型、提交任务和获取结果。"
-              icon={<KeyRound size={28} />}
-            >
-              <button
-                type="button"
-                className="text-link"
-                onClick={() => setTab("quickstart")}
-              >
-                先查看调用示例 <ArrowUpRight size={14} />
-              </button>
-            </Empty>
-          )}
-          <p className="platform-key-note">
-            API Key
-            只能访问所属账户的数据，不能管理用户、修改密码或创建其他密钥。
-          </p>
-        </section>
-      )}
-      {tab === "quickstart" && <Quickstart base={base} />}
-      {tab === "records" && (
-        <>
+      <div
+        role="tabpanel"
+        id="developer-panel"
+        aria-labelledby={`developer-panel-tab-${tab}`}
+        tabIndex={0}
+      >
+        {tab === "keys" && (
           <section className="panel">
             <div className="section-header">
               <div>
-                <h2>API 调用记录</h2>
-                <p>仅显示通过 API Key 提交的生成任务。</p>
+                <h2>我的 API Keys</h2>
+                <p>完整密钥仅在创建时展示一次，最多可创建 20 个。</p>
               </div>
-              <Tabs
-                value={status}
-                onChange={setStatus}
-                items={[
-                  { value: "all", label: "全部" },
-                  { value: "running", label: "生成中" },
-                  { value: "succeeded", label: "已完成" },
-                  { value: "failed", label: "失败" },
-                ]}
-              />
+              <span className="count-badge">{keys?.length || 0} / 20</span>
             </div>
-            {jobsLoading ? (
+            {isLoading ? (
               <Loading />
-            ) : jobsError ? (
-              <ErrorState error={jobsError} retry={refetchJobs} />
-            ) : (
-              <JobsTable jobs={jobs?.items || []} />
-            )}
-            <Pagination
-              page={page}
-              total={jobs?.total || 0}
-              limit={20}
-              onChange={setPage}
-            />
-          </section>
-          <section className="panel">
-            <div className="section-header">
-              <div>
-                <h2>API 消费金额</h2>
-                <p>最近 7 天，按 UTC 日期统计</p>
+            ) : keyError ? (
+              <ErrorState error={keyError} retry={refetchKeys} />
+            ) : keys?.length ? (
+              <div className="table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>名称</th>
+                      <th>API Key</th>
+                      <th>创建时间</th>
+                      <th>最近使用</th>
+                      <th>操作</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {keys.map((key) => (
+                      <tr key={key.id}>
+                        <td>{key.name}</td>
+                        <td>
+                          <code>{key.prefix}••••••••••••</code>
+                        </td>
+                        <td>{date(key.created_at)}</td>
+                        <td>
+                          {key.last_used_at
+                            ? date(key.last_used_at)
+                            : "尚未使用"}
+                        </td>
+                        <td>
+                          <button
+                            type="button"
+                            className="icon-button danger"
+                            aria-label={`撤销 ${key.name}`}
+                            disabled={busy}
+                            onClick={async () => {
+                              if (
+                                await confirm(
+                                  "撤销后此 API Key 将立即失效，使用它的应用将无法继续调用。",
+                                  {
+                                    title: "撤销 API Key",
+                                    confirmLabel: "确认撤销",
+                                  },
+                                )
+                              )
+                                void act(async () => {
+                                  await api(`/keys/${key.id}`, {
+                                    method: "DELETE",
+                                  });
+                                  refresh("/keys");
+                                }, "API Key 已撤销");
+                            }}
+                          >
+                            <Trash2 size={16} />
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
-              <strong className="gold">
-                {money(
-                  usage?.daily?.reduce(
-                    (sum: number, day: RecordData) => sum + day.credits,
-                    0,
-                  ),
-                )}
-              </strong>
-            </div>
-            <UsageChart data={usage?.daily || []} />
+            ) : (
+              <Empty
+                title="创建你的第一个 API Key"
+                text="为应用或脚本创建密钥，即可调用模型、提交任务和获取结果。"
+                icon={<KeyRound size={28} />}
+              >
+                <button
+                  type="button"
+                  className="text-link"
+                  onClick={() => setTab("quickstart")}
+                >
+                  先查看调用示例 <ArrowUpRight size={14} />
+                </button>
+              </Empty>
+            )}
+            <p className="platform-key-note">
+              API Key
+              只能访问所属账户的数据，不能管理用户、修改密码或创建其他密钥。
+            </p>
           </section>
-        </>
-      )}
+        )}
+        {tab === "quickstart" && <Quickstart base={base} />}
+        {tab === "records" && (
+          <>
+            <section className="panel">
+              <div className="section-header">
+                <div>
+                  <h2>API 调用记录</h2>
+                  <p>仅显示通过 API Key 提交的生成任务。</p>
+                </div>
+                <Tabs
+                  value={status}
+                  onChange={setStatus}
+                  items={[
+                    { value: "all", label: "全部" },
+                    { value: "running", label: "生成中" },
+                    { value: "succeeded", label: "已完成" },
+                    { value: "failed", label: "失败" },
+                  ]}
+                />
+              </div>
+              {jobsLoading ? (
+                <Loading />
+              ) : jobsError ? (
+                <ErrorState error={jobsError} retry={refetchJobs} />
+              ) : (
+                <JobsTable jobs={jobs?.items || []} />
+              )}
+              <Pagination
+                page={page}
+                total={jobs?.total}
+                limit={20}
+                onChange={setPage}
+              />
+            </section>
+            <section className="panel">
+              <div className="section-header">
+                <div>
+                  <h2>API 消费金额</h2>
+                  <p>最近 7 天，按 UTC 日期统计</p>
+                </div>
+                <strong className="gold">
+                  {money(
+                    usage?.daily?.reduce(
+                      (sum: number, day: RecordData) => sum + day.credits,
+                      0,
+                    ),
+                  )}
+                </strong>
+              </div>
+              <UsageChart data={usage?.daily || []} />
+            </section>
+          </>
+        )}
+      </div>
       {create && (
         <Modal
           title="创建 API Key"

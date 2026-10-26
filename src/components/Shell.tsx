@@ -35,9 +35,11 @@ import {
   post,
   money,
   Loading,
+  ErrorState,
   type User,
   type RecordData,
 } from "../lib";
+import { MoneyRecovery } from "./MoneyRecovery";
 import { Brand } from "./Brand";
 import { preferredTheme, THEME_STORAGE_KEY } from "../theme";
 
@@ -59,11 +61,14 @@ export default function Shell() {
     data: user,
     isLoading,
     error: userError,
+    refetch: refetchUser,
   } = useApi<User>("/me", {
     refetchOnWindowFocus: true,
   });
   const { data: config } = useApi<RecordData>("/config");
   const [menuOpen, setMenuOpen] = useState(false);
+  const [loggingOut, setLoggingOut] = useState(false);
+  const logoutLock = useRef(false);
   const [theme, setTheme] = useState(preferredTheme);
   const menu = useRef<HTMLDivElement>(null);
   const menuButton = useRef<HTMLButtonElement>(null);
@@ -86,9 +91,19 @@ export default function Shell() {
     setTheme(next);
   };
   const logout = async () => {
-    await post("/auth/logout");
-    client.clear();
-    navigate("/login");
+    if (logoutLock.current) return;
+    logoutLock.current = true;
+    setLoggingOut(true);
+    try {
+      await post("/auth/logout");
+      client.clear();
+      navigate("/login");
+    } catch {
+      toast("退出未完成，会话仍可能有效，请稍后再次退出。", true);
+    } finally {
+      logoutLock.current = false;
+      setLoggingOut(false);
+    }
   };
   useEffect(() => {
     document.documentElement.dataset.theme = theme;
@@ -133,8 +148,15 @@ export default function Shell() {
     };
   }, [menuOpen]);
   if (isLoading) return <Loading />;
-  if (!user || userError?.status === 401)
+  if (userError?.status === 401)
     return <Navigate to="/login" replace state={{ from: location.pathname }} />;
+  if (userError || !user)
+    return (
+      <ErrorState
+        error={userError || new Error("暂时无法确认登录状态")}
+        retry={refetchUser}
+      />
+    );
   return (
     <div
       className={`app-shell horizontal-shell ${location.pathname === "/generate" ? "is-studio" : ""}`}
@@ -241,6 +263,7 @@ export default function Shell() {
             aria-label="退出登录"
             title="退出登录"
             onClick={logout}
+            disabled={loggingOut}
           >
             <LogOut size={15} />
           </button>
@@ -310,7 +333,7 @@ export default function Shell() {
                 {theme === "light" ? <Moon size={15} /> : <Sun size={15} />}
                 <span>{theme === "light" ? "深色主题" : "浅色主题"}</span>
               </button>
-              <button type="button" onClick={logout}>
+              <button type="button" onClick={logout} disabled={loggingOut}>
                 <LogOut size={15} />
                 退出登录
               </button>
@@ -319,6 +342,7 @@ export default function Shell() {
         </>
       )}
       <main id="workspace-content" className="main-content" tabIndex={-1}>
+        <MoneyRecovery userId={user.id} />
         <Outlet />
       </main>
     </div>

@@ -184,7 +184,7 @@ export function Ledger() {
         <Pagination
           page={filters.page}
           limit={20}
-          total={data?.total || 0}
+          total={data?.total}
           onChange={(page) => setFilters((current) => ({ ...current, page }))}
         />
       </section>

@@ -137,6 +137,7 @@ try {
     const r = await context.request.fetch(base + "/api" + path, {
       method,
       data,
+      headers: { "Idempotency-Key": crypto.randomUUID() },
     });
     return { status: r.status(), data: await r.json() };
   };
@@ -161,6 +162,8 @@ try {
     .getByRole("button", { name: "任务详情", exact: true })
     .first()
     .click();
+  await page.getByRole("region", { name: "上游调用情况", exact: true }).getByText("本地演示，未调用付费模型", { exact: true }).waitFor();
+  check("users can inspect their own upstream phase and simulated call status");
   await page
     .getByRole("dialog", { name: "任务详情", exact: true })
     .getByRole("button", { name: "删除记录", exact: true })
@@ -574,7 +577,7 @@ try {
     .click();
   await page
     .getByRole("dialog", { name: "从资产库选择", exact: true })
-    .getByRole("tab", { name: "图片", exact: true })
+    .getByRole("button", { name: "图片", exact: true })
     .click();
   await page.locator(".asset-choice").first().waitFor();
   assert.equal(await page.locator(".asset-choice:not(:disabled)").count(), 0);
@@ -800,12 +803,12 @@ try {
   assert.equal((await req("/usage?source=api")).data.total, 1);
   assert.equal((await req("/usage?source=api")).data.spent, 1);
   await page.getByRole("tab", { name: "快速接入", exact: true }).click();
-  await page.getByRole("tab", { name: "视频生成", exact: true }).click();
+  await page.getByRole("button", { name: "视频生成", exact: true }).click();
   assert.match(
     await page.locator(".platform-code").innerText(),
     /sd2\.0-933-op/,
   );
-  await page.getByRole("tab", { name: "Node.js", exact: true }).click();
+  await page.getByRole("button", { name: "Node.js", exact: true }).click();
   assert.match(
     await page.locator(".platform-code").innerText(),
     /process.env.PHANTOMFRAME_API_KEY/,
@@ -1287,17 +1290,44 @@ try {
   check(
     "administrator can filter all-user API calls and inspect protected output without exposing admin access to the owner",
   );
+  await page.getByRole("navigation", { name: "后台管理导航" }).getByRole("link", { name: "上游日志", exact: true }).click();
+  await chooseOption(page, "筛选用户", regularUser.id);
+  await chooseOption(page, "日志调用来源", "api");
+  await page.getByRole("button", { name: "查看上游调用 " + regularJob.id, exact: true }).waitFor();
+  assert.equal(await page.locator(".upstream-log-table tbody tr").count(), 1);
+  for (const text of ["上游任务 ID", "总耗时", "参数", "用户"]) assert.ok(await page.getByRole("columnheader", { name: text, exact: true }).count());
+  await page.screenshot({ path: join(root, "ui-upstream-logs-desktop.png"), fullPage: true });
+  await page.getByRole("button", { name: "查看上游调用 " + regularJob.id, exact: true }).click();
+  const upstreamDetail = page.getByRole("dialog", { name: "上游调用详情", exact: true });
+  await upstreamDetail.getByText("本地演示，未调用付费模型", { exact: true }).waitFor();
+  await upstreamDetail.getByRole("button", { name: "查看生成任务", exact: true }).click();
+  await page.getByRole("dialog", { name: "调用详情", exact: true }).waitFor();
+  await page.keyboard.press("Escape");
+  await upstreamDetail.waitFor();
+  for (const width of [390, 320]) {
+    await page.setViewportSize({ width, height: 844 });
+    assert.equal(await upstreamDetail.evaluate(node => node.scrollWidth > node.clientWidth), false);
+    await page.screenshot({ path: join(root, `ui-upstream-detail-${width}.png`), fullPage: true });
+  }
+  await page.keyboard.press("Escape");
+  assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), false);
+  await page.screenshot({ path: join(root, "ui-upstream-logs-mobile.png"), fullPage: true });
+  await page.setViewportSize({ width: 1440, height: 1000 });
+  assert.equal((await regularContext.request.get(base + "/api/admin/upstream-calls")).status(), 403);
+  assert.equal((await regularContext.request.get(base + "/api/jobs/" + regularJob.id + "/upstream")).status(), 200);
+  assert.equal((await regularContext.request.get(base + "/api/jobs/" + videoJob.id + "/upstream")).status(), 404);
+  check("upstream logs support admin filtering, request details, nested job inspection, mobile layouts and owner-only access");
   await req("/admin/codes", "POST", {
     count: 1,
     credits: 3,
     expiresAt: new Date(Date.now() - 3600000).toISOString(),
   });
   await page.goto(base + "/admin/codes", { waitUntil: "networkidle" });
-  await page.getByRole("tab", { name: "已过期", exact: true }).click();
+  await page.getByRole("button", { name: "已过期", exact: true }).click();
   await page.waitForFunction(
     () => document.querySelectorAll(".admin-page tbody tr").length === 1,
   );
-  await page.getByRole("tab", { name: "已使用", exact: true }).click();
+  await page.getByRole("button", { name: "已使用", exact: true }).click();
   await page
     .locator(".admin-page tbody tr")
     .filter({ hasText: "ui-admin" })

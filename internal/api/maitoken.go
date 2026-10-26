@@ -118,7 +118,7 @@ func (a *App) maiTokenUpstream(ctx context.Context, j, p Row, key string, refs [
 	if taskID == "" || len(taskID) > 255 {
 		return nil, fmt.Errorf("供应商未返回有效任务 ID，请核对上游记录")
 	}
-	a.Store.Exec("UPDATE jobs SET upstream_id=? WHERE id=?", taskID, j["id"])
+	a.setUpstreamTaskID(j["id"], taskID)
 	interval := time.Duration(num(first(object(p["config"])["pollInterval"], 5000))) * time.Millisecond
 	if interval < 20*time.Millisecond {
 		interval = 20 * time.Millisecond

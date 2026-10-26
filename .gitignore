@@ -21,4 +21,6 @@ test-results/
 *.log
 .tools/
 bin/
+**/provider-routes*.csv
+**/providers-full-keys.csv
 *.exe

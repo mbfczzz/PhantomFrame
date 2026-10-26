@@ -39,6 +39,9 @@ func (c *testClient) request(t *testing.T, method, path string, body any, header
 		t.Fatal(e)
 	}
 	r.Header.Set("Content-Type", "application/json")
+	if method == "POST" && (strings.HasSuffix(path, "/transfer") || strings.HasSuffix(path, "/credits")) {
+		r.Header.Set("Idempotency-Key", id())
+	}
 	if c.cookie != "" {
 		r.Header.Set("Cookie", c.cookie)
 	}
@@ -368,7 +371,7 @@ func TestIntegration(t *testing.T) {
 		t.Helper()
 		for i := 0; i < 100; i++ {
 			j := object(user.ok(t, "GET", "/jobs/"+id, nil, 200))
-			if j["status"] != "queued" && j["status"] != "running" {
+			if j["status"] != "queued" && j["status"] != "running" && j["status"] != "refund_pending" {
 				return j
 			}
 			time.Sleep(80 * time.Millisecond)

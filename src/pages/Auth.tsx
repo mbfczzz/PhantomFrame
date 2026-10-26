@@ -77,7 +77,7 @@ export default function Auth() {
           <h2>{register ? "创建账号" : `登录${brandLabel}`}</h2>
           <p>
             {register
-              ? "注册后即可创作图片和视频，管理生成记录与资产。"
+              ? "注册后即可开始创作，管理生成记录与资产。"
               : config?.subtitle &&
                   config.subtitle !== "让每一个想法，成为独特的一帧。"
                 ? config.subtitle

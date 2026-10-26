@@ -40,7 +40,7 @@ func (s Store) ticketDetail(ticket Row) Row {
 	view["messages"] = messages
 	view["relatedJob"] = nil
 	if ticket["related_job_id"] != nil {
-		if job := s.One("SELECT * FROM jobs WHERE id=? AND user_id=?", ticket["related_job_id"], ticket["user_id"]); job != nil {
+		if job := s.One("SELECT * FROM jobs WHERE id=? AND user_id=? AND hidden_at IS NULL", ticket["related_job_id"], ticket["user_id"]); job != nil {
 			summary := s.JobView(job)
 			view["relatedJob"] = Row{"id": summary["id"], "modelName": summary["modelName"], "status": summary["status"], "cost": summary["cost"], "refunded": summary["refunded"]}
 		}
@@ -90,12 +90,10 @@ func (a *App) createTicket(r *Request) any {
 	ticketID := id()
 	a.Tx(func(s Store) {
 		s.One("SELECT id FROM users WHERE id=? FOR UPDATE", r.UID())
-		if integer(s.One("SELECT count(*) n FROM support_tickets WHERE user_id=? AND status IN ('open','replied')", r.UID())["n"]) >= 50 {
-			fail(429, "最多同时保留 50 个未结束的工单")
-		}
+		s.checkOpenTickets(r.UID())
 		var related any
 		if jobID != "" {
-			if s.One("SELECT id FROM jobs WHERE id=? AND user_id=?", jobID, r.UID()) == nil {
+			if s.One("SELECT id FROM jobs WHERE id=? AND user_id=? AND hidden_at IS NULL", jobID, r.UID()) == nil {
 				fail(400, "关联任务不存在或不属于当前账户")
 			}
 			related = jobID
@@ -135,14 +133,25 @@ func (a *App) updateTicket(r *Request, staff bool) any {
 		status = enumField(p, "status", "open", "closed")
 	}
 	a.Tx(func(s Store) {
+		// Same owner lock/order as creation, including staff reopening another user's ticket.
+		owner := s.ticket(r.ID(), r.UID(), staff, false)
+		s.One("SELECT id FROM users WHERE id=? FOR UPDATE", owner["user_id"])
 		ticket := s.ticket(r.ID(), r.UID(), staff, true)
 		if ticket["status"] == status {
 			return
+		}
+		if status == "open" && (ticket["status"] == "closed" || ticket["status"] == "resolved") {
+			s.checkOpenTickets(str(ticket["user_id"]))
 		}
 		s.Exec("UPDATE support_tickets SET status=?,updated_at=CURRENT_TIMESTAMP(3) WHERE id=?", status, r.ID())
 		s.Audit(r.UID(), "ticket.status", Row{"id": r.ID(), "status": status, "staff": staff})
 	})
 	return a.Store.ticketDetail(a.Store.ticket(r.ID(), r.UID(), staff, false))
+}
+func (s Store) checkOpenTickets(uid string) {
+	if integer(s.One("SELECT count(*) n FROM support_tickets WHERE user_id=? AND status IN ('open','replied')", uid)["n"]) >= 50 {
+		fail(429, "最多同时保留 50 个未结束的工单")
+	}
 }
 func (a *App) ticketRoutes(m *http.ServeMux) {
 	a.route(m, "GET /api/tickets", 2, func(r *Request) any { return a.listTickets(r, false) })

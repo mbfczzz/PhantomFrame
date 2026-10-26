@@ -26,6 +26,13 @@ func main() {
 		log.Fatal(err)
 	}
 	app.Seed()
+	if path := os.Getenv("PROVIDER_INVENTORY_FILE"); path != "" {
+		result, err := app.ImportProviderInventoryFile(path)
+		if err != nil {
+			log.Fatal(err)
+		}
+		log.Printf("provider inventory routes=%v providers=%v excluded3D=%v applied=%v pricesInherited=%v", result["routes"], result["providers"], result["excluded3D"], result["applied"], result["pricesInherited"])
+	}
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer stop()
 	worker := app.StartWorker(ctx)

@@ -19,3 +19,5 @@ test-results
 .tools
 bin
 legacy
+**/provider-routes*.csv
+**/providers-full-keys.csv

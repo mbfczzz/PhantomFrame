@@ -75,6 +75,9 @@ func Open(c Config) (*App, error) {
 }
 func (a *App) Close() { a.Redis.Close(); a.DB.Close() }
 func (a *App) Migrate() error {
+	if err := a.checkDatabaseCompatibility(); err != nil {
+		return err
+	}
 	for _, q := range strings.Split(schema, ";") {
 		if strings.TrimSpace(q) == "" {
 			continue

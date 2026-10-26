@@ -87,7 +87,7 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-      - name: Verify production image startup, frontend and login
+      - name: Verify image deployment, HTTPS proxy and persistent files
         env:
           PHANTOMFRAME_IMAGE: phantomframe:ci
           MYSQL_DATABASE: phantomframe_ci
@@ -97,45 +97,7 @@ jobs:
           ADMIN_USERNAME: smoke-admin
           ADMIN_PASSWORD: phantomframe-ci-admin-only
           STORAGE_DRIVER: local
-        run: |
-          cp deploy/.env.example deploy/.env
-          docker compose --env-file deploy/.env -f deploy/docker-compose.yml config --quiet
-          docker compose --env-file deploy/.env -f deploy/docker-compose.yml up -d --pull never
-          for attempt in $(seq 1 60); do
-            if curl --fail --silent http://127.0.0.1:3001/api/health > /tmp/phantomframe-health.json; then
-              break
-            fi
-            sleep 2
-          done
-          curl --fail --silent http://127.0.0.1:3001/api/health | jq -e '.status == "ok" and .database == "mysql" and .cache == "redis"'
-          curl --fail --silent http://127.0.0.1:3001/generate | grep -q '<div id="root">'
-          curl --fail --silent http://127.0.0.1:3001/api/auth/login \
-            -H 'Content-Type: application/json' \
-            -H 'Origin: https://phantomframe.tcmzhan.com' \
-            --data '{"username":"smoke-admin","password":"phantomframe-ci-admin-only"}' \
-            --dump-header /tmp/phantomframe-login.headers > /tmp/phantomframe-login.json
-          grep -i 'set-cookie:' /tmp/phantomframe-login.headers | grep -qi 'secure'
-          docker exec phantomframe sh -c 'test -f /app/dist/index.html && command -v ffprobe && ! command -v nginx'
-          docker restart phantomframe
-          for attempt in $(seq 1 30); do
-            if curl --fail --silent http://127.0.0.1:3001/api/health > /dev/null; then
-              break
-            fi
-            sleep 2
-          done
-          curl --fail --silent http://127.0.0.1:3001/api/health | jq -e '.status == "ok"'
-
-      - name: Validate standalone Nginx configuration
-        run: |
-          mkdir -p /tmp/phantomframe-cert
-          openssl req -x509 -newkey rsa:2048 -nodes -days 1 \
-            -subj /CN=phantomframe.tcmzhan.com \
-            -keyout /tmp/phantomframe-cert/privkey.pem \
-            -out /tmp/phantomframe-cert/fullchain.pem
-          docker run --rm \
-            --mount type=bind,source="$PWD/deploy/nginx/phantomframe.tcmzhan.com.conf",target=/etc/nginx/conf.d/default.conf,readonly \
-            --mount type=bind,source=/tmp/phantomframe-cert,target=/etc/letsencrypt/live/phantomframe.tcmzhan.com,readonly \
-            nginx:stable-alpine nginx -t
+        run: bash scripts/test-deployment.sh
 
       - name: Show container logs on failure
         if: failure()
@@ -159,5 +121,5 @@ jobs:
           {
             echo "Image: \`$IMAGE_NAME:latest\`"
             echo ""
-            echo "Verified: backend integration tests, production startup, frontend routing, login, restart and persistent data volume."
+            echo "Verified: backend integration tests, foreign database protection, HTTPS proxy, frontend assets, login, API keys, and file/session persistence across container replacement."
           } >> "$GITHUB_STEP_SUMMARY"

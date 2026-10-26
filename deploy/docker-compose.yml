@@ -1,0 +1,51 @@
+# Linux production: the application image connects to host MySQL and Redis.
+# Host nginx owns ports 80/443; only the Go application runs in this container.
+services:
+  phantomframe:
+    image: ${PHANTOMFRAME_IMAGE:-ghcr.io/mbfczzz/phantomframe:latest}
+    container_name: phantomframe
+    restart: unless-stopped
+    network_mode: host
+    env_file:
+      - .env
+    environment:
+      APP_ENV: production
+      HOST: 127.0.0.1
+      PORT: "${PORT:-3001}"
+      APP_URL: https://phantomframe.tcmzhan.com
+      DATA_DIR: /app/data
+      FRONTEND_DIR: /app/dist
+      DEMO_MODE: "false"
+      COOKIE_SECURE: "true"
+      ENCRYPTION_KEY: ${ENCRYPTION_KEY:?Set ENCRYPTION_KEY in .env}
+      ADMIN_USERNAME: ${ADMIN_USERNAME:-admin}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:?Set ADMIN_PASSWORD in .env}
+      MYSQL_HOST: 127.0.0.1
+      MYSQL_PORT: "3306"
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-canvas}
+      MYSQL_USER: ${MYSQL_USER:-root}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:?Set MYSQL_PASSWORD in .env}
+      REDIS_ADDR: 127.0.0.1:6379
+      REDIS_PASSWORD: ${REDIS_PASSWORD:?Set REDIS_PASSWORD in .env}
+      REDIS_DB: "${REDIS_DB:-0}"
+      REDIS_PREFIX: "phantomframe:"
+      STORAGE_DRIVER: ${STORAGE_DRIVER:-oss}
+      OSS_BUCKET: ${OSS_BUCKET:-flowlinght}
+      OSS_REGION: ${OSS_REGION:-cn-shanghai}
+      OSS_ENDPOINT: ${OSS_ENDPOINT:-https://oss-cn-shanghai.aliyuncs.com}
+      OSS_ACCELERATE_ENDPOINT: ${OSS_ACCELERATE_ENDPOINT:-https://flowlinght.oss-accelerate.aliyuncs.com}
+      OSS_UPLOAD_ACCELERATE: ${OSS_UPLOAD_ACCELERATE:-true}
+      OSS_READ_ACCELERATE: ${OSS_READ_ACCELERATE:-true}
+      OSS_PREFIX: ${OSS_PREFIX:-phantomframe/uploads/}
+      OSS_CDN_DOMAIN: ${OSS_CDN_DOMAIN:-}
+      OSS_PUBLIC_READ: ${OSS_PUBLIC_READ:-false}
+      OSS_URL_TTL: ${OSS_URL_TTL:-3600}
+      OSS_ACCESS_KEY_ID: ${OSS_ACCESS_KEY_ID:-}
+      OSS_ACCESS_KEY_SECRET: ${OSS_ACCESS_KEY_SECRET:-}
+    volumes:
+      - phantomframe-data:/app/data
+    stop_grace_period: 30s
+
+volumes:
+  phantomframe-data:
+    name: phantomframe-data

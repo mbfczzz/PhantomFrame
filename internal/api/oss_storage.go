@@ -41,7 +41,7 @@ func defaultOSSConfig(production bool) OSSConfig {
 		driver = "oss"
 	}
 	ttl, _ := strconv.Atoi(env("OSS_URL_TTL", "3600"))
-	return OSSConfig{Enabled: env("STORAGE_DRIVER", driver) == "oss", Bucket: env("OSS_BUCKET", "flowlinght"), Region: env("OSS_REGION", "cn-shanghai"), Endpoint: env("OSS_ENDPOINT", "https://oss-cn-shanghai.aliyuncs.com"), AccelerateEndpoint: env("OSS_ACCELERATE_ENDPOINT", "https://flowlinght.oss-accelerate.aliyuncs.com"), UploadAccelerate: env("OSS_UPLOAD_ACCELERATE", "true") == "true", ReadAccelerate: env("OSS_READ_ACCELERATE", "true") == "true", Prefix: env("OSS_PREFIX", "canvas/uploads/"), CDNDomain: env("OSS_CDN_DOMAIN", ""), PublicRead: env("OSS_PUBLIC_READ", "false") == "true", URLTTL: ttl, AccessKey: env("OSS_ACCESS_KEY_ID", ""), SecretKey: env("OSS_ACCESS_KEY_SECRET", "")}
+	return OSSConfig{Enabled: env("STORAGE_DRIVER", driver) == "oss", Bucket: env("OSS_BUCKET", "flowlinght"), Region: env("OSS_REGION", "cn-shanghai"), Endpoint: env("OSS_ENDPOINT", "https://oss-cn-shanghai.aliyuncs.com"), AccelerateEndpoint: env("OSS_ACCELERATE_ENDPOINT", "https://flowlinght.oss-accelerate.aliyuncs.com"), UploadAccelerate: env("OSS_UPLOAD_ACCELERATE", "true") == "true", ReadAccelerate: env("OSS_READ_ACCELERATE", "true") == "true", Prefix: env("OSS_PREFIX", "phantomframe/uploads/"), CDNDomain: env("OSS_CDN_DOMAIN", ""), PublicRead: env("OSS_PUBLIC_READ", "false") == "true", URLTTL: ttl, AccessKey: env("OSS_ACCESS_KEY_ID", ""), SecretKey: env("OSS_ACCESS_KEY_SECRET", "")}
 }
 
 func (a *App) storageConfig(s Store) (OSSConfig, error) {

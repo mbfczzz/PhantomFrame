@@ -5,7 +5,16 @@ dist-server
 test-results
 .git
 .env
+.env.*
+**/.env
+**/.env.*
 .local-credentials.json
+.local-credentials*.json
+**/.local-credentials*.json
+*.pem
+*.key
+*.p12
+*.pfx
 *.log
 .tools
 bin

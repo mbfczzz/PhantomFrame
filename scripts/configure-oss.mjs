@@ -27,7 +27,7 @@ const api = async (path, method = 'GET', body) => {
 };
 try {
   const current = await api('/admin/storage');
-  const config = { ...current, enabled: true, bucket: 'flowlinght', region: 'cn-shanghai', endpoint: 'https://oss-cn-shanghai.aliyuncs.com', accelerateEndpoint: 'https://flowlinght.oss-accelerate.aliyuncs.com', prefix: 'canvas/uploads/', uploadAccelerate: true, readAccelerate: true, cdnDomain: supplied.cdnDomain, accessKeyId: supplied.accessKeyId, accessKeySecret: supplied.accessKeySecret, publicRead: true, urlTTL: 3600 };
+  const config = { ...current, enabled: true, bucket: 'flowlinght', region: 'cn-shanghai', endpoint: 'https://oss-cn-shanghai.aliyuncs.com', accelerateEndpoint: 'https://flowlinght.oss-accelerate.aliyuncs.com', prefix: 'phantomframe/uploads/', uploadAccelerate: true, readAccelerate: true, cdnDomain: supplied.cdnDomain, accessKeyId: supplied.accessKeyId, accessKeySecret: supplied.accessKeySecret, publicRead: true, urlTTL: 3600 };
   assert.ok(config.accessKeyId && config.accessKeySecret && config.cdnDomain);
   let test;
   try { test = await api('/admin/storage/test', 'POST', config); }

@@ -64,7 +64,7 @@ services:
       OSS_ACCELERATE_ENDPOINT: ${OSS_ACCELERATE_ENDPOINT:-https://flowlinght.oss-accelerate.aliyuncs.com}
       OSS_UPLOAD_ACCELERATE: ${OSS_UPLOAD_ACCELERATE:-true}
       OSS_READ_ACCELERATE: ${OSS_READ_ACCELERATE:-true}
-      OSS_PREFIX: ${OSS_PREFIX:-canvas/uploads/}
+      OSS_PREFIX: ${OSS_PREFIX:-phantomframe/uploads/}
       OSS_CDN_DOMAIN: ${OSS_CDN_DOMAIN:-}
       OSS_PUBLIC_READ: ${OSS_PUBLIC_READ:-false}
       OSS_URL_TTL: ${OSS_URL_TTL:-3600}

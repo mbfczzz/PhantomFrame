@@ -96,7 +96,7 @@ export default function StorageSettings() {
             <input
               value={form.prefix}
               onChange={(event) => set("prefix", event.target.value)}
-              placeholder="canvas/uploads/"
+              placeholder="phantomframe/uploads/"
             />
           </Field>
           <Field

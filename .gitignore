@@ -5,6 +5,7 @@ data/
 .env
 .env.*
 !.env.example
+!**/.env.example
 .local-credentials.json
 .local-credentials*.json
 .encryption-key

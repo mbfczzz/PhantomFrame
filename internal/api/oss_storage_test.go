@@ -36,7 +36,7 @@ func TestOSSStoragePipeline(t *testing.T) {
 	}
 	config := object(admin.ok(t, "GET", "/admin/storage", nil, 200))
 	want(t, config["bucket"], "flowlinght")
-	want(t, config["prefix"], "canvas/uploads/")
+	want(t, config["prefix"], "phantomframe/uploads/")
 	want(t, config["hasCredentials"], false)
 	for _, invalid := range []Row{{"enabled": true}, {"endpoint": "http://invalid.example"}, {"prefix": "../bad/"}, {"cdnDomain": "https://cdn.example/x?secret=yes"}, {"urlTTL": 0}, {"accessKeyId": "partial-key"}} {
 		admin.ok(t, "PUT", "/admin/storage", invalid, 400)
@@ -60,7 +60,7 @@ func TestOSSStoragePipeline(t *testing.T) {
 			if r.Header.Get("x-oss-object-acl") != "" {
 				t.Error("must inherit the bucket's ACL")
 			}
-			if !strings.HasPrefix(r.URL.Path, "/canvas/uploads/") {
+			if !strings.HasPrefix(r.URL.Path, "/phantomframe/uploads/") {
 				t.Error("object escaped the configured prefix")
 			}
 			if failUpload.Load() {

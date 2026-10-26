@@ -12,7 +12,7 @@
 
 ## 生成结果存储
 
-生成结果可转存阿里云 OSS，在「管理后台 → 站点设置 → 生成结果存储」配置。默认 Bucket 为 `flowlinght`，Region 为 `cn-shanghai`，文件前缀为 `canvas/uploads/`，上传与读取加速默认开启；CDN 域名由后台填写。生产模式默认使用 OSS，本地开发默认使用本地文件，可用 `STORAGE_DRIVER` 覆盖。启用 OSS 时先完成上传再将任务置为成功，接口返回本站 OSS / CDN 链接。AccessKey ID / Secret 成对填写、加密存储，接口与操作日志不回显；未配置凭据时会在扣费和调用供应商之前阻止提交。
+生成结果可转存阿里云 OSS，在「管理后台 → 站点设置 → 生成结果存储」配置。默认 Bucket 为 `flowlinght`，Region 为 `cn-shanghai`，文件前缀为 `phantomframe/uploads/`，上传与读取加速默认开启；CDN 域名由后台填写。后台已保存的存储配置优先于环境变量和默认值，已有部署需在此处同步更新文件前缀。生产模式默认使用 OSS，本地开发默认使用本地文件，可用 `STORAGE_DRIVER` 覆盖。启用 OSS 时先完成上传再将任务置为成功，接口返回本站 OSS / CDN 链接。AccessKey ID / Secret 成对填写、加密存储，接口与操作日志不回显；未配置凭据时会在扣费和调用供应商之前阻止提交。
 
 `outputs[].url` 和资产列表的 `url` 返回 OSS / CDN 地址；私有读取使用签名链接，每次查询记录重新签发，并返回 `urlExpiresAt`。`downloadUrl` 是需要当前用户或 API Key 权限的站内下载入口。不要把平台 API Key 发送给 OSS / CDN。公共读模式须与 Bucket / CDN 的实际权限一致，程序不会修改 Bucket ACL。现有本地文件仍可读取，本地缓存继续供文件下载、时长检测和参考素材复用；支持公网素材的通用渠道优先使用 OSS 加速地址，供应商专属上传协议保留。转存失败时不返回上游直链，不会重新提交生成任务，按原失败流程退款并清理本次输出。
 
@@ -137,6 +137,8 @@ npm run dev
 - 文件当前存放在本地磁盘。运行多个 API 实例时必须共享文件目录和加密密钥；对象存储、支付网关、实时多人协同及供应商特有协议仍需另行接入。
 
 ## 构建与部署
+
+使用服务器已有 MySQL / Redis、宿主机 Nginx 时，采用 [镜像部署说明](deploy/README.md) 和 `deploy/docker-compose.yml`。应用镜像为 `ghcr.io/mbfczzz/phantomframe:latest`，包含前端和后端，服务器只需拉取镜像运行；推送 `main` 后 GitHub Actions 自动测试、构建并发布。Nginx 站点配置位于 `deploy/nginx/phantomframe.tcmzhan.com.conf`，安装在宿主机。
 
 ```powershell
 npm run build

@@ -87,10 +87,13 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
+      - name: Initialize dedicated application database
+        run: docker exec --interactive --env MYSQL_PWD=phantomframe-ci-mysql-only "${{ job.services.mysql.id }}" mysql --user=root < deploy/mysql-init.sql
+
       - name: Verify image deployment, HTTPS proxy and persistent files
         env:
           PHANTOMFRAME_IMAGE: phantomframe:ci
-          MYSQL_DATABASE: phantomframe_ci
+          MYSQL_DATABASE: phantomframe
           MYSQL_PASSWORD: phantomframe-ci-mysql-only
           REDIS_PASSWORD: phantomframe-ci-redis-only
           ENCRYPTION_KEY: 0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-if [[ "${GITHUB_ACTIONS:-}" != true || "${MYSQL_DATABASE:-}" != phantomframe_ci || "${PHANTOMFRAME_IMAGE:-}" != phantomframe:ci ]]; then
+if [[ "${GITHUB_ACTIONS:-}" != true || "${MYSQL_DATABASE:-}" != phantomframe || "${PHANTOMFRAME_IMAGE:-}" != phantomframe:ci ]]; then
   echo 'Run only in the isolated GitHub Actions deployment test job.' >&2
   exit 1
 fi

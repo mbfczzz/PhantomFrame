@@ -1,6 +1,6 @@
 # PhantomFrame 镜像部署
 
-与 `canvas/deploy/docker-compose.yml` 一样，生产服务使用 Linux host 网络，连接宿主机已有的 MySQL 和 Redis。Nginx 安装在宿主机，负责域名与 HTTPS。应用镜像中只有 Go 后端、React 构建产物和媒体处理工具，不包含 Nginx、MySQL 或 Redis。
+与 `canvas/deploy/docker-compose.yml` 一样，生产服务使用 Linux host 网络，连接宿主机已有的 MySQL 和 Redis。两个项目共用 `127.0.0.1:3306` 的 MySQL 实例与连接账号，Canvas 使用 `canvas` 数据库，PhantomFrame 使用独立的 `phantomframe` 数据库。Redis 共用 `127.0.0.1:6379` 的实例和编号 0，PhantomFrame 使用 `phantomframe:` 键前缀。Nginx 安装在宿主机，负责域名与 HTTPS。应用镜像中只有 Go 后端、React 构建产物和媒体处理工具，不包含 Nginx、MySQL 或 Redis。
 
 ```text
 https://phantomframe.tcmzhan.com
@@ -20,7 +20,7 @@ https://phantomframe.tcmzhan.com
 
 ## 首次部署
 
-服务器需要已有 Docker Engine、Compose 插件、MySQL、Redis 和 Nginx。将本目录的 `docker-compose.yml`、`.env` 和 Nginx 配置复制到服务器，例如 `/opt/phantomframe/`。服务器只需要这些部署文件，无须安装 Go、Node.js 或复制项目源码。
+服务器需要已有 Docker Engine、Compose 插件、MySQL、Redis 和 Nginx。将本目录的 `docker-compose.yml`、`.env`、`mysql-init.sql` 和 Nginx 配置复制到服务器，例如 `/opt/phantomframe/`。服务器只需要这些部署文件，无须安装 Go、Node.js 或复制项目源码。
 
 尚无 `.env` 时，复制 `.env.example` 并填写空值：
 
@@ -38,7 +38,7 @@ HOST=127.0.0.1
 PORT=3001
 MYSQL_HOST=127.0.0.1
 MYSQL_PORT=3306
-MYSQL_DATABASE=canvas
+MYSQL_DATABASE=phantomframe
 MYSQL_USER=root
 MYSQL_PASSWORD=填写实际密码
 REDIS_ADDR=127.0.0.1:6379
@@ -55,7 +55,14 @@ OSS_PREFIX=phantomframe/uploads/
 
 新部署可以用 `openssl rand -hex 32` 生成 `ENCRYPTION_KEY`。此密钥须与数据库一起备份并长期保持不变；如使用已有 PhantomFrame 数据，继续使用原来的密钥。
 
-`MYSQL_DATABASE` 指定的数据库须已存在，并且专属于 PhantomFrame。参考项目 Canvas 的生产配置同样使用 `canvas` 库，且两项目的 `users`、`projects` 表结构不同；如果连接同一 MySQL 实例，应为 PhantomFrame 新建独立数据库（例如 `phantomframe`），再修改 `.env` 的 `MYSQL_DATABASE`。只有这个 `canvas` 库专属于 PhantomFrame 时，才能沿用上面的库名。启动时应用先检查同名表是否兼容，不兼容时在执行迁移前停止；兼容时自动创建和迁移业务表，不会自动创建数据库。
+首次在服务器上创建独立的 `phantomframe` 数据库，输入与 Canvas 相同的 MySQL 连接密码：
+
+```bash
+cd /opt/phantomframe
+mysql --host=127.0.0.1 --port=3306 --user=root -p < mysql-init.sql
+```
+
+初始化 SQL 只执行 `CREATE DATABASE IF NOT EXISTS phantomframe`。两项目的 `users`、`projects` 表结构不同，必须分库存放。应用启动时先检查同名表是否兼容，不兼容时在执行迁移前停止；兼容时自动创建和迁移业务表，不会自动创建数据库。
 
 OSS AccessKey 可以在 `.env` 填写，或启动后在「管理后台 → 站点设置 → 生成结果存储」填写。后台已保存的存储配置优先，已有配置需同步设置文件前缀为 `phantomframe/uploads/`。
 

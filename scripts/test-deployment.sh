@@ -5,6 +5,7 @@ if [[ "${GITHUB_ACTIONS:-}" != true || "${MYSQL_DATABASE:-}" != phantomframe || 
   echo 'Run only in the isolated GitHub Actions deployment test job.' >&2
   exit 1
 fi
+test -n "${MYSQL_TEST_CONTAINER:-}"
 
 domain=phantomframe.tcmzhan.com
 test_dir=$(mktemp -d)
@@ -12,6 +13,10 @@ trap 'docker rm -f phantomframe-nginx-check >/dev/null 2>&1 || true' EXIT
 
 compose() {
   docker compose --env-file deploy/.env -f deploy/docker-compose.yml "$@"
+}
+sql() {
+  docker exec --env "MYSQL_PWD=$MYSQL_PASSWORD" "$MYSQL_TEST_CONTAINER" \
+    mysql --user=root --batch --skip-column-names --execute "$1"
 }
 https() {
   curl --silent --show-error --insecure --noproxy "$domain" \
@@ -31,8 +36,13 @@ wait_for_api() {
 
 cp deploy/.env.example deploy/.env
 compose config --quiet
+# Start with a missing target database and a separate existing Canvas database.
+test "$(sql "SELECT count(*) FROM information_schema.SCHEMATA WHERE SCHEMA_NAME='phantomframe'")" = 0
+sql "CREATE DATABASE canvas; CREATE TABLE canvas.users(id BIGINT PRIMARY KEY,username VARCHAR(64)); INSERT INTO canvas.users VALUES(1,'canvas-canary');"
 compose up -d --pull never
 wait_for_api
+test "$(sql "SELECT DEFAULT_COLLATION_NAME FROM information_schema.SCHEMATA WHERE SCHEMA_NAME='phantomframe'")" = utf8mb4_bin
+test "$(sql "SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA='phantomframe' AND TABLE_NAME IN ('users','projects','jobs','assets')")" = 4
 curl --fail --silent http://127.0.0.1:3001/api/health | jq -e '.status == "ok" and .database == "mysql" and .cache == "redis"'
 docker exec phantomframe sh -c 'test -f /app/dist/index.html && command -v ffprobe && ! command -v nginx && test ! -f /app/.env && test "$(id -u)" -ne 0'
 
@@ -90,4 +100,6 @@ wait_for_api
 https --fail -b "$test_dir/cookies" "https://$domain/api/me" | jq -e '.username == "smoke-admin"'
 https --fail -b "$test_dir/cookies" "https://$domain$asset_url" > "$test_dir/restored.png"
 cmp "$test_dir/reference.png" "$test_dir/restored.png"
-echo 'Verified HTTPS proxy, redirect, frontend assets, secure login, API key, origin checks, file persistence and session persistence across container replacement.'
+test "$(sql "SELECT username FROM canvas.users WHERE id=1")" = canvas-canary
+test "$(sql "SELECT count(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA='canvas'")" = 1
+echo 'Verified automatic database/table creation, unchanged sibling Canvas database, HTTPS proxy, redirect, frontend assets, secure login, API key, origin checks, file persistence and session persistence across container replacement.'

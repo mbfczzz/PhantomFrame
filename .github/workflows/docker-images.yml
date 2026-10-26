@@ -87,9 +87,6 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-      - name: Initialize dedicated application database
-        run: docker exec --interactive --env MYSQL_PWD=phantomframe-ci-mysql-only "${{ job.services.mysql.id }}" mysql --user=root < deploy/mysql-init.sql
-
       - name: Verify image deployment, HTTPS proxy and persistent files
         env:
           PHANTOMFRAME_IMAGE: phantomframe:ci
@@ -100,6 +97,7 @@ jobs:
           ADMIN_USERNAME: smoke-admin
           ADMIN_PASSWORD: phantomframe-ci-admin-only
           STORAGE_DRIVER: local
+          MYSQL_TEST_CONTAINER: ${{ job.services.mysql.id }}
         run: bash scripts/test-deployment.sh
 
       - name: Show container logs on failure
@@ -124,5 +122,5 @@ jobs:
           {
             echo "Image: \`$IMAGE_NAME:latest\`"
             echo ""
-            echo "Verified: backend integration tests, foreign database protection, HTTPS proxy, frontend assets, login, API keys, and file/session persistence across container replacement."
+            echo "Verified: automatic database/table creation, backend integration tests, foreign database protection, HTTPS proxy, frontend assets, login, API keys, and file/session persistence across container replacement."
           } >> "$GITHUB_STEP_SUMMARY"

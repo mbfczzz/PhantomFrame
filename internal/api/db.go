@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	_ "embed"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"math"
 	"net"
@@ -61,7 +62,14 @@ func Open(c Config) (*App, error) {
 	db.SetConnMaxLifetime(3 * time.Minute)
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
-	if err = db.PingContext(ctx); err != nil {
+	err = db.PingContext(ctx)
+	var serverErr *mysql.MySQLError
+	if err != nil && cfg.DBName != "" && errors.As(err, &serverErr) && serverErr.Number == 1049 {
+		if err = createMySQLDatabase(ctx, cfg); err == nil {
+			err = db.PingContext(ctx)
+		}
+	}
+	if err != nil {
 		db.Close()
 		return nil, fmt.Errorf("connect MySQL: %w", err)
 	}
@@ -73,6 +81,22 @@ func Open(c Config) (*App, error) {
 	}
 	return &App{Config: c, DB: db, Store: Store{db}, Redis: rc}, nil
 }
+
+func createMySQLDatabase(ctx context.Context, cfg *mysql.Config) error {
+	serverConfig := *cfg
+	serverConfig.DBName = ""
+	server, err := sql.Open("mysql", serverConfig.FormatDSN())
+	if err != nil {
+		return err
+	}
+	defer server.Close()
+	name := "`" + strings.ReplaceAll(cfg.DBName, "`", "``") + "`"
+	if _, err := server.ExecContext(ctx, "CREATE DATABASE IF NOT EXISTS "+name+" CHARACTER SET utf8mb4 COLLATE utf8mb4_bin"); err != nil {
+		return fmt.Errorf("自动创建数据库 %q 失败，请确认 MySQL 账号具有该库的 CREATE 权限: %w", cfg.DBName, err)
+	}
+	return nil
+}
+
 func (a *App) Close() { a.Redis.Close(); a.DB.Close() }
 func (a *App) Migrate() error {
 	if err := a.checkDatabaseCompatibility(); err != nil {

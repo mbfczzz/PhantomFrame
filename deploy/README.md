@@ -20,7 +20,7 @@ https://phantomframe.tcmzhan.com
 
 ## 首次部署
 
-服务器需要已有 Docker Engine、Compose 插件、MySQL、Redis 和 Nginx。将本目录的 `docker-compose.yml`、`.env`、`mysql-init.sql` 和 Nginx 配置复制到服务器，例如 `/opt/phantomframe/`。服务器只需要这些部署文件，无须安装 Go、Node.js 或复制项目源码。
+服务器需要已有 Docker Engine、Compose 插件、MySQL、Redis 和 Nginx。将本目录的 `docker-compose.yml`、`.env` 和 Nginx 配置复制到服务器，例如 `/opt/phantomframe/`。服务器只需要这些部署文件，无须安装 Go、Node.js 或复制项目源码，也不需要预先建库或执行 SQL。
 
 尚无 `.env` 时，复制 `.env.example` 并填写空值：
 
@@ -55,14 +55,9 @@ OSS_PREFIX=phantomframe/uploads/
 
 新部署可以用 `openssl rand -hex 32` 生成 `ENCRYPTION_KEY`。此密钥须与数据库一起备份并长期保持不变；如使用已有 PhantomFrame 数据，继续使用原来的密钥。
 
-首次在服务器上创建独立的 `phantomframe` 数据库，输入与 Canvas 相同的 MySQL 连接密码：
+首次启动时，应用会自动创建不存在的 `MYSQL_DATABASE` 数据库（当前为 `phantomframe`），字符集为 `utf8mb4`、排序规则为 `utf8mb4_bin`，然后自动创建表结构、执行迁移并初始化管理员。MySQL 账号需要具备目标库的建库、建表和迁移权限，当前配置沿用现有的 `root` 账号。数据库已存在时直接连接并迁移，重复启动保留已有数据。
 
-```bash
-cd /opt/phantomframe
-mysql --host=127.0.0.1 --port=3306 --user=root -p < mysql-init.sql
-```
-
-初始化 SQL 只执行 `CREATE DATABASE IF NOT EXISTS phantomframe`。两项目的 `users`、`projects` 表结构不同，必须分库存放。应用启动时先检查同名表是否兼容，不兼容时在执行迁移前停止；兼容时自动创建和迁移业务表，不会自动创建数据库。
+两项目的 `users`、`projects` 表结构不同，必须分库存放。应用迁移前仍会检查同名表是否兼容，不兼容时停止迁移。
 
 OSS AccessKey 可以在 `.env` 填写，或启动后在「管理后台 → 站点设置 → 生成结果存储」填写。后台已保存的存储配置优先，已有配置需同步设置文件前缀为 `phantomframe/uploads/`。
 

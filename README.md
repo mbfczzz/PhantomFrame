@@ -138,7 +138,7 @@ npm run dev
 
 ## 构建与部署
 
-使用服务器已有 MySQL / Redis、宿主机 Nginx 时，采用 [镜像部署说明](deploy/README.md) 和 `deploy/docker-compose.yml`。应用镜像为 `ghcr.io/mbfczzz/phantomframe:latest`，包含前端和后端，服务器只需拉取镜像运行；推送 `main` 后 GitHub Actions 自动测试、构建并发布。Nginx 站点配置位于 `deploy/nginx/phantomframe.tcmzhan.com.conf`，安装在宿主机。
+使用服务器已有 MySQL / Redis、宿主机 Nginx 时，采用 [镜像部署说明](deploy/README.md) 和 `deploy/docker-compose.yml`。应用镜像为 `ghcr.io/mbfczzz/phantomframe:latest`，包含前端和后端，服务器只需拉取镜像运行；首次启动自动创建不存在的目标数据库并创建、迁移表结构（MySQL 账号须具备相应权限）。推送 `main` 后 GitHub Actions 自动测试、构建并发布。Nginx 站点配置位于 `deploy/nginx/phantomframe.tcmzhan.com.conf`，安装在宿主机。
 
 ```powershell
 npm run build

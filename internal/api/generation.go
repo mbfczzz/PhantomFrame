@@ -30,11 +30,14 @@ func (a *App) quote(s Store, mid, uid string, raw Row) Quote {
 	if provider == nil || (provider["protocol"] == "demo" && !a.Config.Demo) {
 		fail(400, "模型通道未启用")
 	}
-	if m["type"] != "image" && m["type"] != "video" && provider["protocol"] != "inventory" && provider["protocol"] != "demo" {
+	if m["type"] != "image" && m["type"] != "video" && provider["protocol"] != "inventory" && provider["protocol"] != "opencrow" && provider["protocol"] != "demo" {
 		fail(400, "此类型需要使用供应商独立路由")
 	}
 	if provider["protocol"] == "inventory" {
 		provider = a.inventoryProvider(s, m, provider)
+	}
+	if provider["protocol"] == "opencrow" {
+		provider = a.openCrowProvider(s, m, provider)
 	}
 	defs := imageRequestParameters(str(m["type"]), array(m["parameters"]))
 	known := map[string]bool{}
@@ -167,7 +170,7 @@ func (a *App) quote(s Store, mid, uid string, raw Row) Quote {
 			fail(400, "参考素材合计最多 "+str(p["maxTotal"])+" 个")
 		}
 	}
-	if provider["protocol"] == "inventory" {
+	if provider["protocol"] == "inventory" || provider["protocol"] == "opencrow" {
 		a.validateInventoryQuote(s, m, provider, params, uid)
 	}
 	matches := []Row{}
@@ -263,7 +266,7 @@ func (a *App) submit(r *Request) any {
 		}
 		s.One("SELECT id FROM models WHERE id=? FOR UPDATE", mid)
 		q := a.quote(s, mid, r.UID(), params)
-		if q.Provider["protocol"] == "inventory" {
+		if q.Provider["protocol"] == "inventory" || q.Provider["protocol"] == "opencrow" {
 			a.validateInventoryQuote(s, q.Model, q.Provider, q.Params, r.UID(), prompt)
 		}
 		storage, storageErr := a.storageConfig(s)

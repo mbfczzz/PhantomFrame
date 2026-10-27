@@ -120,7 +120,7 @@ func (a *App) consume(ctx context.Context) {
 func (a *App) processJob(parent context.Context, j Row) {
 	a.beginUpstreamCall(j)
 	timeout := 12 * time.Minute
-	if object(j["provider_snapshot"])["protocol"] == "inventory" {
+	if object(j["provider_snapshot"])["protocol"] == "inventory" || object(j["provider_snapshot"])["protocol"] == "opencrow" {
 		timeout = 20 * time.Minute
 	}
 	if object(j["provider_snapshot"])["protocol"] == "rolldek" || object(j["provider_snapshot"])["protocol"] == "maitoken" {
@@ -134,7 +134,7 @@ func (a *App) processJob(parent context.Context, j Row) {
 		var e error
 		if object(j["provider_snapshot"])["protocol"] == "demo" {
 			out, e = a.demo(ctx, j)
-		} else if object(j["provider_snapshot"])["protocol"] == "inventory" {
+		} else if object(j["provider_snapshot"])["protocol"] == "inventory" || object(j["provider_snapshot"])["protocol"] == "opencrow" {
 			out, e = a.inventoryUpstream(ctx, j)
 		} else {
 			out, e = a.upstream(ctx, j)

@@ -63,6 +63,9 @@ func inventoryPlan(j, p Row, refs map[string][]string, files []Row) (inventoryCa
 	if err := inventoryValidateNativeParameters(p, object(j["params"])); err != nil {
 		return inventoryCall{}, "", "", err
 	}
+	if object(p["config"])["vendor"] == "opencrow" {
+		return openCrowPlan(j, p, refs, files)
+	}
 	call, poll, method, err := inventoryPlanNative(j, p, refs, files)
 	cfg := object(p["config"])
 	if override := str(cfg["submit_path_override"]); override != "" {

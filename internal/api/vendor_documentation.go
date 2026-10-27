@@ -21,6 +21,14 @@ func vendorCatalogEntry(vendor string, item, root Row) (string, []any, bool) {
 	return kind, imageRequestParameters(kind, parameters), ok
 }
 func vendorCatalogDefinition(vendor string, item, root Row) (string, []any, bool) {
+	if vendor == "opencrow" {
+		model := str(item["id"])
+		spec := openCrowDefinition(model)
+		if spec == nil || item["enabled"] == false {
+			return "", nil, false
+		}
+		return str(spec["kind"]), array(jsonText(openCrowParameters(model))), true
+	}
 	if vendor == "maitoken" {
 		definition := maiTokenDefinition(str(item["id"]))
 		if definition == nil || item["enabled"] == false {
@@ -119,6 +127,13 @@ func documentedModelDescription(vendor, upstream, kind string, parameters []any)
 	return imageRequestDescription(kind, upstream, vendorModelDescription(vendor, upstream, kind, parameters))
 }
 func vendorModelDescription(vendor, upstream, kind string, parameters []any) string {
+	if vendor == "opencrow" {
+		description := "OpenCrow · " + str(openCrowDefinition(upstream)["name"]) + "；同步后需确认本站售价再启用"
+		if openCrowDefinition(upstream)["profile"] == "motion" {
+			description += "。形象图须为 PNG/JPEG，宽高至少 300px；动作视频须为 MP4，宽高 340–3850px，人物朝向 image 时 3–10 秒、video 时 3–30 秒。"
+		}
+		return description
+	}
 	if vendor == "maitoken" {
 		return str(maiTokenDefinition(upstream)["description"])
 	}

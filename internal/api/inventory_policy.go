@@ -84,6 +84,9 @@ func inventoryDefaultModel(vendor, model string, mappings Row) string {
 }
 
 func inventoryParameters(r InventoryRoute) (result []any) {
+	if strings.EqualFold(r.Vendor, "opencrow") {
+		return openCrowParameters(r.Upstream)
+	}
 	defer func() {
 		if strings.EqualFold(r.Vendor, "kinovi") {
 			result = inventoryKinoviParams(r, result)
@@ -233,19 +236,34 @@ func (a *App) validateInventoryQuote(s Store, m, p, params Row, uid string, prom
 	refs := map[string][]string{"image": {}, "video": {}, "audio": {}}
 	files := []Row{}
 	var total int64
+	nativeAssets := map[string]string{}
+	if p["protocol"] == "opencrow" {
+		for _, raw := range openCrowParameters(str(m["upstream_model"])) {
+			field := object(raw)
+			if field["type"] == "assets" {
+				nativeAssets[str(field["name"])] = str(field["itemType"])
+			}
+		}
+	}
 	for _, raw := range array(m["parameters"]) {
 		field := object(raw)
 		if field["type"] != "assets" {
 			continue
 		}
 		for _, assetID := range array(params[str(field["name"])]) {
-			asset := s.One("SELECT id,type,size FROM assets WHERE id=? AND user_id=?", assetID, uid)
+			asset := s.One("SELECT * FROM assets WHERE id=? AND user_id=?", assetID, uid)
 			if asset == nil {
 				fail(400, "参考素材已不存在")
+			}
+			if p["protocol"] == "opencrow" && nativeAssets[str(field["name"])] != str(asset["type"]) {
+				fail(400, "OpenCrow 参考素材类型与模型协议不一致，请修正模型参数，未扣费")
 			}
 			total += integer(asset["size"])
 			refs[str(asset["type"])] = append(refs[str(asset["type"])], "https://reference.invalid/"+str(assetID))
 			files = append(files, asset)
+			if p["protocol"] == "opencrow" && openCrowDefinition(str(m["upstream_model"]))["profile"] == "motion" {
+				a.validateOpenCrowMotionAsset(asset, params)
+			}
 		}
 	}
 	if total > 30*1024*1024 {
@@ -254,6 +272,11 @@ func (a *App) validateInventoryQuote(s Store, m, p, params Row, uid string, prom
 	p = clone(p)
 	p["type"] = m["type"]
 	p["upstreamModel"] = m["upstream_model"]
+	if p["protocol"] == "opencrow" && openCrowDefinition(str(m["upstream_model"]))["profile"] == "gemini_image" {
+		for i := range refs["image"] {
+			refs["image"][i] = "data:image/png;base64,cHJlZmxpZ2h0"
+		}
+	}
 	prompt := "preflight"
 	if len(prompts) > 0 {
 		prompt = prompts[0]

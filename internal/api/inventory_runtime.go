@@ -19,6 +19,11 @@ func inventoryObject(value any) Row {
 }
 func inventoryTaskIDs(vendor string, value any) []string {
 	root := inventoryObject(value)
+	if vendor == "opencrow" {
+		if taskID := openCrowResponseID(root); taskID != "" {
+			return []string{taskID}
+		}
+	}
 	if vendor == "mxapi" {
 		ids := array(vendorValue(root, "data.task_ids"))
 		if len(ids) > 0 {
@@ -51,6 +56,9 @@ func inventoryID(value any) string {
 }
 func inventoryPollValue(vendor, taskID string, value any) any {
 	root := inventoryObject(value)
+	if vendor == "opencrow" {
+		return openCrowPollValue(taskID, root)
+	}
 	if vendor == "midjourney-api" || vendor == "runware" {
 		if len(array(root["data"])) == 0 && inventoryEnvelopeError(vendor, root) {
 			return root
@@ -87,7 +95,7 @@ func inventoryFinished(status string) bool {
 	return status == "completed" || status == "complete" || status == "succeeded" || status == "success" || status == "done" || status == "finished"
 }
 func inventoryFailed(status string) bool {
-	return status == "fail" || status == "failed" || status == "failure" || status == "error" || status == "cancel" || status == "cancelled" || status == "canceled" || status == "rejected"
+	return status == "fail" || status == "failed" || status == "failure" || status == "error" || status == "cancel" || status == "cancelled" || status == "canceled" || status == "rejected" || status == "timeout"
 }
 
 func inventoryMeaningfulError(value any) bool {
@@ -170,6 +178,18 @@ func inventoryOutputs(value any, kinds ...string) []any {
 			if kind != "" && (strings.HasPrefix(mediaType, "image") || strings.HasPrefix(mediaType, "video") || strings.HasPrefix(mediaType, "audio")) && !strings.HasPrefix(mediaType, kind) {
 				return
 			}
+			if mediaType == "image" && strings.HasPrefix(str(x["mime_type"]), "image/") && str(x["data"]) != "" {
+				outputs = append(outputs, Row{"b64_json": x["data"]})
+				return
+			}
+			if steps := array(x["steps"]); len(steps) > 0 {
+				for _, raw := range steps {
+					step := object(raw)
+					if step["type"] == "model_output" {
+						visit(step["content"], depth+1)
+					}
+				}
+			}
 			if encoded, ok := x["resultJson"].(string); ok && len(encoded) < 2*1024*1024 {
 				var decoded any
 				if json.Unmarshal([]byte(encoded), &decoded) == nil {
@@ -186,6 +206,9 @@ func inventoryOutputs(value any, kinds ...string) []any {
 			}
 			for _, key := range []string{"url", "video_url", "audio_url", "image_url", "image", "imageUrl", "videoUrl", "audioUrl", "imageURL", "videoURL", "audioURL", "result_url", "output_url", "download_url", "file_url"} {
 				if candidate, ok := x[key].(string); ok {
+					visit(candidate, depth+1)
+				}
+				if candidate, ok := x[key].(map[string]any); ok {
 					visit(candidate, depth+1)
 				}
 			}
@@ -257,6 +280,11 @@ func (a *App) inventoryUpstream(ctx context.Context, j Row) ([]Row, error) {
 	if len(files) > 0 {
 		inline := vendor == "ali" || vendor == "huanwangai" || ((vendor == "ccgo" || vendor == "mynewapi") && strings.HasPrefix(str(cfg["sourceModel"]), "nano-banana"))
 		multipart := kind == "image" && inventoryOpenAIImage(vendor, str(cfg["sourceModel"]))
+		if vendor == "opencrow" {
+			profile := str(openCrowDefinition(str(cfg["upstreamModel"]))["profile"])
+			inline = profile == "gemini_image"
+			multipart = profile == "gpt_image"
+		}
 		if inline {
 			for _, asset := range files {
 				data, e := os.ReadFile(a.filePath(str(asset["file"])))

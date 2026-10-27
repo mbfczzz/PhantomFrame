@@ -19,7 +19,7 @@ import (
 
 func isVendor(protocol any) bool {
 	switch str(protocol) {
-	case "openvideo", "suda", "modelhub", "gway", "catcoder", "wxart", "rolldek", "maitoken":
+	case "openvideo", "suda", "modelhub", "gway", "catcoder", "wxart", "rolldek", "maitoken", "opencrow":
 		return true
 	}
 	return false

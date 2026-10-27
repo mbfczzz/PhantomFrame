@@ -1419,6 +1419,7 @@ function ProviderAdmin() {
     wxart: "WXArt · 图片/视频",
     rolldek: "Rolldek · 图片/视频",
     maitoken: "Mai-Token · 图片/视频",
+    opencrow: "OpenCrow · 图片/视频/文本/语音",
     "media-upload": "公共素材上传服务",
   };
   return (
@@ -1631,7 +1632,20 @@ function ProviderForm({
           <Field label="接入协议">
             <select
               value={form.protocol}
-              onChange={(e) => set("protocol", e.target.value)}
+              onChange={(e) => {
+                const protocol = e.target.value;
+                setForm((current) => ({
+                  ...current,
+                  protocol,
+                  ...(protocol === "opencrow"
+                    ? {
+                        name: current.name || "OpenCrow",
+                        base_url:
+                          current.base_url || "https://api.router.ai/v1",
+                      }
+                    : {}),
+                }));
+              }}
             >
               <option value="openai-image">OpenAI 兼容图片接口</option>
               <option value="openai-video">OpenAI 兼容视频接口</option>
@@ -1644,6 +1658,7 @@ function ProviderForm({
               <option value="wxart">WXArt 专用适配</option>
               <option value="rolldek">Rolldek 专用适配</option>
               <option value="maitoken">Mai-Token 专用适配</option>
+              <option value="opencrow">OpenCrow 专用适配</option>
               <option value="media-upload">公共素材上传服务</option>
               <option value="demo">本地演示</option>
             </select>
@@ -1651,7 +1666,11 @@ function ProviderForm({
         </div>
         <Field
           label="API 基础地址"
-          hint="填写到版本前缀，例如 https://your-provider.com/v1"
+          hint={
+            form.protocol === "opencrow"
+              ? "OpenCrow 文档地址：https://api.router.ai/v1。保存后同步模型，确认本站价格再启用。"
+              : "填写到版本前缀，例如 https://your-provider.com/v1"
+          }
         >
           <input
             type={form.protocol === "demo" ? "text" : "url"}

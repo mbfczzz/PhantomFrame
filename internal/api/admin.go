@@ -25,7 +25,7 @@ func validBaseURL(s string) bool {
 func (a *App) saveProvider(r *Request) any {
 	p := r.Body()
 	name := trimField(p, "name", 1, 80)
-	protocol := enumField(p, "protocol", "demo", "openai-image", "openai-video", "json-async", "openvideo", "suda", "modelhub", "gway", "catcoder", "wxart", "rolldek", "maitoken", "media-upload", "inventory")
+	protocol := enumField(p, "protocol", "demo", "openai-image", "openai-video", "json-async", "openvideo", "suda", "modelhub", "gway", "catcoder", "wxart", "rolldek", "maitoken", "opencrow", "media-upload", "inventory")
 	base := textField(p, "base_url", 0, 500, "")
 	key := textField(p, "apiKey", 0, 4096, "")
 	enabled := boolField(p, "enabled", true)
@@ -193,7 +193,7 @@ func (a *App) saveModel(r *Request) any {
 		if provider["protocol"] == "media-upload" {
 			fail(400, "素材上传服务不能绑定生成模型")
 		}
-		if kind != "image" && kind != "video" && provider["protocol"] != "inventory" && provider["protocol"] != "demo" {
+		if kind != "image" && kind != "video" && provider["protocol"] != "inventory" && provider["protocol"] != "opencrow" && provider["protocol"] != "demo" {
 			fail(400, "此类型需要清单路由或本地演示通道")
 		}
 		old := s.One("SELECT * FROM models WHERE id=? FOR UPDATE", mid)
@@ -340,7 +340,14 @@ func (a *App) adminRoutes(m *http.ServeMux) {
 		if e != nil {
 			return Row{"ok": false, "message": "通道密钥无法解密"}
 		}
-		req, e := http.NewRequestWithContext(ctx, "GET", strings.TrimRight(str(p["base_url"]), "/")+"/models", nil)
+		address := strings.TrimRight(str(p["base_url"]), "/") + "/models"
+		if p["protocol"] == "opencrow" {
+			address, e = inventoryEndpoint(str(p["base_url"]), "/v1/models")
+			if e != nil {
+				return Row{"ok": false, "message": "OpenCrow API 地址不正确"}
+			}
+		}
+		req, e := http.NewRequestWithContext(ctx, "GET", address, nil)
 		if e != nil {
 			return Row{"ok": false, "message": "API 地址格式不正确"}
 		}

@@ -195,7 +195,18 @@ func (a *App) publishProviderModel(r *Request) any {
 			fail(409, "站内模型 ID 已存在，请更换 ID")
 		}
 		parameters := imageRequestParameters(kind, validateParameters(array(entry["parameters"])))
+		var sources []inventoryPriceSource
+		if provider["protocol"] == "opencrow" {
+			definition := openCrowDefinition(str(entry["upstream_model"]))
+			if definition == nil || definition["kind"] != kind {
+				fail(400, "OpenCrow 模型类型与目录不一致")
+			}
+			sources = inventoryPriceSources(s)
+		}
 		s.Exec("INSERT INTO models(id,name,type,provider_id,upstream_model,description,category,enabled,sort_order,tags,parameters) VALUES(?,?,?,?,?,?,?,0,100,'[]',?)", modelID, name, kind, r.ID(), entry["upstream_model"], entry["description"], category, jsonText(parameters))
+		if provider["protocol"] == "opencrow" {
+			inheritModelPrices(s, modelID, str(entry["upstream_model"]), kind, sources)
+		}
 		s.Audit(r.UID(), "provider_model.publish", Row{"id": entry["id"], "providerId": r.ID(), "modelId": modelID})
 		model = s.ModelView(s.One("SELECT * FROM models WHERE id=?", modelID))
 	})
@@ -222,7 +233,14 @@ func (a *App) syncProviderModels(r *Request) any {
 	}
 	ctx, cancel := context.WithTimeout(r.R.Context(), 20*time.Second)
 	defer cancel()
-	request, err := http.NewRequestWithContext(ctx, "GET", strings.TrimRight(str(provider["base_url"]), "/")+"/models", nil)
+	address := strings.TrimRight(str(provider["base_url"]), "/") + "/models"
+	if provider["protocol"] == "opencrow" {
+		address, err = inventoryEndpoint(str(provider["base_url"]), "/v1/models")
+		if err != nil {
+			fail(400, "OpenCrow API 地址不正确")
+		}
+	}
+	request, err := http.NewRequestWithContext(ctx, "GET", address, nil)
 	if err != nil {
 		fail(400, "渠道地址不正确")
 	}

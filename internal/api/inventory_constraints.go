@@ -3,6 +3,7 @@ package api
 import (
 	"fmt"
 	"math"
+	"strings"
 )
 
 func inventoryRouteFromRow(row Row) InventoryRoute {
@@ -19,8 +20,11 @@ func inventoryValidateNativeParameters(provider, params Row) error {
 		p := object(raw)
 		definitions[str(p["name"])] = p
 		value := params[str(p["name"])]
-		if truth(p["required"]) && p["type"] != "assets" && (value == nil || value == "") {
+		if truth(p["required"]) && p["type"] != "assets" && (value == nil || strings.TrimSpace(str(value)) == "") {
 			return fmt.Errorf("供应商需要填写 %s", str(p["label"]))
+		}
+		if r.Vendor == "opencrow" && (p["type"] == "select" || p["type"] == "number") && (value == nil || strings.TrimSpace(str(value)) == "") {
+			return fmt.Errorf("OpenCrow 缺少 %s 参数，请在模型管理中恢复该模型的参数定义，未扣费", str(p["label"]))
 		}
 	}
 	for name, value := range params {
@@ -53,6 +57,9 @@ func inventoryValidateNativeParameters(provider, params Row) error {
 			}
 		}
 		if !valid {
+			if r.Vendor == "opencrow" {
+				return fmt.Errorf("OpenCrow 不支持当前 %s 参数，请在模型管理中核对参数定义和价格，未扣费", name)
+			}
 			return fmt.Errorf("供应商不支持当前 %s 参数，请在供应商路由中更新参数规范并重新确认价格", name)
 		}
 	}

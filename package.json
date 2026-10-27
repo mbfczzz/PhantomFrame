@@ -22,7 +22,8 @@
     "test:upstream-ui": "node scripts/test-upstream-ui.mjs",
     "test:audit-ui": "node scripts/test-audit-ui.mjs",
     "test:recheck-ui": "node scripts/test-recheck-ui.mjs",
-    "test:inventory-ui": "node scripts/test-inventory-ui.mjs"
+    "test:inventory-ui": "node scripts/test-inventory-ui.mjs",
+    "test:opencrow-ui": "node scripts/test-opencrow-ui.mjs"
   },
   "dependencies": {
     "@tanstack/react-query": "^5.90.2",

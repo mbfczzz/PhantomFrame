@@ -130,6 +130,17 @@ func (a *App) inventoryHTTP(ctx context.Context, p Row, key string, call invento
 	status := res.StatusCode
 	mt := strings.Split(res.Header.Get("Content-Type"), ";")[0]
 	if status < 200 || status >= 300 {
+		cfg := object(p["config"])
+		if cfg["vendor"] == "opencrow" && p["type"] == "video" && (status >= 500 || status == 408 || status == 409 || status == 429) {
+			raw, readErr := io.ReadAll(io.LimitReader(res.Body, 1024*1024+1))
+			res.Body.Close()
+			if readErr == nil {
+				if receipt, ok := openCrowAcceptedErrorResponse(raw, str(cfg["upstreamModel"])); ok {
+					return receipt, nil, "", nil
+				}
+			}
+			return nil, nil, "", apiError{status, fmt.Sprintf("供应商请求失败（HTTP %d）", status)}
+		}
 		res.Body.Close()
 		return nil, nil, "", apiError{status, fmt.Sprintf("供应商请求失败（HTTP %d）", status)}
 	}

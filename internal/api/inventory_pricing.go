@@ -24,7 +24,10 @@ func inventoryPriceSources(s Store) []inventoryPriceSource {
 }
 
 func inheritInventoryPrices(s Store, r InventoryRoute, sources []inventoryPriceSource) string {
-	mid := inventoryModelID(r.ID)
+	return inheritModelPrices(s, inventoryModelID(r.ID), r.Model, r.Modality, sources)
+}
+
+func inheritModelPrices(s Store, mid, sourceName, kind string, sources []inventoryPriceSource) string {
 	m := s.One("SELECT * FROM models WHERE id=? FOR UPDATE", mid)
 	if s.One("SELECT id FROM prices WHERE model_id=? LIMIT 1", mid) != nil {
 		return "preserved"
@@ -33,12 +36,12 @@ func inheritInventoryPrices(s Store, r InventoryRoute, sources []inventoryPriceS
 	fingerprint := ""
 	for _, source := range sources {
 		old := source.model
-		if old["type"] != r.Modality || str(old["id"]) == mid {
+		if old["type"] != kind || str(old["id"]) == mid {
 			continue
 		}
 		match := false
 		for _, key := range []string{"id", "name", "upstream_model", "source_model"} {
-			if str(old[key]) == r.Model {
+			if str(old[key]) == sourceName {
 				match = true
 			}
 		}

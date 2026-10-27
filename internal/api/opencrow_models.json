@@ -1,0 +1,1087 @@
+[
+  {
+    "id": "kimi-k3.1-pro",
+    "name": "Kimi K3.1 Pro",
+    "kind": "text",
+    "profile": "chat",
+    "maxOutputTokens": 1048576
+  },
+  {
+    "id": "gemini-4-argon",
+    "name": "Gemini 4 Argon",
+    "kind": "text",
+    "profile": "chat",
+    "maxOutputTokens": 65536
+  },
+  {
+    "id": "claude-opus-5-5",
+    "name": "Claude Opus 5.5",
+    "kind": "text",
+    "profile": "chat",
+    "maxOutputTokens": 128000
+  },
+  {
+    "id": "claude-sonnet-5-5",
+    "name": "Claude Sonnet 5.5",
+    "kind": "text",
+    "profile": "chat",
+    "maxOutputTokens": 128000
+  },
+  {
+    "id": "claude-haiku-5-5",
+    "name": "Claude Haiku 5.5",
+    "kind": "text",
+    "profile": "chat",
+    "maxOutputTokens": 128000
+  },
+  {
+    "id": "gpt-6.1-sol",
+    "name": "GPT-6.1 Sol",
+    "kind": "text",
+    "profile": "chat",
+    "maxOutputTokens": 128000
+  },
+  {
+    "id": "kimi-k2.8-preview",
+    "name": "Kimi K2.8 Preview",
+    "kind": "text",
+    "profile": "chat",
+    "maxOutputTokens": 131072
+  },
+  {
+    "id": "wan3.0-video",
+    "name": "Wan 3.0 Video",
+    "kind": "video",
+    "profile": "wan3",
+    "maxOutputTokens": null
+  },
+  {
+    "id": "wan3.0-video-prime",
+    "name": "Wan 3.0 Video Prime",
+    "kind": "video",
+    "profile": "wan3",
+    "maxOutputTokens": null
+  },
+  {
+    "id": "gpt-image-2.5-sunburst",
+    "name": "GPT-Image-2.5-Sunburst",
+    "kind": "image",
+    "profile": "gpt_image",
+    "maxOutputTokens": null
+  },
+  {
+    "id": "gpt-6-astra",
+    "name": "GPT-6 Astra",
+    "kind": "text",
+    "profile": "chat",
+    "maxOutputTokens": 128000
+  },
+  {
+    "id": "gpt-6-sol",
+    "name": "GPT-6 Sol",
+    "kind": "text",
+    "profile": "chat",
+    "maxOutputTokens": 128000
+  },
+  {
+    "id": "gpt-6-luna",
+    "name": "GPT-6 Luna",
+    "kind": "text",
+    "profile": "chat",
+    "maxOutputTokens": 128000
+  },
+  {
+    "id": "dreamina-seedance-2.5",
+    "name": "Seedance 2.5",
+    "kind": "video",
+    "profile": "seedance",
+    "maxOutputTokens": null
+  },
+  {
+    "id": "claude-fable-5-1",
+    "name": "Claude Fable 5.1",
+    "kind": "text",
+    "profile": "chat",
+    "maxOutputTokens": 64000
+  },
+  {
+    "id": "claude-opus-5",
+    "name": "Claude Opus 5",
+    "kind": "text",
+    "profile": "chat",
+    "maxOutputTokens": 128000
+  },
+  {
+    "id": "claude-opus-4-8",
+    "name": "Claude Opus 4.8",
+    "kind": "text",
+    "profile": "chat",
+    "maxOutputTokens": 128000
+  },
+  {
+    "id": "gpt-5.6-luna",
+    "name": "GPT-5.6 Luna",
+    "kind": "text",
+    "profile": "chat",
+    "maxOutputTokens": 128000
+  },
+  {
+    "id": "gpt-5.6-terra",
+    "name": "GPT-5.6 Terra",
+    "kind": "text",
+    "profile": "chat",
+    "maxOutputTokens": 128000
+  },
+  {
+    "id": "gpt-5.6-sol",
+    "name": "GPT-5.6 Sol",
+    "kind": "text",
+    "profile": "chat",
+    "maxOutputTokens": 128000
+  },
+  {
+    "id": "gpt-5.5",
+    "name": "GPT-5.5",
+    "kind": "text",
+    "profile": "chat",
+    "maxOutputTokens": 128000
+  },
+  {
+    "id": "dola-seedream-5-0-pro-260628",
+    "name": "Seedream 5.0 Pro",
+    "kind": "image",
+    "profile": "seedream",
+    "maxOutputTokens": null
+  },
+  {
+    "id": "dreamina-seedance-2-0-260128",
+    "name": "Seedance 2.0",
+    "kind": "video",
+    "profile": "seedance",
+    "maxOutputTokens": null
+  },
+  {
+    "id": "deepseek-v4.1-flash-1017",
+    "name": "DeepSeek-V4.1-Flash-1017",
+    "kind": "text",
+    "profile": "chat",
+    "maxOutputTokens": 393216
+  },
+  {
+    "id": "gpt-image-2.5-flare",
+    "name": "GPT-Image-2.5-Flare",
+    "kind": "image",
+    "profile": "gpt_image",
+    "maxOutputTokens": null
+  },
+  {
+    "id": "deepseek-v4.1-flash",
+    "name": "DeepSeek-V4.1-Flash",
+    "kind": "text",
+    "profile": "chat",
+    "maxOutputTokens": 393216
+  },
+  {
+    "id": "dreamina-seedance-2-0-fast-260128",
+    "name": "Seedance 2.0 Fast",
+    "kind": "video",
+    "profile": "seedance",
+    "maxOutputTokens": null
+  },
+  {
+    "id": "dreamina-seedance-2-0-mini-260615",
+    "name": "Seedance 2.0 Mini",
+    "kind": "video",
+    "profile": "seedance",
+    "maxOutputTokens": null
+  },
+  {
+    "id": "happyhorse-1.1-i2v",
+    "name": "HappyHorse 1.1 I2V",
+    "kind": "video",
+    "profile": "happyhorse",
+    "maxOutputTokens": null
+  },
+  {
+    "id": "happyhorse-1.1-r2v",
+    "name": "HappyHorse 1.1 R2V",
+    "kind": "video",
+    "profile": "happyhorse",
+    "maxOutputTokens": null
+  },
+  {
+    "id": "wan2.7-t2v",
+    "name": "Wan 2.7 T2V",
+    "kind": "video",
+    "profile": "wan",
+    "maxOutputTokens": null
+  },
+  {
+    "id": "wan2.7-i2v",
+    "name": "Wan 2.7 I2V",
+    "kind": "video",
+    "profile": "wan",
+    "maxOutputTokens": null
+  },
+  {
+    "id": "wan2.7-r2v",
+    "name": "Wan 2.7 R2V",
+    "kind": "video",
+    "profile": "wan",
+    "maxOutputTokens": null
+  },
+  {
+    "id": "wan2.7-t2v-2026-04-25",
+    "name": "Wan 2.7 T2V (2026-04-25)",
+    "kind": "video",
+    "profile": "wan",
+    "maxOutputTokens": null
+  },
+  {
+    "id": "wan2.7-i2v-2026-04-25",
+    "name": "Wan 2.7 I2V (2026-04-25)",
+    "kind": "video",
+    "profile": "wan",
+    "maxOutputTokens": null
+  },
+  {
+    "id": "happyhorse-1.0-t2v",
+    "name": "HappyHorse 1.0 T2V",
+    "kind": "video",
+    "profile": "happyhorse",
+    "maxOutputTokens": null
+  },
+  {
+    "id": "happyhorse-1.0-i2v",
+    "name": "HappyHorse 1.0 I2V",
+    "kind": "video",
+    "profile": "happyhorse",
+    "maxOutputTokens": null
+  },
+  {
+    "id": "happyhorse-1.0-r2v",
+    "name": "HappyHorse 1.0 R2V",
+    "kind": "video",
+    "profile": "happyhorse",
+    "maxOutputTokens": null
+  },
+  {
+    "id": "happyhorse-1.0-video-edit",
+    "name": "HappyHorse 1.0 Video Edit",
+    "kind": "video",
+    "profile": "happyhorse",
+    "maxOutputTokens": null
+  },
+  {
+    "id": "deepseek-v4-pro",
+    "name": "DeepSeek-V4-Pro",
+    "kind": "text",
+    "profile": "chat",
+    "maxOutputTokens": 393216
+  },
+  {
+    "id": "claude-fable-5",
+    "name": "Claude Fable 5",
+    "kind": "text",
+    "profile": "chat",
+    "maxOutputTokens": 64000
+  },
+  {
+    "id": "deepseek-v4-pro-0813",
+    "name": "DeepSeek-V4-Pro 0813",
+    "kind": "text",
+    "profile": "chat",
+    "maxOutputTokens": 393216
+  },
+  {
+    "id": "deepseek-v4-flash",
+    "name": "DeepSeek-V4-Flash",
+    "kind": "text",
+    "profile": "chat",
+    "maxOutputTokens": 393216
+  },
+  {
+    "id": "deepseek-v4-flash-vision-exp",
+    "name": "DeepSeek-V4-Flash-Vision-Exp",
+    "kind": "text",
+    "profile": "chat",
+    "maxOutputTokens": 393216
+  },
+  {
+    "id": "deepseek-v4-flash-0731",
+    "name": "DeepSeek-V4-Flash-0731",
+    "kind": "text",
+    "profile": "chat",
+    "maxOutputTokens": 393216
+  },
+  {
+    "id": "claude-opus-4-6",
+    "name": "Claude Opus 4.6",
+    "kind": "text",
+    "profile": "chat",
+    "maxOutputTokens": 128000
+  },
+  {
+    "id": "claude-opus-4-5",
+    "name": "Claude Opus 4.5",
+    "kind": "text",
+    "profile": "chat",
+    "maxOutputTokens": 64000
+  },
+  {
+    "id": "claude-sonnet-4-6",
+    "name": "Claude Sonnet 4.6",
+    "kind": "text",
+    "profile": "chat",
+    "maxOutputTokens": 64000
+  },
+  {
+    "id": "claude-opus-4-7",
+    "name": "Claude Opus 4.7",
+    "kind": "text",
+    "profile": "chat",
+    "maxOutputTokens": 128000
+  },
+  {
+    "id": "claude-sonnet-4-5-20250929",
+    "name": "Claude Sonnet 4.5",
+    "kind": "text",
+    "profile": "chat",
+    "maxOutputTokens": 64000
+  },
+  {
+    "id": "claude-haiku-4-5-20251001",
+    "name": "Claude Haiku 4.5",
+    "kind": "text",
+    "profile": "chat",
+    "maxOutputTokens": 64000
+  },
+  {
+    "id": "grok-4.6",
+    "name": "Grok 4.6",
+    "kind": "text",
+    "profile": "chat",
+    "maxOutputTokens": 32768
+  },
+  {
+    "id": "grok-4.5",
+    "name": "Grok 4.5",
+    "kind": "text",
+    "profile": "chat",
+    "maxOutputTokens": 32768
+  },
+  {
+    "id": "gemini-3.8-flash",
+    "name": "Gemini 3.8 Flash",
+    "kind": "text",
+    "profile": "chat",
+    "maxOutputTokens": 65535
+  },
+  {
+    "id": "gemini-3.7-flash",
+    "name": "Gemini 3.7 Flash",
+    "kind": "text",
+    "profile": "chat",
+    "maxOutputTokens": 65535
+  },
+  {
+    "id": "gemini-3.6-flash",
+    "name": "Gemini 3.6 Flash",
+    "kind": "text",
+    "profile": "chat",
+    "maxOutputTokens": 65535
+  },
+  {
+    "id": "gemini-3.1-pro-preview",
+    "name": "Gemini 3.1 Pro Preview",
+    "kind": "text",
+    "profile": "chat",
+    "maxOutputTokens": 65536
+  },
+  {
+    "id": "gemini-3.1-flash-lite-preview",
+    "name": "Gemini 3.1 Flash Lite Preview",
+    "kind": "text",
+    "profile": "chat",
+    "maxOutputTokens": 65536
+  },
+  {
+    "id": "gemini-3-flash-preview",
+    "name": "Gemini 3 Flash Preview",
+    "kind": "text",
+    "profile": "chat",
+    "maxOutputTokens": 65535
+  },
+  {
+    "id": "gemini-3.5-flash",
+    "name": "Gemini 3.5 Flash",
+    "kind": "text",
+    "profile": "chat",
+    "maxOutputTokens": 65535
+  },
+  {
+    "id": "gemini-3.5-flash-lite",
+    "name": "Gemini 3.5 Flash Lite",
+    "kind": "text",
+    "profile": "chat",
+    "maxOutputTokens": 65536
+  },
+  {
+    "id": "gemini-2.5-flash",
+    "name": "Gemini 2.5 Flash",
+    "kind": "text",
+    "profile": "chat",
+    "maxOutputTokens": 65535
+  },
+  {
+    "id": "gemini-2.5-flash-lite",
+    "name": "Gemini 2.5 Flash Lite",
+    "kind": "text",
+    "profile": "chat",
+    "maxOutputTokens": 65535
+  },
+  {
+    "id": "gpt-5.4",
+    "name": "GPT-5.4",
+    "kind": "text",
+    "profile": "chat",
+    "maxOutputTokens": 128000
+  },
+  {
+    "id": "gpt-5.4-pro",
+    "name": "GPT-5.4 Pro",
+    "kind": "text",
+    "profile": "chat",
+    "maxOutputTokens": 128000
+  },
+  {
+    "id": "seedance-1-5-pro-251215",
+    "name": "Seedance 1.5 Pro",
+    "kind": "video",
+    "profile": "seedance",
+    "maxOutputTokens": null
+  },
+  {
+    "id": "gpt-5.4-mini",
+    "name": "GPT-5.4 Mini",
+    "kind": "text",
+    "profile": "chat",
+    "maxOutputTokens": 128000
+  },
+  {
+    "id": "gpt-5.4-nano",
+    "name": "GPT-5.4 Nano",
+    "kind": "text",
+    "profile": "chat",
+    "maxOutputTokens": 128000
+  },
+  {
+    "id": "seedance-1-0-pro-250528",
+    "name": "Seedance 1.0 Pro",
+    "kind": "video",
+    "profile": "seedance",
+    "maxOutputTokens": null
+  },
+  {
+    "id": "qwen3.7-max",
+    "name": "Qwen3.7-Max",
+    "kind": "text",
+    "profile": "chat",
+    "maxOutputTokens": 65536
+  },
+  {
+    "id": "seedance-1-0-pro-fast-251015",
+    "name": "Seedance 1.0 Pro Fast",
+    "kind": "video",
+    "profile": "seedance",
+    "maxOutputTokens": null
+  },
+  {
+    "id": "qwen3.8-max",
+    "name": "Qwen3.8-Max",
+    "kind": "text",
+    "profile": "chat",
+    "maxOutputTokens": 131072
+  },
+  {
+    "id": "gemini-3.1-flash-image-preview",
+    "name": "Gemini 3.1 Flash Image (Nano Banana 2)",
+    "kind": "image",
+    "profile": "gemini_image",
+    "maxOutputTokens": null
+  },
+  {
+    "id": "gemini-3.1-flash-image",
+    "name": "Gemini 3.1 Flash Image",
+    "kind": "image",
+    "profile": "gemini_image",
+    "maxOutputTokens": null
+  },
+  {
+    "id": "gemini-3.1-flash-lite-image",
+    "name": "Gemini 3.1 Flash Lite Image",
+    "kind": "image",
+    "profile": "gemini_image",
+    "maxOutputTokens": null
+  },
+  {
+    "id": "gemini-3-pro-image-preview",
+    "name": "Gemini 3 Pro Image (Nano Banana Pro)",
+    "kind": "image",
+    "profile": "gemini_image",
+    "maxOutputTokens": null
+  },
+  {
+    "id": "gemini-3-pro-image",
+    "name": "Gemini 3 Pro Image (Nano Banana Pro)",
+    "kind": "image",
+    "profile": "gemini_image",
+    "maxOutputTokens": null
+  },
+  {
+    "id": "gemini-2.5-flash-image",
+    "name": "Gemini 2.5 Flash Image (Legacy)",
+    "kind": "image",
+    "profile": "gemini_image",
+    "maxOutputTokens": null
+  },
+  {
+    "id": "gpt-image-2",
+    "name": "GPT-Image-2",
+    "kind": "image",
+    "profile": "gpt_image",
+    "maxOutputTokens": null
+  },
+  {
+    "id": "gpt-image-1.5",
+    "name": "GPT-Image-1.5",
+    "kind": "image",
+    "profile": "gpt_image",
+    "maxOutputTokens": null
+  },
+  {
+    "id": "gpt-image-1-mini",
+    "name": "GPT-Image-1 Mini",
+    "kind": "image",
+    "profile": "gpt_image",
+    "maxOutputTokens": null
+  },
+  {
+    "id": "qwen-max",
+    "name": "Qwen-Max",
+    "kind": "text",
+    "profile": "chat",
+    "maxOutputTokens": null
+  },
+  {
+    "id": "qwen3.5-flash",
+    "name": "Qwen3.5-Flash",
+    "kind": "text",
+    "profile": "chat",
+    "maxOutputTokens": null
+  },
+  {
+    "id": "qwen3.5-27b",
+    "name": "Qwen3.5-27b",
+    "kind": "text",
+    "profile": "chat",
+    "maxOutputTokens": null
+  },
+  {
+    "id": "qwen3.5-35b-a3b",
+    "name": "Qwen3.5-35b-A3b",
+    "kind": "text",
+    "profile": "chat",
+    "maxOutputTokens": null
+  },
+  {
+    "id": "qwen3.5-122b-a10b",
+    "name": "Qwen3.5-122b-A10b",
+    "kind": "text",
+    "profile": "chat",
+    "maxOutputTokens": null
+  },
+  {
+    "id": "qwen3.5-397b-a17b",
+    "name": "Qwen3.5-397b-A17b",
+    "kind": "text",
+    "profile": "chat",
+    "maxOutputTokens": null
+  },
+  {
+    "id": "qwen3.6-27b",
+    "name": "Qwen3.6-27b",
+    "kind": "text",
+    "profile": "chat",
+    "maxOutputTokens": null
+  },
+  {
+    "id": "qwen3.6-35b-a3b",
+    "name": "Qwen3.6-35b-A3b",
+    "kind": "text",
+    "profile": "chat",
+    "maxOutputTokens": null
+  },
+  {
+    "id": "qwen3.5-plus",
+    "name": "Qwen3.5-Plus",
+    "kind": "text",
+    "profile": "chat",
+    "maxOutputTokens": null
+  },
+  {
+    "id": "qwen-flash",
+    "name": "Qwen-Flash",
+    "kind": "text",
+    "profile": "chat",
+    "maxOutputTokens": null
+  },
+  {
+    "id": "qwen3-max",
+    "name": "Qwen3-Max",
+    "kind": "text",
+    "profile": "chat",
+    "maxOutputTokens": null
+  },
+  {
+    "id": "qwen3-max-preview",
+    "name": "Qwen3-Max-Preview",
+    "kind": "text",
+    "profile": "chat",
+    "maxOutputTokens": null
+  },
+  {
+    "id": "qwen3.6-plus",
+    "name": "Qwen3.6-Plus",
+    "kind": "text",
+    "profile": "chat",
+    "maxOutputTokens": null
+  },
+  {
+    "id": "qwen3.6-flash",
+    "name": "Qwen3.6-Flash",
+    "kind": "text",
+    "profile": "chat",
+    "maxOutputTokens": null
+  },
+  {
+    "id": "qwen3.6-max-preview",
+    "name": "Qwen3.6-Max-Preview",
+    "kind": "text",
+    "profile": "chat",
+    "maxOutputTokens": null
+  },
+  {
+    "id": "qwen-image",
+    "name": "Qwen-Image",
+    "kind": "image",
+    "profile": "qwen_image",
+    "maxOutputTokens": null
+  },
+  {
+    "id": "qwen-image-2.0",
+    "name": "Qwen-Image-2.0",
+    "kind": "image",
+    "profile": "qwen_image",
+    "maxOutputTokens": null
+  },
+  {
+    "id": "qwen-image-2.0-pro",
+    "name": "Qwen-Image-2.0-Pro",
+    "kind": "image",
+    "profile": "qwen_image",
+    "maxOutputTokens": null
+  },
+  {
+    "id": "qwen-image-edit",
+    "name": "Qwen-Image-Edit",
+    "kind": "image",
+    "profile": "qwen_image",
+    "maxOutputTokens": null
+  },
+  {
+    "id": "qwen-image-edit-max",
+    "name": "Qwen-Image-Edit-Max",
+    "kind": "image",
+    "profile": "qwen_image",
+    "maxOutputTokens": null
+  },
+  {
+    "id": "qwen-image-edit-plus",
+    "name": "Qwen-Image-Edit-Plus",
+    "kind": "image",
+    "profile": "qwen_image",
+    "maxOutputTokens": null
+  },
+  {
+    "id": "qwen-image-max",
+    "name": "Qwen-Image-Max",
+    "kind": "image",
+    "profile": "qwen_image",
+    "maxOutputTokens": null
+  },
+  {
+    "id": "qwen-image-plus",
+    "name": "Qwen-Image-Plus",
+    "kind": "image",
+    "profile": "qwen_image",
+    "maxOutputTokens": null
+  },
+  {
+    "id": "qwen3-tts-flash",
+    "name": "Qwen3-TTS-Flash",
+    "kind": "audio",
+    "profile": "tts",
+    "maxOutputTokens": null
+  },
+  {
+    "id": "qwen3-tts-instruct-flash",
+    "name": "Qwen3-TTS-Instruct-Flash",
+    "kind": "audio",
+    "profile": "tts",
+    "maxOutputTokens": null
+  },
+  {
+    "id": "wan2.5-t2v-preview",
+    "name": "Wan 2.5 T2V Preview",
+    "kind": "video",
+    "profile": "wan",
+    "maxOutputTokens": null
+  },
+  {
+    "id": "wan2.6-t2v",
+    "name": "Wan 2.6 T2V",
+    "kind": "video",
+    "profile": "wan",
+    "maxOutputTokens": null
+  },
+  {
+    "id": "wan2.5-i2v-preview",
+    "name": "Wan 2.5 I2V Preview",
+    "kind": "video",
+    "profile": "wan",
+    "maxOutputTokens": null
+  },
+  {
+    "id": "wan2.6-i2v",
+    "name": "Wan 2.6 I2V",
+    "kind": "video",
+    "profile": "wan",
+    "maxOutputTokens": null
+  },
+  {
+    "id": "wan2.6-i2v-flash",
+    "name": "Wan 2.6 I2V Flash",
+    "kind": "video",
+    "profile": "wan",
+    "maxOutputTokens": null
+  },
+  {
+    "id": "wan2.6-r2v",
+    "name": "Wan 2.6 R2V",
+    "kind": "video",
+    "profile": "wan",
+    "maxOutputTokens": null
+  },
+  {
+    "id": "wan2.6-r2v-flash",
+    "name": "Wan 2.6 R2V Flash",
+    "kind": "video",
+    "profile": "wan",
+    "maxOutputTokens": null
+  },
+  {
+    "id": "seedream-4-0-250828",
+    "name": "Seedream 4.0",
+    "kind": "image",
+    "profile": "seedream",
+    "maxOutputTokens": null
+  },
+  {
+    "id": "seedream-4-5-251128",
+    "name": "Seedream 4.5",
+    "kind": "image",
+    "profile": "seedream",
+    "maxOutputTokens": null
+  },
+  {
+    "id": "seedream-5-0-lite-260128",
+    "name": "Seedream 5.0 Lite",
+    "kind": "image",
+    "profile": "seedream",
+    "maxOutputTokens": null
+  },
+  {
+    "id": "grok-imagine-image",
+    "name": "Grok Imagine Image",
+    "kind": "image",
+    "profile": "grok_image",
+    "maxOutputTokens": null
+  },
+  {
+    "id": "grok-imagine-image-quality",
+    "name": "Grok Imagine Image (Quality)",
+    "kind": "image",
+    "profile": "grok_image",
+    "maxOutputTokens": null
+  },
+  {
+    "id": "grok-imagine-video",
+    "name": "Grok Imagine Video",
+    "kind": "video",
+    "profile": "grok_video",
+    "maxOutputTokens": null
+  },
+  {
+    "id": "grok-imagine-video-1.5-preview",
+    "name": "Grok Imagine Video 1.5 (Preview)",
+    "kind": "video",
+    "profile": "grok_video",
+    "maxOutputTokens": null
+  },
+  {
+    "id": "grok-4.3",
+    "name": "Grok 4.3",
+    "kind": "text",
+    "profile": "chat",
+    "maxOutputTokens": 32768
+  },
+  {
+    "id": "grok-4.20-0309-reasoning",
+    "name": "Grok 4.20 Reasoning",
+    "kind": "text",
+    "profile": "chat",
+    "maxOutputTokens": 32768
+  },
+  {
+    "id": "grok-4.20-0309-non-reasoning",
+    "name": "Grok 4.20 Non-Reasoning",
+    "kind": "text",
+    "profile": "chat",
+    "maxOutputTokens": 32768
+  },
+  {
+    "id": "grok-4.20-multi-agent-0309",
+    "name": "Grok 4.20 Multi-Agent",
+    "kind": "text",
+    "profile": "chat",
+    "maxOutputTokens": 32768
+  },
+  {
+    "id": "grok-build-0.1",
+    "name": "Grok Build 0.1",
+    "kind": "text",
+    "profile": "chat",
+    "maxOutputTokens": 16384
+  },
+  {
+    "id": "qwen3.7-plus",
+    "name": "Qwen3.7-Plus",
+    "kind": "text",
+    "profile": "chat",
+    "maxOutputTokens": null
+  },
+  {
+    "id": "glm-5.2",
+    "name": "GLM-5.2",
+    "kind": "text",
+    "profile": "chat",
+    "maxOutputTokens": 131072
+  },
+  {
+    "id": "kimi-k2.7-code",
+    "name": "Kimi K2.7 Code",
+    "kind": "text",
+    "profile": "chat",
+    "maxOutputTokens": 32768
+  },
+  {
+    "id": "kimi-k3",
+    "name": "Kimi K3",
+    "kind": "text",
+    "profile": "chat",
+    "maxOutputTokens": 131072
+  },
+  {
+    "id": "qwen3.7-flash",
+    "name": "Qwen3.7-Flash",
+    "kind": "text",
+    "profile": "chat",
+    "maxOutputTokens": 65536
+  },
+  {
+    "id": "hy3",
+    "name": "Hy3",
+    "kind": "text",
+    "profile": "chat",
+    "maxOutputTokens": 128000
+  },
+  {
+    "id": "hy-mt2-plus",
+    "name": "Hy-MT2-Plus",
+    "kind": "text",
+    "profile": "chat",
+    "maxOutputTokens": 4000
+  },
+  {
+    "id": "minimax-m3",
+    "name": "MiniMax-M3",
+    "kind": "text",
+    "profile": "chat",
+    "maxOutputTokens": 1000000
+  },
+  {
+    "id": "glm-5-turbo",
+    "name": "GLM-5-Turbo",
+    "kind": "text",
+    "profile": "chat",
+    "maxOutputTokens": 128000
+  },
+  {
+    "id": "glm-5v-turbo",
+    "name": "GLM-5V-Turbo",
+    "kind": "text",
+    "profile": "chat",
+    "maxOutputTokens": 128000
+  },
+  {
+    "id": "kimi-k2.6",
+    "name": "Kimi K2.6",
+    "kind": "text",
+    "profile": "chat",
+    "maxOutputTokens": 32768
+  },
+  {
+    "id": "qwen-audio-3.0-tts-plus",
+    "name": "Qwen-Audio-3.0-TTS-Plus",
+    "kind": "audio",
+    "profile": "tts",
+    "maxOutputTokens": null
+  },
+  {
+    "id": "qwen-audio-3.0-tts-flash",
+    "name": "Qwen-Audio-3.0-TTS-Flash",
+    "kind": "audio",
+    "profile": "tts",
+    "maxOutputTokens": null
+  },
+  {
+    "id": "kimi-k2.7-code-highspeed",
+    "name": "Kimi K2.7 Code HighSpeed",
+    "kind": "text",
+    "profile": "chat",
+    "maxOutputTokens": 32768
+  },
+  {
+    "id": "minimax-video-h3",
+    "name": "minimax-video-h3",
+    "kind": "video",
+    "profile": "minimax",
+    "maxOutputTokens": null
+  },
+  {
+    "id": "minimax-video-h3-max",
+    "name": "minimax-video-h3-max",
+    "kind": "video",
+    "profile": "minimax",
+    "maxOutputTokens": null
+  },
+  {
+    "id": "kling-video-v3",
+    "name": "kling-video-v3",
+    "kind": "video",
+    "profile": "kling",
+    "maxOutputTokens": null
+  },
+  {
+    "id": "kling-video-v3-turbo",
+    "name": "kling-video-v3-turbo",
+    "kind": "video",
+    "profile": "kling",
+    "maxOutputTokens": null
+  },
+  {
+    "id": "kling-video-v3-omni",
+    "name": "kling-video-v3-omni",
+    "kind": "video",
+    "profile": "kling",
+    "maxOutputTokens": null
+  },
+  {
+    "id": "kling-video-motion-control-v3.0",
+    "name": "kling-video-motion-control-v3.0",
+    "kind": "video",
+    "profile": "motion",
+    "maxOutputTokens": null
+  },
+  {
+    "id": "kling-video-motion-control-v2.6",
+    "name": "kling-video-motion-control-v2.6",
+    "kind": "video",
+    "profile": "motion",
+    "maxOutputTokens": null
+  },
+  {
+    "id": "glm-5.3-flashx",
+    "name": "GLM-5.3-FlashX",
+    "kind": "text",
+    "profile": "chat",
+    "maxOutputTokens": 131072
+  },
+  {
+    "id": "hy4-preview",
+    "name": "Hy4 preview",
+    "kind": "text",
+    "profile": "chat",
+    "maxOutputTokens": 65536
+  },
+  {
+    "id": "qwen-audio-3.1-tts-flash",
+    "name": "Qwen-Audio 3.1 TTS Flash",
+    "kind": "audio",
+    "profile": "tts",
+    "maxOutputTokens": null
+  },
+  {
+    "id": "dola-seed-2-1-turbo",
+    "name": "Dola Seed 2.1 Turbo",
+    "kind": "text",
+    "profile": "chat",
+    "maxOutputTokens": null
+  },
+  {
+    "id": "dola-seed-2-0-pro",
+    "name": "Dola Seed 2.0 Pro",
+    "kind": "text",
+    "profile": "chat",
+    "maxOutputTokens": null
+  },
+  {
+    "id": "glm-5.3",
+    "name": "GLM-5.3",
+    "kind": "text",
+    "profile": "chat",
+    "maxOutputTokens": 131072
+  },
+  {
+    "id": "glm-5.3-flash",
+    "name": "GLM-5.3-Flash",
+    "kind": "text",
+    "profile": "chat",
+    "maxOutputTokens": 131072
+  },
+  {
+    "id": "claude-sonnet-5",
+    "name": "Claude Sonnet 5",
+    "kind": "text",
+    "profile": "chat",
+    "maxOutputTokens": null
+  },
+  {
+    "id": "happyhorse-1.1-t2v",
+    "name": "HappyHorse 1.1 T2V",
+    "kind": "video",
+    "profile": "happyhorse",
+    "maxOutputTokens": null
+  }
+]

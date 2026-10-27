@@ -14,6 +14,8 @@
 
 供应商 CSV 接入、独立路由密钥与同名价格继承见 [供应商清单接入](docs/PROVIDER-INVENTORY.md)；本轮模拟测试与待配置事项见 [供应商接入回归记录](docs/PROVIDER-INTEGRATION-QA-2026-10-26.md)。
 
+OpenCrow 专用渠道、模型同步及价格处理见 [OpenCrow 接入说明](docs/OPENCROW.md)。
+
 生成结果可转存阿里云 OSS，在「管理后台 → 站点设置 → 生成结果存储」配置。默认 Bucket 为 `flowlinght`，Region 为 `cn-shanghai`，文件前缀为 `phantomframe/uploads/`，上传与读取加速默认开启；CDN 域名由后台填写。后台已保存的存储配置优先于环境变量和默认值，已有部署需在此处同步更新文件前缀。生产模式默认使用 OSS，本地开发默认使用本地文件，可用 `STORAGE_DRIVER` 覆盖。启用 OSS 时先完成上传再将任务置为成功，接口返回本站 OSS / CDN 链接。AccessKey ID / Secret 成对填写、加密存储，接口与操作日志不回显；未配置凭据时会在扣费和调用供应商之前阻止提交。
 
 ## 上游调用日志

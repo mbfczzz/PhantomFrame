@@ -187,7 +187,11 @@ func (a *App) importProviderInventory(input io.Reader, apply, startup bool) (Row
 			for _, r := range routes {
 				pid := inventoryProviderID(r.Vendor)
 				s.Exec("INSERT IGNORE INTO providers(id,name,protocol,base_url,api_key,enabled,config) VALUES(?,?,'inventory',?,'',1,'{}')", pid, r.Vendor, r.Base)
-				old := s.One("SELECT api_key FROM inventory_routes WHERE id=? FOR UPDATE", r.ID)
+				old := s.One("SELECT * FROM inventory_routes WHERE id=? FOR UPDATE", r.ID)
+				if old != nil && (!strings.EqualFold(str(old["vendor"]), r.Vendor) || old["model"] != r.Model || old["modality"] != r.Modality) {
+					fail(409, "清单不能复用已有路由编号绑定不同供应商、模型或类型，请为新模型使用新的 route_id")
+				}
+				bindingChanged := old != nil && (old["upstream_model"] != r.Upstream || old["base_url"] != r.Base || jsonText(object(old["config"])) != jsonText(r.Config))
 				encrypted := a.encrypt(r.Key)
 				if old != nil {
 					if previous, e := a.decrypt(str(old["api_key"])); e == nil && previous == r.Key {
@@ -205,6 +209,9 @@ func (a *App) importProviderInventory(input io.Reader, apply, startup bool) (Row
 				// binding requires renewed review, and a disabled/incomplete source stays off.
 				s.Exec("UPDATE models SET enabled=0 WHERE id=? AND (provider_id<>? OR upstream_model<>? OR type<>? OR ?=0 OR ?='' OR ?=0)", mid, pid, r.Upstream, r.Modality, r.Enabled, r.Base, inventoryCredentialReady(r.Key))
 				s.Exec("UPDATE models SET provider_id=?,upstream_model=?,type=? WHERE id=?", pid, r.Upstream, r.Modality, mid)
+				if bindingChanged {
+					s.Exec("UPDATE models SET enabled=0 WHERE id=?", mid)
+				}
 				switch outcome := inheritInventoryPrices(s, r, sources); outcome {
 				case "inherited":
 					inherited++
@@ -236,6 +243,17 @@ func (a *App) ImportProviderInventoryFile(path string) (Row, error) {
 }
 
 func (a *App) inventoryRoutes(m *http.ServeMux) {
+	a.route(m, "POST /api/admin/provider-inventory/{id}/parameters", 3, func(r *Request) any {
+		a.Tx(func(s Store) {
+			row := s.One("SELECT * FROM inventory_routes WHERE id=? FOR UPDATE", r.ID())
+			if row == nil {
+				fail(404, "路由不存在")
+			}
+			s.Exec("UPDATE models SET parameters=?,enabled=0 WHERE inventory_route_id=?", jsonText(inventoryParameters(inventoryRouteFromRow(row))), r.ID())
+			s.Audit(r.UID(), "inventory.parameters.refresh", Row{"routeId": r.ID()})
+		})
+		return Row{"ok": true}
+	})
 	a.route(m, "PATCH /api/admin/provider-inventory/{id}", 3, func(r *Request) any {
 		body := r.Body()
 		a.Tx(func(s Store) {

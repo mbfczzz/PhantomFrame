@@ -1,12 +1,13 @@
 import { useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { Upload, Settings2 } from "lucide-react";
+import { Upload, Settings2, RefreshCw } from "lucide-react";
 import {
   api,
   post,
   useApi,
   useAction,
   useRefresh,
+  useConfirm,
   PageHeader,
   Loading,
   ErrorState,
@@ -42,6 +43,7 @@ export default function ProviderInventory() {
   const fileInput = useRef<HTMLInputElement>(null);
   const { act, busy } = useAction();
   const refresh = useRefresh();
+  const confirm = useConfirm();
   const rows = (data || []).filter((row) =>
     `${row.vendor} ${row.model} ${row.upstreamModel} ${row.id} ${routeState(row)}`
       .toLowerCase()
@@ -151,6 +153,37 @@ export default function ProviderInventory() {
                       >
                         模型与价格
                       </Link>
+                      <button
+                        className="button small"
+                        disabled={busy}
+                        onClick={async () => {
+                          if (
+                            await confirm(
+                              "将恢复此路由当前支持的参数并停用模型，保留已有价格。请核对价格与新规格后重新启用。",
+                              {
+                                title: "更新参数规范",
+                                confirmLabel: "更新并停用模型",
+                              },
+                            )
+                          ) {
+                            act(async () => {
+                              await post(
+                                `/admin/provider-inventory/${encodeURIComponent(row.id)}/parameters`,
+                                {},
+                              );
+                              refresh(
+                                "/admin/provider-inventory",
+                                "/admin/models",
+                                "/models",
+                                "/pricing/quote",
+                              );
+                            }, "参数已更新，请核对价格后启用模型");
+                          }
+                        }}
+                      >
+                        <RefreshCw size={14} />
+                        更新参数规范
+                      </button>
                     </div>
                   </td>
                 </tr>

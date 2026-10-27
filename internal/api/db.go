@@ -369,6 +369,11 @@ func (s Store) ModelView(m Row) Row {
 	v["parameters"] = imageRequestParameters(str(m["type"]), array(m["parameters"]))
 	if m["type"] == "image" {
 		v["maxOutputsPerRequest"] = imageOutputLimit(str(m["upstream_model"]))
+		if str(m["inventory_route_id"]) != "" {
+			if route := s.One("SELECT model FROM inventory_routes WHERE id=?", m["inventory_route_id"]); route != nil {
+				v["maxOutputsPerRequest"] = max(imageOutputLimit(str(m["upstream_model"])), imageOutputLimit(str(route["model"])))
+			}
+		}
 		v["description"] = imageRequestDescription("image", str(m["upstream_model"]), str(m["description"]))
 	}
 	v["providerName"] = p["name"]

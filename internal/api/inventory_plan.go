@@ -60,6 +60,9 @@ func inventoryDimensions(resolution, ratio string) (int, int) {
 // Pure request compilation is shared by pre-debit validation and mock contract tests.
 // Route credentials never enter the body; media inputs have already passed ownership checks.
 func inventoryPlan(j, p Row, refs map[string][]string, files []Row) (inventoryCall, string, string, error) {
+	if err := inventoryValidateNativeParameters(p, object(j["params"])); err != nil {
+		return inventoryCall{}, "", "", err
+	}
 	call, poll, method, err := inventoryPlanNative(j, p, refs, files)
 	cfg := object(p["config"])
 	if override := str(cfg["submit_path_override"]); override != "" {
@@ -257,6 +260,14 @@ func inventoryPlanNative(j, p Row, refs map[string][]string, files []Row) (inven
 			}
 			call.Body = Row{"model": model, "content": parts, "ratio": ratio, "resolution": resolution, "duration": duration, "generate_audio": false}
 		} else {
+			if vendor == "infotoken" {
+				body["resolution"], body["quality"], body["aspect_ratio"] = strings.ToLower(resolution), quality, ratio
+				if len(images) > 0 {
+					call.Path = "/v1/images/edits"
+					body["image_urls"] = images
+				}
+				break
+			}
 			body["response_format"] = "url"
 			w, h := inventoryDimensions(resolution, ratio)
 			body["size"] = fmt.Sprintf("%dx%d", w, h)

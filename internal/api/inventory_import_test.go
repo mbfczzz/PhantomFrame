@@ -192,6 +192,9 @@ func TestInventoryEveryImportedRouteHasARequestPlan(t *testing.T) {
 					params[str(p["name"])] = []any{}
 				} else {
 					params[str(p["name"])] = p["default"]
+					if truth(p["required"]) && p["type"] == "text" && str(p["default"]) == "" {
+						params[str(p["name"])] = "test-explicit-value"
+					}
 				}
 			}
 			refs := map[string][]string{"image": {}, "video": {}, "audio": {}}

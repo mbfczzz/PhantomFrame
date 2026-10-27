@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"strings"
+	"unicode/utf8"
 )
 
 // Model contracts copied from the user's apiRouter catalog, without credentials.
@@ -95,6 +96,9 @@ func inventoryKinoviBody(source, model, prompt string, params Row, refs map[stri
 	spec := inventoryKinoviSpec(source, model)
 	if spec == nil {
 		return nil, fmt.Errorf("供应商 Kinovi 模型未找到对应协议")
+	}
+	if maximum := integer(spec["maxPrompt"]); maximum > 0 && int64(utf8.RuneCountInString(prompt)) > maximum {
+		return nil, fmt.Errorf("供应商 Kinovi 此模型提示词最多 %d 个字符", maximum)
 	}
 	input := Row{"prompt": prompt}
 	profile := str(spec["profile"])

@@ -263,6 +263,9 @@ func (a *App) submit(r *Request) any {
 		}
 		s.One("SELECT id FROM models WHERE id=? FOR UPDATE", mid)
 		q := a.quote(s, mid, r.UID(), params)
+		if q.Provider["protocol"] == "inventory" {
+			a.validateInventoryQuote(s, q.Model, q.Provider, q.Params, r.UID(), prompt)
+		}
 		storage, storageErr := a.storageConfig(s)
 		if storageErr != nil {
 			fail(400, storageErr.Error())
@@ -293,6 +296,9 @@ func (a *App) submit(r *Request) any {
 		snapshot["parameters"] = array(q.Model["parameters"])
 		if q.Model["type"] == "image" {
 			snapshot["maxOutputsPerRequest"] = imageOutputLimit(str(q.Model["upstream_model"]))
+			if q.Provider["protocol"] == "inventory" {
+				snapshot["maxOutputsPerRequest"] = inventoryImageOutputLimit(snapshot)
+			}
 		}
 		var idem any
 		if key != "" {

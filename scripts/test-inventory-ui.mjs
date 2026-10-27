@@ -149,13 +149,11 @@ try {
   page.setDefaultTimeout(15000);
   page.on("pageerror", (e) => errors.push(e.message));
   await page.goto(base + "/admin/inventory", { waitUntil: "networkidle" });
-  await page
-    .locator('input[type="file"]')
-    .setInputFiles({
-      name: "synthetic-provider-routes.csv",
-      mimeType: "text/csv",
-      buffer: Buffer.from(csv),
-    });
+  await page.locator('input[type="file"]').setInputFiles({
+    name: "synthetic-provider-routes.csv",
+    mimeType: "text/csv",
+    buffer: Buffer.from(csv),
+  });
   const preview = page.getByRole("dialog", {
     name: "导入供应商路由",
     exact: true,
@@ -189,6 +187,36 @@ try {
   );
   await page.keyboard.press("Escape");
   check("route configuration never reveals imported credentials");
+  const repairRoute = routes.find(
+    (row) => row.vendor === "APIYI" && row.model === "gpt-5.4",
+  );
+  await page
+    .getByRole("textbox", { name: "搜索供应商、模型、路由或待配置状态" })
+    .fill(repairRoute.id);
+  await page.getByRole("button", { name: "更新参数规范", exact: true }).click();
+  const confirmation = page.getByRole("dialog", {
+    name: "更新参数规范",
+    exact: true,
+  });
+  await confirmation.waitFor();
+  await confirmation
+    .getByRole("button", { name: "更新并停用模型", exact: true })
+    .click();
+  await confirmation.waitFor({ state: "hidden" });
+  await page
+    .getByText("参数已更新，请核对价格后启用模型", { exact: true })
+    .waitFor();
+  const repaired = (await api(ctx, "/admin/models")).find(
+    (model) => model.id === repairRoute.modelId,
+  );
+  assert.equal(repaired.enabled, false);
+  assert.ok(
+    repaired.parameters.some((field) => field.name === "maxOutputTokens"),
+  );
+  assert.equal(requests.length, 0);
+  check(
+    "parameter repair confirms its impact, disables the model and preserves independent route management without upstream requests",
+  );
   const wanted = [
     { vendor: "APIYI", model: "gpt-5.4", kind: "text" },
     { vendor: "openrouter", model: "tts-gemini-openrouter", kind: "audio" },
@@ -238,14 +266,11 @@ try {
       .getByLabel("提示词", { exact: true })
       .fill("本地模拟验证 " + target.kind);
     if (target.kind === "upscale") {
-      await page
-        .locator('input[type="file"]')
-        .first()
-        .setInputFiles({
-          name: "reference.webm",
-          mimeType: "video/webm",
-          buffer: video,
-        });
+      await page.locator('input[type="file"]').first().setInputFiles({
+        name: "reference.webm",
+        mimeType: "video/webm",
+        buffer: video,
+      });
       await page.locator(".reference-item").first().waitFor();
     }
     await page.getByRole("button", { name: "开始生成", exact: true }).click();
@@ -272,15 +297,28 @@ try {
       );
       assert.ok(await detail.locator("pre").count());
     }
-    const outputElement = detail.locator(target.kind === "text" ? "pre" : target.kind === "audio" ? "audio" : "video").first();
+    const outputElement = detail
+      .locator(
+        target.kind === "text"
+          ? "pre"
+          : target.kind === "audio"
+            ? "audio"
+            : "video",
+      )
+      .first();
     await outputElement.waitFor();
-    await outputElement.evaluate(el => el.scrollIntoView({ behavior: "instant", block: "center" }));
+    await outputElement.evaluate((el) =>
+      el.scrollIntoView({ behavior: "instant", block: "center" }),
+    );
     await page.screenshot({
       path: join(output, target.kind + "-desktop.png"),
-      fullPage: false, animations: "disabled",
+      fullPage: false,
+      animations: "disabled",
     });
     await page.setViewportSize({ width: 390, height: 844 });
-    await outputElement.evaluate(el => el.scrollIntoView({ behavior: "instant", block: "center" }));
+    await outputElement.evaluate((el) =>
+      el.scrollIntoView({ behavior: "instant", block: "center" }),
+    );
     assert.equal(
       await page.evaluate(
         () => document.documentElement.scrollWidth > innerWidth,
@@ -289,7 +327,8 @@ try {
     );
     await page.screenshot({
       path: join(output, target.kind + "-mobile.png"),
-      fullPage: false, animations: "disabled",
+      fullPage: false,
+      animations: "disabled",
     });
     await page.keyboard.press("Escape");
     await page.setViewportSize({ width: 1440, height: 1000 });

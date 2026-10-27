@@ -52,9 +52,7 @@ func (a *App) saveProviderModelKey(r *Request) any {
 	}
 	var result Row
 	a.Tx(func(s Store) {
-		if s.One("SELECT id FROM providers WHERE id=? FOR UPDATE", r.ID()) == nil {
-			fail(404, "渠道不存在")
-		}
+		inventoryRejectLegacyCatalog(s.One("SELECT id,protocol FROM providers WHERE id=? FOR UPDATE", r.ID()))
 		entry := s.One("SELECT * FROM provider_models WHERE id=? AND provider_id=? FOR UPDATE", r.R.PathValue("entryID"), r.ID())
 		if entry == nil {
 			fail(404, "渠道模型不存在")
@@ -116,9 +114,7 @@ func (a *App) saveProviderModel(r *Request) any {
 	}
 	var result Row
 	a.Tx(func(s Store) {
-		if s.One("SELECT id FROM providers WHERE id=? FOR UPDATE", r.ID()) == nil {
-			fail(404, "渠道不存在")
-		}
+		inventoryRejectLegacyCatalog(s.One("SELECT id,protocol FROM providers WHERE id=? FOR UPDATE", r.ID()))
 		if update {
 			entry := s.One("SELECT * FROM provider_models WHERE id=? AND provider_id=? FOR UPDATE", entryID, r.ID())
 			if entry == nil {
@@ -179,6 +175,7 @@ func (a *App) publishProviderModel(r *Request) any {
 		if provider == nil {
 			fail(404, "渠道不存在")
 		}
+		inventoryRejectLegacyCatalog(provider)
 		if provider["protocol"] == "media-upload" {
 			fail(400, "素材上传服务不能发布生成模型")
 		}
@@ -212,6 +209,7 @@ func (a *App) syncProviderModels(r *Request) any {
 	if provider == nil {
 		fail(404, "渠道不存在")
 	}
+	inventoryRejectLegacyCatalog(provider)
 	if provider["protocol"] == "demo" {
 		fail(400, "演示渠道没有上游模型接口，请手动添加模型")
 	}

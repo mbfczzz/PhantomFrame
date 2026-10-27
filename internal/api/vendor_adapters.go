@@ -99,6 +99,9 @@ func vendorHTTPBounded(ctx context.Context, base, key, path string, body io.Read
 	if idem != "" && method == "POST" {
 		req.Header.Set("Idempotency-Key", idem)
 	}
+	if method == "POST" {
+		req.GetBody = nil
+	}
 	client := upstreamClient()
 	client.Timeout = 10 * time.Minute
 	res, e := client.Do(req)

@@ -144,8 +144,11 @@ func inventoryConstrainParameters(r InventoryRoute, params []any) []any {
 		p := clone(object(raw))
 		name := str(p["name"])
 		if name == "resolution" {
-			if vendor == "dsas" || vendor == "huanwangai" {
+			if vendor == "dsas" || vendor == "huanwangai" || vendor == "afrifex" && strings.HasPrefix(r.Model, "seedance-") {
 				continue
+			}
+			if vendor == "kinovi" && strings.Contains(r.Model, "kling") && strings.Contains(r.Model, "4k") {
+				p = choice(name, str(p["label"]), []any{"4k"}, "4k")
 			}
 			if vendor == "atlascloud" || vendor == "midjourney-api" && strings.Contains(r.Model, "midjourney") {
 				p = choice(name, str(p["label"]), []any{"1k", "2k"}, "1k")
@@ -158,7 +161,7 @@ func inventoryConstrainParameters(r InventoryRoute, params []any) []any {
 			if vendor == "kinovi" && inventoryKinoviSpec(r.Model, r.Upstream)["profile"] != "gpt" {
 				continue
 			}
-			if vendor == "dimensio" {
+			if vendor == "dimensio" || vendor == "infotoken" || vendor == "runninghub" {
 				p = choice(name, "细节质量", []any{"low", "medium", "high"}, "medium")
 			}
 		}
@@ -184,6 +187,9 @@ func inventoryConstrainParameters(r InventoryRoute, params []any) []any {
 			p = choice(name, str(p["label"]), []any{"1k", "4k"}, "1k")
 		}
 		if vendor == "runware" && r.Modality == "video" {
+			if strings.HasSuffix(r.Upstream, "-standard") && name == "aspectRatio" {
+				p = choice(name, str(p["label"]), []any{"16:9"}, "16:9")
+			}
 			if name == "imageUrls" {
 				p["label"] = "首帧 / 尾帧图片（按顺序）"
 				if strings.Contains(r.Model, "hailuo-2-3") || strings.Contains(r.Model, "happyhorse") {
@@ -223,7 +229,7 @@ func inventoryConstrainParameters(r InventoryRoute, params []any) []any {
 	return result
 }
 
-func (a *App) validateInventoryQuote(s Store, m, p, params Row, uid string) {
+func (a *App) validateInventoryQuote(s Store, m, p, params Row, uid string, prompts ...string) {
 	refs := map[string][]string{"image": {}, "video": {}, "audio": {}}
 	files := []Row{}
 	var total int64
@@ -248,7 +254,11 @@ func (a *App) validateInventoryQuote(s Store, m, p, params Row, uid string) {
 	p = clone(p)
 	p["type"] = m["type"]
 	p["upstreamModel"] = m["upstream_model"]
-	_, _, _, err := inventoryPlan(Row{"id": "preflight", "params": params, "prompt": "preflight"}, p, refs, files)
+	prompt := "preflight"
+	if len(prompts) > 0 {
+		prompt = prompts[0]
+	}
+	_, _, _, err := inventoryPlan(Row{"id": "preflight", "params": params, "prompt": prompt}, p, refs, files)
 	if err != nil {
 		fail(400, err.Error())
 	}

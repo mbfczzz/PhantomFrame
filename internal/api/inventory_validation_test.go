@@ -91,6 +91,10 @@ func TestInventoryNativeModelsAndSpecialFields(t *testing.T) {
 	}
 	p := Row{"type": "image", "config": Row{"vendor": "APIYI", "sourceModel": "gpt-image-2-vip-APIYI", "upstreamModel": "gpt-image-2-vip"}}
 	call, _, _, e := inventoryPlan(Row{"id": "local", "prompt": "fixture", "params": Row{"quality": "high", "resolution": "1k", "aspectRatio": "1:1"}}, p, nil, nil)
+	if e == nil {
+		t.Fatal("unsupported VIP quality must fail before billing")
+	}
+	call, _, _, e = inventoryPlan(Row{"id": "local", "prompt": "fixture", "params": Row{"resolution": "1k", "aspectRatio": "1:1"}}, p, nil, nil)
 	if e != nil {
 		t.Fatal(e)
 	}

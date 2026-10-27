@@ -4,8 +4,10 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
+	"net"
 	"net/http"
 	"net/url"
 	"strings"
@@ -18,6 +20,20 @@ type inventoryCall struct {
 	Form                 Row
 	Files                []vendorFile
 	Repeated             map[string][]string
+}
+
+type inventoryConnectionError struct{}
+
+func (inventoryConnectionError) Error() string {
+	return "供应商连接中断，请根据本站任务编号核对上游"
+}
+
+func inventoryProviderAuth(provider Row) string {
+	cfg := object(provider["config"])
+	if strings.EqualFold(str(cfg["vendor"]), "mynewapi") && strings.HasPrefix(str(cfg["sourceModel"]), "nano-banana") {
+		return "x-goog-api-key"
+	}
+	return inventoryAuth(str(cfg["vendor"]))
 }
 
 func inventoryEndpoint(base, path string) (string, error) {
@@ -83,9 +99,14 @@ func (a *App) inventoryHTTP(ctx context.Context, p Row, key string, call invento
 	if e != nil {
 		return nil, nil, "", fmt.Errorf("供应商请求构造失败")
 	}
+	// Even with a deduplication header, a vendor may not implement idempotency.
+	// Disable net/http's implicit replay of POST bodies on reused connections.
+	if method == "POST" {
+		req.GetBody = nil
+	}
 	header := call.Header
 	if header == "" {
-		header = inventoryAuth(str(object(p["config"])["vendor"]))
+		header = inventoryProviderAuth(p)
 	}
 	if header == "Authorization" {
 		req.Header.Set(header, "Bearer "+key)
@@ -101,7 +122,10 @@ func (a *App) inventoryHTTP(ctx context.Context, p Row, key string, call invento
 	client.Timeout = 90 * time.Second
 	res, e := client.Do(req)
 	if e != nil {
-		return nil, nil, "", fmt.Errorf("供应商连接失败，请根据本站任务编号核对上游")
+		if ctx.Err() != nil {
+			return nil, nil, "", ctx.Err()
+		}
+		return nil, nil, "", inventoryConnectionError{}
 	}
 	status := res.StatusCode
 	mt := strings.Split(res.Header.Get("Content-Type"), ";")[0]
@@ -111,6 +135,10 @@ func (a *App) inventoryHTTP(ctx context.Context, p Row, key string, call invento
 	}
 	raw, e := boundedBody(res, 32*1024*1024)
 	if e != nil {
+		var network net.Error
+		if errors.Is(e, io.ErrUnexpectedEOF) || errors.As(e, &network) {
+			return nil, nil, "", inventoryConnectionError{}
+		}
 		return nil, nil, "", e
 	}
 	if strings.HasPrefix(mt, "audio/") {

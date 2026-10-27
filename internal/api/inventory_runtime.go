@@ -52,6 +52,9 @@ func inventoryID(value any) string {
 func inventoryPollValue(vendor, taskID string, value any) any {
 	root := inventoryObject(value)
 	if vendor == "midjourney-api" || vendor == "runware" {
+		if len(array(root["data"])) == 0 && inventoryEnvelopeError(vendor, root) {
+			return root
+		}
 		for _, raw := range array(root["data"]) {
 			item := object(raw)
 			if str(first(item["taskId"], item["taskUUID"])) == taskID {
@@ -354,6 +357,9 @@ func (a *App) inventoryUpstream(ctx context.Context, j Row) ([]Row, error) {
 			}
 			response, _, _, err := a.inventoryHTTP(ctx, p, key, query)
 			if err != nil {
+				if _, ok := err.(inventoryConnectionError); ok && ctx.Err() == nil {
+					continue
+				}
 				if httpError, ok := err.(apiError); ok && (httpError.Status == 404 || httpError.Status == 429 || httpError.Status >= 500) {
 					continue
 				}
@@ -362,10 +368,10 @@ func (a *App) inventoryUpstream(ctx context.Context, j Row) ([]Row, error) {
 			if vendor == "midjourney-api" && str(inventoryObject(response)["code"]) == "1002" {
 				continue
 			}
+			response = inventoryPollValue(vendor, taskID, response)
 			if inventoryEnvelopeError(vendor, response) {
 				return nil, fmt.Errorf("供应商查询返回任务错误，请核对上游记录")
 			}
-			response = inventoryPollValue(vendor, taskID, response)
 			state = inventoryState(vendor, response)
 			if inventoryFailed(state) {
 				return nil, fmt.Errorf("供应商任务失败，费用将退回")
@@ -408,7 +414,7 @@ func (a *App) inventorySave(ctx context.Context, j Row, outputs []any, base, key
 	kind := str(object(j["provider_snapshot"])["type"])
 	limit := 10
 	if kind == "image" {
-		limit = imageOutputLimit(str(object(j["provider_snapshot"])["upstreamModel"]))
+		limit = inventoryImageOutputLimit(object(j["provider_snapshot"]))
 	}
 	for i, raw := range outputs {
 		if i >= limit {
@@ -451,8 +457,7 @@ func (a *App) inventorySave(ctx context.Context, j Row, outputs []any, base, key
 					}
 					address = origin.ResolveReference(relative).String()
 				}
-				vendor := str(object(object(j["provider_snapshot"])["config"])["vendor"])
-				data, e = downloadVendorOutputAuth(ctx, address, base, key, inventoryAuth(vendor))
+				data, e = downloadVendorOutputAuth(ctx, address, base, key, inventoryProviderAuth(object(j["provider_snapshot"])))
 			}
 		}
 		if e != nil {

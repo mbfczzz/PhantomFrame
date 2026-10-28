@@ -1,6 +1,10 @@
 import ProviderInventory from "./ProviderInventory";
 import { generationLabels, generationOptions } from "../lib";
 import { useMoneyMutation } from "../components/MoneyRecovery";
+import {
+  ProviderInventoryImport,
+  ProviderInventoryImportResult,
+} from "../components/ProviderInventoryImport";
 import { useState, useEffect, useRef, useId } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import {
@@ -1402,6 +1406,7 @@ function ProviderAdmin() {
     useApi<RecordData[]>("/admin/providers");
   const [edit, setEdit] = useState<RecordData | null>(null);
   const [catalog, setCatalog] = useState<RecordData | null>(null);
+  const [importResult, setImportResult] = useState<RecordData | null>(null);
   const [status, setStatus] = useState("all");
   const enabledCount = (data || []).filter(
     (provider) => provider.enabled,
@@ -1438,11 +1443,15 @@ function ProviderAdmin() {
           <h2>供应商渠道</h2>
           <p className="muted">配置渠道支持的模型，按需发布到模型管理。</p>
         </div>
-        <button className="button primary" onClick={() => setEdit({})}>
-          <Plus size={16} />
-          新增渠道
-        </button>
+        <div className="row-actions">
+          <ProviderInventoryImport onImported={setImportResult} />
+          <button className="button primary" onClick={() => setEdit({})}>
+            <Plus size={16} />
+            新增渠道
+          </button>
+        </div>
       </div>
+      <ProviderInventoryImportResult result={importResult} />
       {!isLoading && !error && (
         <Tabs
           value={status}

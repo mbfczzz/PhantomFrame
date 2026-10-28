@@ -1,8 +1,7 @@
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
-import { Upload, Settings2, RefreshCw } from "lucide-react";
+import { Settings2, RefreshCw } from "lucide-react";
 import {
-  api,
   post,
   useApi,
   useAction,
@@ -19,6 +18,11 @@ import {
   generationLabels,
   type RecordData,
 } from "../lib";
+
+import {
+  ProviderInventoryImport,
+  ProviderInventoryImportResult,
+} from "../components/ProviderInventoryImport";
 
 function routeState(row: RecordData) {
   if (!row.providerEnabled)
@@ -45,12 +49,9 @@ function ProviderInventoryScope({ providerId }: { providerId: string | null }) {
   );
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
-  const [file, setFile] = useState<File | null>(null);
-  const [preview, setPreview] = useState<RecordData | null>(null);
   const [importResult, setImportResult] = useState<RecordData | null>(null);
   const [edit, setEdit] = useState<RecordData | null>(null);
   const [key, setKey] = useState("");
-  const fileInput = useRef<HTMLInputElement>(null);
   const { act, busy } = useAction();
   const refresh = useRefresh();
   const confirm = useConfirm();
@@ -62,17 +63,6 @@ function ProviderInventoryScope({ providerId }: { providerId: string | null }) {
       .toLowerCase()
       .includes(search.toLowerCase()),
   );
-  const inspect = (selected: File) =>
-    act(async () => {
-      const form = new FormData();
-      form.append("file", selected);
-      const result = await api("/admin/provider-inventory/import", {
-        method: "POST",
-        body: form,
-      });
-      setFile(selected);
-      setPreview(result);
-    });
   return (
     <section className="panel">
       <PageHeader
@@ -84,34 +74,9 @@ function ProviderInventoryScope({ providerId }: { providerId: string | null }) {
             全部供应商
           </Link>
         )}
-        <input
-          type="file"
-          accept=".csv,text/csv"
-          ref={fileInput}
-          hidden
-          onChange={(event) => {
-            const selected = event.target.files?.[0];
-            if (selected) void inspect(selected);
-            event.target.value = "";
-          }}
-        />
-        <button
-          className="button primary"
-          disabled={busy}
-          onClick={() => fileInput.current?.click()}
-        >
-          <Upload size={16} />
-          导入 CSV
-        </button>
+        <ProviderInventoryImport onImported={setImportResult} />
       </PageHeader>
-      {importResult && (
-        <p role="status" className="muted">
-          导入完成：{importResult.pricesInherited || 0} 个模型沿用同名价格，
-          {importResult.pricesPreserved || 0} 个保留已有价格规则，
-          {importResult.pricesPending?.length || 0}{" "}
-          个待定价。新增模型需检查后启用。
-        </p>
-      )}
+      <ProviderInventoryImportResult result={importResult} />
       <div className="toolbar">
         <SearchBox
           value={search}
@@ -216,63 +181,6 @@ function ProviderInventoryScope({ providerId }: { providerId: string | null }) {
         </div>
       )}
       <Pagination page={page} total={rows.length} onChange={setPage} />
-      {preview && file && (
-        <Modal
-          title="导入供应商路由"
-          onClose={() => {
-            if (!busy) {
-              setPreview(null);
-              setFile(null);
-            }
-          }}
-        >
-          <p>
-            将处理 {preview.providers} 家供应商、{preview.routes} 条路由；排除{" "}
-            {preview.excluded3D} 条 3D 路由。
-          </p>
-          <p>
-            新增模型默认停用。同名且规格兼容的模型沿用已有价格；未匹配或价格有冲突的模型保留待定。重复导入保留已有售价与参数，确认配置后再启用。
-          </p>
-          <p>{preview.warnings?.length || 0} 条路由需要补充地址或有效密钥。</p>
-          <div className="modal-footer">
-            <button
-              className="button"
-              disabled={busy}
-              onClick={() => {
-                setPreview(null);
-                setFile(null);
-              }}
-            >
-              取消
-            </button>
-            <button
-              className="button primary"
-              disabled={busy}
-              onClick={() =>
-                act(async () => {
-                  const form = new FormData();
-                  form.append("file", file);
-                  form.append("apply", "true");
-                  const result = await api("/admin/provider-inventory/import", {
-                    method: "POST",
-                    body: form,
-                  });
-                  setImportResult(result);
-                  setPreview(null);
-                  setFile(null);
-                  refresh(
-                    "/admin/provider-inventory",
-                    "/admin/models",
-                    "/admin/providers",
-                  );
-                }, "路由已导入，请检查待配置项")
-              }
-            >
-              确认导入
-            </button>
-          </div>
-        </Modal>
-      )}
       {edit && (
         <Modal
           title={`路由配置 · ${edit.vendor}`}

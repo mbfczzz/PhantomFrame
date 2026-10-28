@@ -156,6 +156,58 @@ try {
   );
   assert.equal(requests.length, 0);
   await page.goto(base + "/admin/providers", { waitUntil: "networkidle" });
+  const chooser = page.waitForEvent("filechooser");
+  await page.getByRole("button", { name: "导入 CSV", exact: true }).click();
+  await (
+    await chooser
+  ).setFiles({
+    name: "synthetic-provider-routes.csv",
+    mimeType: "text/csv",
+    buffer: Buffer.from(csv),
+  });
+  const channelPreview = page.getByRole("dialog", {
+    name: "导入供应商路由",
+    exact: true,
+  });
+  await channelPreview.waitFor();
+  assert.match(await channelPreview.innerText(), /249/);
+  assert.match(await channelPreview.innerText(), /34/);
+  assert.match(await channelPreview.innerText(), /包括空值/);
+  assert.equal(
+    (await api(ctx, "/admin/provider-inventory")).filter((r) => r.hasKey)
+      .length,
+    0,
+  );
+  await page.screenshot({
+    path: join(output, "channel-import-desktop.png"),
+    fullPage: false,
+    animations: "disabled",
+  });
+  await page.setViewportSize({ width: 390, height: 844 });
+  assert.equal(
+    await page.evaluate(
+      () => document.documentElement.scrollWidth > innerWidth,
+    ),
+    false,
+  );
+  await page.screenshot({
+    path: join(output, "channel-import-mobile.png"),
+    fullPage: false,
+    animations: "disabled",
+  });
+  await channelPreview
+    .getByRole("button", { name: "取消", exact: true })
+    .click();
+  await channelPreview.waitFor({ state: "hidden" });
+  assert.equal(
+    (await api(ctx, "/admin/provider-inventory")).filter((r) => r.hasKey)
+      .length,
+    0,
+  );
+  await page.setViewportSize({ width: 1440, height: 1000 });
+  check(
+    "channel page opens the CSV picker and previews import consequences; cancelling leaves keys unchanged",
+  );
   await page.getByRole("button", { name: "新增渠道", exact: true }).click();
   let presetDialog = page.getByRole("dialog", {
     name: "新增供应商渠道",
@@ -291,16 +343,48 @@ try {
       .length,
     1,
   );
+  await preview.getByRole("button", { name: "取消", exact: true }).click();
+  await preview.waitFor({ state: "hidden" });
+  await page.goto(base + "/admin/providers", { waitUntil: "networkidle" });
+  await page.locator('input[type="file"]').setInputFiles({
+    name: "synthetic-provider-routes.csv",
+    mimeType: "text/csv",
+    buffer: Buffer.from(csv),
+  });
+  await preview.waitFor();
+  // A failed save keeps the selected file and preview available for retry.
+  await ctx.route(
+    "**/api/admin/provider-inventory/import",
+    (route) =>
+      route.fulfill({
+        status: 503,
+        contentType: "application/json",
+        body: JSON.stringify({ message: "模拟导入暂时失败，请重试" }),
+      }),
+    { times: 1 },
+  );
+  await preview.getByRole("button", { name: "确认导入", exact: true }).click();
+  await page.getByText("模拟导入暂时失败，请重试", { exact: true }).waitFor();
+  assert.equal(
+    (await api(ctx, "/admin/provider-inventory")).filter((r) => r.hasKey)
+      .length,
+    1,
+  );
   await preview.getByRole("button", { name: "确认导入", exact: true }).click();
   await preview.waitFor({ state: "hidden" });
+  await page
+    .getByRole("status")
+    .filter({ hasText: "导入完成：34 家供应商、249 条路由" })
+    .waitFor();
   const routes = await api(ctx, "/admin/provider-inventory");
   assert.equal(routes.length, 249);
   assert.equal(new Set(routes.map((r) => r.vendor)).size, 34);
   assert.ok(routes.every((r) => r.type !== "3d" && !r.enabled));
   assert.equal(requests.length, 0);
   check(
-    "CSV preview and import preserve 249 routes across 34 suppliers, exclude 3D, and make no upstream requests",
+    "shared CSV import works from both pages; channel import retries safely, preserves 249 routes across 34 suppliers and excludes 3D without upstream requests",
   );
+  await page.goto(base + "/admin/inventory", { waitUntil: "networkidle" });
   await page
     .getByRole("textbox", { name: "搜索供应商、模型、路由或待配置状态" })
     .fill("APIYI");

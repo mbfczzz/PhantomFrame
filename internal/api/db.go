@@ -495,4 +495,7 @@ func (a *App) Seed() {
 	})
 	a.backfillProviderModels()
 	a.ensureOpenCrowDefault()
+	if a.Config.ProviderPresets {
+		a.ensureProviderPresets()
+	}
 }

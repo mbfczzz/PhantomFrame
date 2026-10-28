@@ -100,6 +100,9 @@ func setupIntegration(t *testing.T) *App {
 	c.OSS.Enabled = false
 	c.OSS.AccessKey, c.OSS.SecretKey = "", ""
 	c.Demo = true
+	// General API fixtures isolate the built-in CSV templates. Dedicated startup
+	// tests exercise ProviderPresets=true with the full production seed path.
+	c.ProviderPresets = false
 	c.CookieSecure = false
 	c.DataDir = t.TempDir()
 	c.FilesDir = filepath.Join(c.DataDir, "files")

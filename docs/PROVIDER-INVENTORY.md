@@ -2,7 +2,22 @@
 
 本次清单支持 34 家供应商、249 条独立路由，排除 1 条 3D 路由。图片 89、视频 107、文本 38、音频 11、视频超分 4。原清单有 92 条路由缺少地址或有效密钥，必须补齐才能使用。
 
-## 后台导入（推荐）
+## 启动时自动预置（2026-10-28）
+
+新版本直接内置原清单中 **34 家供应商、249 条非 3D 路由**的非敏感配置；连同 OpenCrow，共准备 **35 家供应商**。启动后无需上传 CSV 才能看见这些供应商。
+
+- 「渠道管理」自动出现全部供应商卡片。
+- 「新增渠道 → 接入协议」可选择清单中的所有供应商预设。选中已预置供应商后，进入该供应商的独立路由页填写 Key，无需重复建渠道。
+- 已给出的地址、上游模型名、参数、协议映射和源启用标记自动填入；模型仍默认停用，同名且兼容的已有价格可以继承，其余待定。
+- 生产镜像不包含清单中的 API Key。每条路由保持独立凭据，填写一条不会修改其他路由。
+- 启动只补新增缺失路由；已有地址、密钥、价格、参数、启停状态及渠道名称全部保留。与显式 CSV 导入使用同一把事务锁，防止并发初始化相互覆盖。
+- 原清单有 **6 条路由未提供地址**，保留为空并标注「待补地址」，不能发起调用。涉及 MikotoPro、MYAPI、MYNEWAPI、Rolldek、WXArt、zzshu；不能因为同供应商其他模型有地址就推断它们使用同一个接口。
+
+需要一次性填入原清单已有的密钥时，可以按下面步骤导入原 CSV。自动预置与显式导入共用稳定的路由／模型编号，不会重复建立同一条路由。此前已导入完整 CSV 的部署，重启后原凭据也会保留。
+
+预置供应商：afrifex、ALI、APIYI、atlascloud、bytedance、ccgo、closeAI、copp、dimensio、dlapi、dsas、huanwangai、infotoken、kinovi、LD、midjourney-api、MikotoPro、mxapi、MYAPI、MYNEWAPI、official-openai、openrouter、rolldek、runninghub、runninghub-upscale、runware、secure-skill、secure-skill-out、secure-skill-sepcial、uniart、wavespeed、wxart、zhubo、zzshu。
+
+## 后台导入密钥或更新清单（可选）
 
 1. 部署本次代码构建的应用镜像，登录管理员，打开「供应商路由」(`/admin/inventory`)。
 2. 点击「导入 CSV」，选择原始 `provider-routes-full-keys.csv`。预览只解析数量、格式与缺失配置，不写库、不请求上游。

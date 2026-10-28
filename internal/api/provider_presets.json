@@ -1,0 +1,4760 @@
+[
+  {
+    "ID": "pr_route_o4yn3kx",
+    "Vendor": "afrifex",
+    "Model": "seedance-2-afti",
+    "Upstream": "",
+    "Modality": "video",
+    "Base": "https://api.artifex.help",
+    "Enabled": true,
+    "Primary": false,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "afrifex",
+      "sourceModel": "seedance-2-afti",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_route_0twclx2",
+    "Vendor": "afrifex",
+    "Model": "seedance-2-fast-afti",
+    "Upstream": "",
+    "Modality": "video",
+    "Base": "https://api.artifex.help",
+    "Enabled": true,
+    "Primary": false,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "afrifex",
+      "sourceModel": "seedance-2-fast-afti",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_route_w5j490c",
+    "Vendor": "afrifex",
+    "Model": "seedance-2-ultra-afti",
+    "Upstream": "",
+    "Modality": "video",
+    "Base": "https://api.artifex.help",
+    "Enabled": true,
+    "Primary": false,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "afrifex",
+      "sourceModel": "seedance-2-ultra-afti",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_route_ro00eme",
+    "Vendor": "afrifex",
+    "Model": "video-fast-afti",
+    "Upstream": "",
+    "Modality": "video",
+    "Base": "https://api.artifex.help",
+    "Enabled": true,
+    "Primary": false,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "afrifex",
+      "sourceModel": "video-fast-afti",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_route_g98wb2r",
+    "Vendor": "afrifex",
+    "Model": "video-fast-pro-afti",
+    "Upstream": "",
+    "Modality": "video",
+    "Base": "https://api.artifex.help",
+    "Enabled": true,
+    "Primary": false,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "afrifex",
+      "sourceModel": "video-fast-pro-afti",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_ali_qwenimg21pro",
+    "Vendor": "ALI",
+    "Model": "qwen-image-2.1-pro",
+    "Upstream": "qwen-image-2.1-pro",
+    "Modality": "image",
+    "Base": "https://maas.qianwenaiapi.com/api/v1",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "ALI",
+      "sourceModel": "qwen-image-2.1-pro",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_route_susczaa",
+    "Vendor": "ALI",
+    "Model": "qwen-image-3.0-pro",
+    "Upstream": "",
+    "Modality": "image",
+    "Base": "https://llm-jb2bhmj57xw1zv2c.cn-beijing.maas.aliyuncs.com/api/v1",
+    "Enabled": true,
+    "Primary": false,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "ALI",
+      "sourceModel": "qwen-image-3.0-pro",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_route_57d5yyn",
+    "Vendor": "ALI",
+    "Model": "wan2.7-image-pro",
+    "Upstream": "",
+    "Modality": "image",
+    "Base": "https://llm-jb2bhmj57xw1zv2c.cn-beijing.maas.aliyuncs.com/api/v1",
+    "Enabled": true,
+    "Primary": false,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "ALI",
+      "sourceModel": "wan2.7-image-pro",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_route_76ey7d7",
+    "Vendor": "APIYI",
+    "Model": "DeepSeek-V3.2",
+    "Upstream": "gpt-5.4-mini",
+    "Modality": "text",
+    "Base": "https://api.apiyi.com",
+    "Enabled": true,
+    "Primary": false,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "APIYI",
+      "sourceModel": "DeepSeek-V3.2",
+      "operation": "",
+      "chatAPI": "responses",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_route_z3mq9fn",
+    "Vendor": "APIYI",
+    "Model": "gpt-5.4",
+    "Upstream": "gpt-5.4-mini",
+    "Modality": "text",
+    "Base": "https://api.apiyi.com",
+    "Enabled": true,
+    "Primary": false,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "APIYI",
+      "sourceModel": "gpt-5.4",
+      "operation": "",
+      "chatAPI": "responses",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_route_sniq2ih",
+    "Vendor": "APIYI",
+    "Model": "gpt-5.4-mini",
+    "Upstream": "gpt-5.4-mini",
+    "Modality": "text",
+    "Base": "https://api.apiyi.com",
+    "Enabled": true,
+    "Primary": false,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "APIYI",
+      "sourceModel": "gpt-5.4-mini",
+      "operation": "",
+      "chatAPI": "responses",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_route_iudjtfs",
+    "Vendor": "APIYI",
+    "Model": "gpt-5.5",
+    "Upstream": "gpt-5.4-mini",
+    "Modality": "text",
+    "Base": "https://api.apiyi.com",
+    "Enabled": true,
+    "Primary": false,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "APIYI",
+      "sourceModel": "gpt-5.5",
+      "operation": "",
+      "chatAPI": "responses",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_route_6fjr4at",
+    "Vendor": "APIYI",
+    "Model": "gpt-5.5-APIYI",
+    "Upstream": "gpt-5.4-mini",
+    "Modality": "text",
+    "Base": "https://api.apiyi.com",
+    "Enabled": true,
+    "Primary": false,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "APIYI",
+      "sourceModel": "gpt-5.5-APIYI",
+      "operation": "",
+      "chatAPI": "responses",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_route_d7s6dta",
+    "Vendor": "APIYI",
+    "Model": "gpt-5.6-luna",
+    "Upstream": "gpt-5.4-mini",
+    "Modality": "text",
+    "Base": "https://api.apiyi.com",
+    "Enabled": true,
+    "Primary": false,
+    "Priority": 200,
+    "Weight": 1,
+    "Config": {
+      "vendor": "APIYI",
+      "sourceModel": "gpt-5.6-luna",
+      "operation": "",
+      "chatAPI": "responses",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_route_a2xv8ky",
+    "Vendor": "APIYI",
+    "Model": "gpt-5.6-sol",
+    "Upstream": "gpt-5.4-mini",
+    "Modality": "text",
+    "Base": "https://api.apiyi.com",
+    "Enabled": true,
+    "Primary": false,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "APIYI",
+      "sourceModel": "gpt-5.6-sol",
+      "operation": "",
+      "chatAPI": "responses",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_route_h5s2x70",
+    "Vendor": "APIYI",
+    "Model": "gpt-5.6-terra",
+    "Upstream": "gpt-5.4-mini",
+    "Modality": "text",
+    "Base": "https://api.apiyi.com",
+    "Enabled": true,
+    "Primary": false,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "APIYI",
+      "sourceModel": "gpt-5.6-terra",
+      "operation": "",
+      "chatAPI": "responses",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_astra_apiyi",
+    "Vendor": "APIYI",
+    "Model": "gpt-6-astra",
+    "Upstream": "gpt-6-astra",
+    "Modality": "text",
+    "Base": "https://api.apiyi.com",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "APIYI",
+      "sourceModel": "gpt-6-astra",
+      "operation": "",
+      "chatAPI": "chat",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_route_a017j7x",
+    "Vendor": "APIYI",
+    "Model": "gpt-image-2-APIYI",
+    "Upstream": "",
+    "Modality": "image",
+    "Base": "https://api.apiyi.com",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "APIYI",
+      "sourceModel": "gpt-image-2-APIYI",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_route_vfg9877",
+    "Vendor": "APIYI",
+    "Model": "gpt-image-2-vip-APIYI",
+    "Upstream": "",
+    "Modality": "image",
+    "Base": "https://api.apiyi.com",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 400,
+    "Weight": 1,
+    "Config": {
+      "vendor": "APIYI",
+      "sourceModel": "gpt-image-2-vip-APIYI",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_gpt25_7428153b43cb14c52076256",
+    "Vendor": "APIYI",
+    "Model": "gpt-image-2.5",
+    "Upstream": "gpt-image-2.5-vip",
+    "Modality": "image",
+    "Base": "https://api.apiyi.com",
+    "Enabled": true,
+    "Primary": false,
+    "Priority": 400,
+    "Weight": 1,
+    "Config": {
+      "vendor": "APIYI",
+      "sourceModel": "gpt-image-2.5",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_atlascloud_mjv82",
+    "Vendor": "atlascloud",
+    "Model": "midjourney-v8.2",
+    "Upstream": "",
+    "Modality": "image",
+    "Base": "https://api.atlascloud.ai",
+    "Enabled": false,
+    "Primary": true,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "atlascloud",
+      "sourceModel": "midjourney-v8.2",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {
+        "edits": "youchuan/v8.2/image-to-image",
+        "generation": "youchuan/v8.2/text-to-image"
+      }
+    }
+  },
+  {
+    "ID": "pr_route_1861fd67",
+    "Vendor": "bytedance",
+    "Model": "seedance-2-bytedance",
+    "Upstream": "",
+    "Modality": "video",
+    "Base": "https://ark.cn-beijing.volces.com/api/v3",
+    "Enabled": true,
+    "Primary": true,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "bytedance",
+      "sourceModel": "seedance-2-bytedance",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_route_4nskvm6",
+    "Vendor": "bytedance",
+    "Model": "seedance-2-fast-bytedance",
+    "Upstream": "",
+    "Modality": "video",
+    "Base": "https://ark.cn-beijing.volces.com/api/v3",
+    "Enabled": true,
+    "Primary": false,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "bytedance",
+      "sourceModel": "seedance-2-fast-bytedance",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_route_11iz0op",
+    "Vendor": "bytedance",
+    "Model": "seedream-5.0-pro-bytedance",
+    "Upstream": "",
+    "Modality": "image",
+    "Base": "https://ark.cn-beijing.volces.com/api/v3",
+    "Enabled": true,
+    "Primary": false,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "bytedance",
+      "sourceModel": "seedream-5.0-pro-bytedance",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_route_zwrz64g",
+    "Vendor": "ccgo",
+    "Model": "gpt-5.4",
+    "Upstream": "",
+    "Modality": "text",
+    "Base": "https://www.ccgoai.com",
+    "Enabled": true,
+    "Primary": true,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "ccgo",
+      "sourceModel": "gpt-5.4",
+      "operation": "",
+      "chatAPI": "responses",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_route_qwb6qga",
+    "Vendor": "ccgo",
+    "Model": "gpt-5.4-mini",
+    "Upstream": "",
+    "Modality": "text",
+    "Base": "https://www.ccgoai.com",
+    "Enabled": true,
+    "Primary": true,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "ccgo",
+      "sourceModel": "gpt-5.4-mini",
+      "operation": "",
+      "chatAPI": "responses",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_route_6u939hg",
+    "Vendor": "ccgo",
+    "Model": "gpt-5.5",
+    "Upstream": "",
+    "Modality": "text",
+    "Base": "https://www.ccgoai.com",
+    "Enabled": true,
+    "Primary": true,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "ccgo",
+      "sourceModel": "gpt-5.5",
+      "operation": "",
+      "chatAPI": "responses",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_route_a2e7a8f",
+    "Vendor": "ccgo",
+    "Model": "gpt-5.5-APIYI",
+    "Upstream": "",
+    "Modality": "text",
+    "Base": "https://www.ccgoai.com",
+    "Enabled": true,
+    "Primary": true,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "ccgo",
+      "sourceModel": "gpt-5.5-APIYI",
+      "operation": "",
+      "chatAPI": "responses",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_route_29wpma1",
+    "Vendor": "ccgo",
+    "Model": "gpt-5.6-luna",
+    "Upstream": "",
+    "Modality": "text",
+    "Base": "https://www.ccgoai.com",
+    "Enabled": true,
+    "Primary": true,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "ccgo",
+      "sourceModel": "gpt-5.6-luna",
+      "operation": "",
+      "chatAPI": "responses",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_route_1g9x2lr",
+    "Vendor": "ccgo",
+    "Model": "gpt-5.6-sol",
+    "Upstream": "",
+    "Modality": "text",
+    "Base": "https://www.ccgoai.com",
+    "Enabled": true,
+    "Primary": true,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "ccgo",
+      "sourceModel": "gpt-5.6-sol",
+      "operation": "",
+      "chatAPI": "responses",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_route_w454om3",
+    "Vendor": "ccgo",
+    "Model": "gpt-5.6-terra",
+    "Upstream": "",
+    "Modality": "text",
+    "Base": "https://www.ccgoai.com",
+    "Enabled": true,
+    "Primary": true,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "ccgo",
+      "sourceModel": "gpt-5.6-terra",
+      "operation": "",
+      "chatAPI": "responses",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_astra_ccgo",
+    "Vendor": "ccgo",
+    "Model": "gpt-6-astra",
+    "Upstream": "gpt-6-astra",
+    "Modality": "text",
+    "Base": "https://www.ccgoai.com",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "ccgo",
+      "sourceModel": "gpt-6-astra",
+      "operation": "",
+      "chatAPI": "chat",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_route_xq1byx6",
+    "Vendor": "ccgo",
+    "Model": "gpt-6-astra",
+    "Upstream": "gpt-6-astra",
+    "Modality": "text",
+    "Base": "https://www.ccgoai.com",
+    "Enabled": true,
+    "Primary": false,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "ccgo",
+      "sourceModel": "gpt-6-astra",
+      "operation": "",
+      "chatAPI": "responses",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_route_3xp4sa0",
+    "Vendor": "ccgo",
+    "Model": "gpt-image-2-vip-APIYI",
+    "Upstream": "gpt-image-2",
+    "Modality": "image",
+    "Base": "https://www.ccgoai.com/v1",
+    "Enabled": true,
+    "Primary": false,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "ccgo",
+      "sourceModel": "gpt-image-2-vip-APIYI",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_route_qnjlpdv",
+    "Vendor": "ccgo",
+    "Model": "gpt-image-2-vip-APIYI",
+    "Upstream": "gpt-image-2",
+    "Modality": "image",
+    "Base": "https://www.ccgoai.com/v1",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "ccgo",
+      "sourceModel": "gpt-image-2-vip-APIYI",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_gpt25_7c58c3261fea709c84663a3",
+    "Vendor": "ccgo",
+    "Model": "gpt-image-2.5",
+    "Upstream": "gpt-image-2.5",
+    "Modality": "image",
+    "Base": "https://www.ccgoai.com/v1",
+    "Enabled": true,
+    "Primary": false,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "ccgo",
+      "sourceModel": "gpt-image-2.5",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_route_d2dzxwx",
+    "Vendor": "ccgo",
+    "Model": "gpt-image-2.5",
+    "Upstream": "gpt-image-2.5",
+    "Modality": "image",
+    "Base": "https://ccgoai.com/v1",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "ccgo",
+      "sourceModel": "gpt-image-2.5",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_route_8b7x1fq",
+    "Vendor": "ccgo",
+    "Model": "nano-banana-2",
+    "Upstream": "",
+    "Modality": "image",
+    "Base": "https://www.ccgoai.com/v1",
+    "Enabled": true,
+    "Primary": true,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "ccgo",
+      "sourceModel": "nano-banana-2",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_route_ber9aon",
+    "Vendor": "ccgo",
+    "Model": "nano-banana-2-2k",
+    "Upstream": "gemini-3-pro-image",
+    "Modality": "image",
+    "Base": "https://www.ccgoai.com/v1",
+    "Enabled": true,
+    "Primary": true,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "ccgo",
+      "sourceModel": "nano-banana-2-2k",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_route_xn2xoio",
+    "Vendor": "ccgo",
+    "Model": "nano-banana-2-4k",
+    "Upstream": "gemini-3-pro-image",
+    "Modality": "image",
+    "Base": "https://www.ccgoai.com/v1",
+    "Enabled": true,
+    "Primary": true,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "ccgo",
+      "sourceModel": "nano-banana-2-4k",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_route_7217k8n",
+    "Vendor": "closeAI",
+    "Model": "gpt-image-2-CA",
+    "Upstream": "",
+    "Modality": "image",
+    "Base": "https://api.openai-proxy.org",
+    "Enabled": true,
+    "Primary": false,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "closeAI",
+      "sourceModel": "gpt-image-2-CA",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_route_n4l14jw",
+    "Vendor": "closeAI",
+    "Model": "gpt-image-2-vip-APIYI",
+    "Upstream": "gpt-image-2",
+    "Modality": "image",
+    "Base": "https://api.openai-proxy.org",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "closeAI",
+      "sourceModel": "gpt-image-2-vip-APIYI",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_gpt25_6b7fa64ab535ad658fccada",
+    "Vendor": "closeAI",
+    "Model": "gpt-image-2.5",
+    "Upstream": "gpt-image-2.5",
+    "Modality": "image",
+    "Base": "https://api.openai-proxy.org",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "closeAI",
+      "sourceModel": "gpt-image-2.5",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_route_r5fokl0",
+    "Vendor": "copp",
+    "Model": "seedance-v2",
+    "Upstream": "",
+    "Modality": "video",
+    "Base": "https://api.hkcopp.online",
+    "Enabled": true,
+    "Primary": true,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "copp",
+      "sourceModel": "seedance-v2",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_route_tr8oy3l",
+    "Vendor": "copp",
+    "Model": "seedance-v2-beta",
+    "Upstream": "",
+    "Modality": "video",
+    "Base": "https://api.hkcopp.online",
+    "Enabled": true,
+    "Primary": true,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "copp",
+      "sourceModel": "seedance-v2-beta",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_route_scwfeab",
+    "Vendor": "copp",
+    "Model": "seedance-v2-beta-face",
+    "Upstream": "",
+    "Modality": "video",
+    "Base": "https://api.hkcopp.online",
+    "Enabled": true,
+    "Primary": true,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "copp",
+      "sourceModel": "seedance-v2-beta-face",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_route_mttkpbr",
+    "Vendor": "copp",
+    "Model": "seedance-v2-fast",
+    "Upstream": "",
+    "Modality": "video",
+    "Base": "https://api.hkcopp.online",
+    "Enabled": true,
+    "Primary": true,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "copp",
+      "sourceModel": "seedance-v2-fast",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_route_ul4zl40",
+    "Vendor": "copp",
+    "Model": "seedance-v2-fast-beta",
+    "Upstream": "",
+    "Modality": "video",
+    "Base": "https://api.hkcopp.online",
+    "Enabled": true,
+    "Primary": true,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "copp",
+      "sourceModel": "seedance-v2-fast-beta",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_route_fjupo3u",
+    "Vendor": "copp",
+    "Model": "seedance-v2-fast-beta-face",
+    "Upstream": "",
+    "Modality": "video",
+    "Base": "https://api.hkcopp.online",
+    "Enabled": true,
+    "Primary": true,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "copp",
+      "sourceModel": "seedance-v2-fast-beta-face",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_route_na4jmq0",
+    "Vendor": "copp",
+    "Model": "seedance-v2-intl",
+    "Upstream": "",
+    "Modality": "video",
+    "Base": "https://api.hkcopp.online",
+    "Enabled": true,
+    "Primary": false,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "copp",
+      "sourceModel": "seedance-v2-intl",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_route_5i5wtfe",
+    "Vendor": "copp",
+    "Model": "seedance-v2-intl-fast",
+    "Upstream": "",
+    "Modality": "video",
+    "Base": "https://api.hkcopp.online",
+    "Enabled": true,
+    "Primary": false,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "copp",
+      "sourceModel": "seedance-v2-intl-fast",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_route_nwbpvo3",
+    "Vendor": "copp",
+    "Model": "seedance-v2-intl-xl",
+    "Upstream": "",
+    "Modality": "video",
+    "Base": "https://api.hkcopp.online",
+    "Enabled": true,
+    "Primary": false,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "copp",
+      "sourceModel": "seedance-v2-intl-xl",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_route_a2a2soy",
+    "Vendor": "copp",
+    "Model": "seedance-v2-intl-xl-fast",
+    "Upstream": "",
+    "Modality": "video",
+    "Base": "https://api.hkcopp.online",
+    "Enabled": true,
+    "Primary": false,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "copp",
+      "sourceModel": "seedance-v2-intl-xl-fast",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_route_h9pbo89",
+    "Vendor": "copp",
+    "Model": "seedance-v2-official",
+    "Upstream": "",
+    "Modality": "video",
+    "Base": "https://api.hkcopp.online",
+    "Enabled": true,
+    "Primary": false,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "copp",
+      "sourceModel": "seedance-v2-official",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_route_wbbzomt",
+    "Vendor": "dimensio",
+    "Model": "gpt_image-2-dimesio",
+    "Upstream": "",
+    "Modality": "image",
+    "Base": "https://jimeng.dimensio.cn",
+    "Enabled": true,
+    "Primary": false,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "dimensio",
+      "sourceModel": "gpt_image-2-dimesio",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_gpt25_9f7b45b87aec63026e5ceed",
+    "Vendor": "dimensio",
+    "Model": "gpt-image-2.5",
+    "Upstream": "vxp-gpt-image-2.5",
+    "Modality": "image",
+    "Base": "https://jimeng.dimensio.cn",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "dimensio",
+      "sourceModel": "gpt-image-2.5",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_route_ox8xccu",
+    "Vendor": "dimensio",
+    "Model": "jimeng-video-seedance-2.0-fast-vip-Dimensio",
+    "Upstream": "",
+    "Modality": "video",
+    "Base": "https://jimeng.dimensio.cn",
+    "Enabled": true,
+    "Primary": false,
+    "Priority": 200,
+    "Weight": 1,
+    "Config": {
+      "vendor": "dimensio",
+      "sourceModel": "jimeng-video-seedance-2.0-fast-vip-Dimensio",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_route_82ygd6a",
+    "Vendor": "dimensio",
+    "Model": "jimeng-video-seedance-2.0-mini-Dimensio",
+    "Upstream": "",
+    "Modality": "video",
+    "Base": "https://jimeng.dimensio.cn",
+    "Enabled": true,
+    "Primary": false,
+    "Priority": 200,
+    "Weight": 1,
+    "Config": {
+      "vendor": "dimensio",
+      "sourceModel": "jimeng-video-seedance-2.0-mini-Dimensio",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "jv20vip_73edfa919fda",
+    "Vendor": "dimensio",
+    "Model": "jimeng-video-seedance-2.0-vip",
+    "Upstream": "",
+    "Modality": "video",
+    "Base": "https://jimeng.dimensio.cn",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 200,
+    "Weight": 1,
+    "Config": {
+      "vendor": "dimensio",
+      "sourceModel": "jimeng-video-seedance-2.0-vip",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_route_g0oefs9",
+    "Vendor": "dimensio",
+    "Model": "jimeng-video-seedance-2.0-vip-Dimensio",
+    "Upstream": "",
+    "Modality": "video",
+    "Base": "https://jimeng.dimensio.cn",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 200,
+    "Weight": 1,
+    "Config": {
+      "vendor": "dimensio",
+      "sourceModel": "jimeng-video-seedance-2.0-vip-Dimensio",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_dimensio_minimax_h3",
+    "Vendor": "dimensio",
+    "Model": "minimax-h3-vip",
+    "Upstream": "minimax-h3",
+    "Modality": "video",
+    "Base": "https://jimeng.dimensio.cn",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "dimensio",
+      "sourceModel": "minimax-h3-vip",
+      "operation": "generation",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_dimensio_wan3_video",
+    "Vendor": "dimensio",
+    "Model": "wan3.0-video",
+    "Upstream": "wan-3.0",
+    "Modality": "video",
+    "Base": "https://jimeng.dimensio.cn",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 0,
+    "Weight": 1,
+    "Config": {
+      "vendor": "dimensio",
+      "sourceModel": "wan3.0-video",
+      "operation": "generation",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_dimensio_wan3_video_prime",
+    "Vendor": "dimensio",
+    "Model": "wan3.0-video-prime",
+    "Upstream": "wan-3.0",
+    "Modality": "video",
+    "Base": "https://jimeng.dimensio.cn",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 0,
+    "Weight": 1,
+    "Config": {
+      "vendor": "dimensio",
+      "sourceModel": "wan3.0-video-prime",
+      "operation": "generation",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_dlapi_gpt54",
+    "Vendor": "dlapi",
+    "Model": "gpt-5.4",
+    "Upstream": "",
+    "Modality": "text",
+    "Base": "https://api.dlapi.xyz",
+    "Enabled": true,
+    "Primary": false,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "dlapi",
+      "sourceModel": "gpt-5.4",
+      "operation": "",
+      "chatAPI": "responses",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_dlapi_gpt54mini",
+    "Vendor": "dlapi",
+    "Model": "gpt-5.4-mini",
+    "Upstream": "",
+    "Modality": "text",
+    "Base": "https://api.dlapi.xyz",
+    "Enabled": true,
+    "Primary": false,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "dlapi",
+      "sourceModel": "gpt-5.4-mini",
+      "operation": "",
+      "chatAPI": "responses",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_route_cy8obnm",
+    "Vendor": "dlapi",
+    "Model": "gpt-5.5",
+    "Upstream": "",
+    "Modality": "text",
+    "Base": "https://api.dlapi.xyz",
+    "Enabled": true,
+    "Primary": false,
+    "Priority": 200,
+    "Weight": 1,
+    "Config": {
+      "vendor": "dlapi",
+      "sourceModel": "gpt-5.5",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_route_4msiz21",
+    "Vendor": "dlapi",
+    "Model": "gpt-5.5-APIYI",
+    "Upstream": "gpt-5.5",
+    "Modality": "text",
+    "Base": "https://api.dlapi.xyz",
+    "Enabled": true,
+    "Primary": false,
+    "Priority": 200,
+    "Weight": 1,
+    "Config": {
+      "vendor": "dlapi",
+      "sourceModel": "gpt-5.5-APIYI",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_dlapi_gpt56luna",
+    "Vendor": "dlapi",
+    "Model": "gpt-5.6-luna",
+    "Upstream": "",
+    "Modality": "text",
+    "Base": "https://api.dlapi.xyz",
+    "Enabled": true,
+    "Primary": false,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "dlapi",
+      "sourceModel": "gpt-5.6-luna",
+      "operation": "",
+      "chatAPI": "responses",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_dlapi_gpt56sol",
+    "Vendor": "dlapi",
+    "Model": "gpt-5.6-sol",
+    "Upstream": "",
+    "Modality": "text",
+    "Base": "https://api.dlapi.xyz",
+    "Enabled": true,
+    "Primary": false,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "dlapi",
+      "sourceModel": "gpt-5.6-sol",
+      "operation": "",
+      "chatAPI": "responses",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_dlapi_gpt56terra",
+    "Vendor": "dlapi",
+    "Model": "gpt-5.6-terra",
+    "Upstream": "",
+    "Modality": "text",
+    "Base": "https://api.dlapi.xyz",
+    "Enabled": true,
+    "Primary": false,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "dlapi",
+      "sourceModel": "gpt-5.6-terra",
+      "operation": "",
+      "chatAPI": "responses",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_astra_dlapi",
+    "Vendor": "dlapi",
+    "Model": "gpt-6-astra",
+    "Upstream": "gpt-6-astra",
+    "Modality": "text",
+    "Base": "https://api.dlapi.xyz",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "dlapi",
+      "sourceModel": "gpt-6-astra",
+      "operation": "",
+      "chatAPI": "chat",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_route_yaujyvg",
+    "Vendor": "dlapi",
+    "Model": "gpt-image-2",
+    "Upstream": "",
+    "Modality": "image",
+    "Base": "https://api.dlapi.xyz",
+    "Enabled": true,
+    "Primary": false,
+    "Priority": 200,
+    "Weight": 1,
+    "Config": {
+      "vendor": "dlapi",
+      "sourceModel": "gpt-image-2",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_route_w4ntlsy",
+    "Vendor": "dsas",
+    "Model": "sd-2-720p-dsas",
+    "Upstream": "",
+    "Modality": "video",
+    "Base": "https://api.sudashuiapi.com",
+    "Enabled": true,
+    "Primary": false,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "dsas",
+      "sourceModel": "sd-2-720p-dsas",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_route_qzhdwig",
+    "Vendor": "dsas",
+    "Model": "xh-sdas-pro-720p",
+    "Upstream": "",
+    "Modality": "video",
+    "Base": "https://api.sudashuiapi.com",
+    "Enabled": true,
+    "Primary": true,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "dsas",
+      "sourceModel": "xh-sdas-pro-720p",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_route_67ua39v",
+    "Vendor": "huanwangai",
+    "Model": "midjourney",
+    "Upstream": "",
+    "Modality": "image",
+    "Base": "https://api.huanwangai.com",
+    "Enabled": true,
+    "Primary": false,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "huanwangai",
+      "sourceModel": "midjourney",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_route_shpglhq",
+    "Vendor": "infotoken",
+    "Model": "gpt-image-2",
+    "Upstream": "",
+    "Modality": "image",
+    "Base": "https://inftoken-api.zeabur.app",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "infotoken",
+      "sourceModel": "gpt-image-2",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_route_2a2y2hr",
+    "Vendor": "infotoken",
+    "Model": "seedance-v2",
+    "Upstream": "",
+    "Modality": "video",
+    "Base": "https://inftoken-api.zeabur.app",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 99,
+    "Weight": 1,
+    "Config": {
+      "vendor": "infotoken",
+      "sourceModel": "seedance-v2",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_route_k8ysz58",
+    "Vendor": "infotoken",
+    "Model": "seedance-v2-fast",
+    "Upstream": "",
+    "Modality": "video",
+    "Base": "https://inftoken-api.zeabur.app",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 99,
+    "Weight": 1,
+    "Config": {
+      "vendor": "infotoken",
+      "sourceModel": "seedance-v2-fast",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_kinovi_f80c961182fc03ab35ba",
+    "Vendor": "kinovi",
+    "Model": "gpt_image-2-dimesio",
+    "Upstream": "gpt-image-2",
+    "Modality": "image",
+    "Base": "https://kinovi.ai",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 50,
+    "Weight": 1,
+    "Config": {
+      "vendor": "kinovi",
+      "sourceModel": "gpt_image-2-dimesio",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_kinovi_c8bec57965d070bad4c3",
+    "Vendor": "kinovi",
+    "Model": "gpt-image-2",
+    "Upstream": "gpt-image-2",
+    "Modality": "image",
+    "Base": "https://kinovi.ai",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 49,
+    "Weight": 1,
+    "Config": {
+      "vendor": "kinovi",
+      "sourceModel": "gpt-image-2",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_kinovi_3862a93b94d614547436",
+    "Vendor": "kinovi",
+    "Model": "gpt-image-2-APIYI",
+    "Upstream": "gpt-image-2",
+    "Modality": "image",
+    "Base": "https://kinovi.ai",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 49,
+    "Weight": 1,
+    "Config": {
+      "vendor": "kinovi",
+      "sourceModel": "gpt-image-2-APIYI",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_kinovi_a94bfb500b7d0e43460f",
+    "Vendor": "kinovi",
+    "Model": "gpt-image-2-CA",
+    "Upstream": "gpt-image-2",
+    "Modality": "image",
+    "Base": "https://kinovi.ai",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 49,
+    "Weight": 1,
+    "Config": {
+      "vendor": "kinovi",
+      "sourceModel": "gpt-image-2-CA",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_kinovi_a17f666875b1a37962d8",
+    "Vendor": "kinovi",
+    "Model": "gpt-image-2-ccgo-adobe",
+    "Upstream": "gpt-image-2",
+    "Modality": "image",
+    "Base": "https://kinovi.ai",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 49,
+    "Weight": 1,
+    "Config": {
+      "vendor": "kinovi",
+      "sourceModel": "gpt-image-2-ccgo-adobe",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_kinovi_fb174c2fc4bf86e2039c",
+    "Vendor": "kinovi",
+    "Model": "gpt-image-2-ccgo-az",
+    "Upstream": "gpt-image-2",
+    "Modality": "image",
+    "Base": "https://kinovi.ai",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 49,
+    "Weight": 1,
+    "Config": {
+      "vendor": "kinovi",
+      "sourceModel": "gpt-image-2-ccgo-az",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_kinovi_1468cdc64d592c2a3fe5",
+    "Vendor": "kinovi",
+    "Model": "gpt-image-2-LD",
+    "Upstream": "gpt-image-2",
+    "Modality": "image",
+    "Base": "https://kinovi.ai",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 49,
+    "Weight": 1,
+    "Config": {
+      "vendor": "kinovi",
+      "sourceModel": "gpt-image-2-LD",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_kinovi_60ad36ad9375a52b908f",
+    "Vendor": "kinovi",
+    "Model": "gpt-image-2-Mk",
+    "Upstream": "gpt-image-2",
+    "Modality": "image",
+    "Base": "https://kinovi.ai",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 49,
+    "Weight": 1,
+    "Config": {
+      "vendor": "kinovi",
+      "sourceModel": "gpt-image-2-Mk",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_kinovi_9ccaaeebfeddd560692b",
+    "Vendor": "kinovi",
+    "Model": "gpt-image-2-official",
+    "Upstream": "gpt-image-2",
+    "Modality": "image",
+    "Base": "https://kinovi.ai",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 49,
+    "Weight": 1,
+    "Config": {
+      "vendor": "kinovi",
+      "sourceModel": "gpt-image-2-official",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_kinovi_d479264ce4250fccb5e5",
+    "Vendor": "kinovi",
+    "Model": "gpt-image-2-openrouter",
+    "Upstream": "gpt-image-2",
+    "Modality": "image",
+    "Base": "https://kinovi.ai",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 49,
+    "Weight": 1,
+    "Config": {
+      "vendor": "kinovi",
+      "sourceModel": "gpt-image-2-openrouter",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_kinovi_cb52443d47975562a05e",
+    "Vendor": "kinovi",
+    "Model": "gpt-image-2-vip-APIYI",
+    "Upstream": "gpt-image-2",
+    "Modality": "image",
+    "Base": "https://kinovi.ai",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 49,
+    "Weight": 1,
+    "Config": {
+      "vendor": "kinovi",
+      "sourceModel": "gpt-image-2-vip-APIYI",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_gpt25_84beecad20b694aae576d3c",
+    "Vendor": "kinovi",
+    "Model": "gpt-image-2.5",
+    "Upstream": "gpt-image-2.5",
+    "Modality": "image",
+    "Base": "https://kinovi.ai",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 49,
+    "Weight": 1,
+    "Config": {
+      "vendor": "kinovi",
+      "sourceModel": "gpt-image-2.5",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_kinovi_0b3cd9aee221ae3df539",
+    "Vendor": "kinovi",
+    "Model": "happyhorse-1-runware",
+    "Upstream": "happyhorse1.0",
+    "Modality": "video",
+    "Base": "https://kinovi.ai",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 50,
+    "Weight": 1,
+    "Config": {
+      "vendor": "kinovi",
+      "sourceModel": "happyhorse-1-runware",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_kinovi_29a32203c08f630a96f2",
+    "Vendor": "kinovi",
+    "Model": "jimeng-video-seedance-2.0-fast-vip-Dimensio",
+    "Upstream": "seedance2-fast",
+    "Modality": "video",
+    "Base": "https://kinovi.ai",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 50,
+    "Weight": 1,
+    "Config": {
+      "vendor": "kinovi",
+      "sourceModel": "jimeng-video-seedance-2.0-fast-vip-Dimensio",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_kinovi_0e491935aef53f7af7e5",
+    "Vendor": "kinovi",
+    "Model": "jimeng-video-seedance-2.0-mini-Dimensio",
+    "Upstream": "seedance2.0-mini",
+    "Modality": "video",
+    "Base": "https://kinovi.ai",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 50,
+    "Weight": 1,
+    "Config": {
+      "vendor": "kinovi",
+      "sourceModel": "jimeng-video-seedance-2.0-mini-Dimensio",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_kinovi_9ae55aeb7bd81b3e5988",
+    "Vendor": "kinovi",
+    "Model": "jimeng-video-seedance-2.0-vip",
+    "Upstream": "seedance-20",
+    "Modality": "video",
+    "Base": "https://kinovi.ai",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 50,
+    "Weight": 1,
+    "Config": {
+      "vendor": "kinovi",
+      "sourceModel": "jimeng-video-seedance-2.0-vip",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_kinovi_c99befd235623b19be40",
+    "Vendor": "kinovi",
+    "Model": "jimeng-video-seedance-2.0-vip-Dimensio",
+    "Upstream": "seedance-20",
+    "Modality": "video",
+    "Base": "https://kinovi.ai",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 50,
+    "Weight": 1,
+    "Config": {
+      "vendor": "kinovi",
+      "sourceModel": "jimeng-video-seedance-2.0-vip-Dimensio",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_kinovi_85b3c7724757bae90048",
+    "Vendor": "kinovi",
+    "Model": "jmg-video-seedance-2.5",
+    "Upstream": "seedance2-5",
+    "Modality": "video",
+    "Base": "https://kinovi.ai",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 50,
+    "Weight": 1,
+    "Config": {
+      "vendor": "kinovi",
+      "sourceModel": "jmg-video-seedance-2.5",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_kinovi_b7a64f674fc7f3ffb9a3",
+    "Vendor": "kinovi",
+    "Model": "jmg-video-seedance-2.5-Dimensio",
+    "Upstream": "seedance2-5",
+    "Modality": "video",
+    "Base": "https://kinovi.ai",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 50,
+    "Weight": 1,
+    "Config": {
+      "vendor": "kinovi",
+      "sourceModel": "jmg-video-seedance-2.5-Dimensio",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_kinovi_803bb5901a53568b4738",
+    "Vendor": "kinovi",
+    "Model": "kling-video-3-4k-runware",
+    "Upstream": "kling3",
+    "Modality": "video",
+    "Base": "https://kinovi.ai",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 50,
+    "Weight": 1,
+    "Config": {
+      "vendor": "kinovi",
+      "sourceModel": "kling-video-3-4k-runware",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_kinovi_38b4cf4d290a36c07771",
+    "Vendor": "kinovi",
+    "Model": "kling-video-3-pro-runware",
+    "Upstream": "kling3",
+    "Modality": "video",
+    "Base": "https://kinovi.ai",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 50,
+    "Weight": 1,
+    "Config": {
+      "vendor": "kinovi",
+      "sourceModel": "kling-video-3-pro-runware",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_kinovi_ea17897b596515540123",
+    "Vendor": "kinovi",
+    "Model": "kling-video-3-standard-runware",
+    "Upstream": "kling3",
+    "Modality": "video",
+    "Base": "https://kinovi.ai",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 50,
+    "Weight": 1,
+    "Config": {
+      "vendor": "kinovi",
+      "sourceModel": "kling-video-3-standard-runware",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_kinovi_d46d56cd77281ee8fd18",
+    "Vendor": "kinovi",
+    "Model": "ld-sd-2-1",
+    "Upstream": "seedance-20",
+    "Modality": "video",
+    "Base": "https://kinovi.ai",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 50,
+    "Weight": 1,
+    "Config": {
+      "vendor": "kinovi",
+      "sourceModel": "ld-sd-2-1",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_kinovi_23408cbb535147bed125",
+    "Vendor": "kinovi",
+    "Model": "ld-sd-2-2",
+    "Upstream": "seedance-20",
+    "Modality": "video",
+    "Base": "https://kinovi.ai",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 50,
+    "Weight": 1,
+    "Config": {
+      "vendor": "kinovi",
+      "sourceModel": "ld-sd-2-2",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_kinovi_a11bb174f3d98668b4c9",
+    "Vendor": "kinovi",
+    "Model": "ld-sd-2-4",
+    "Upstream": "seedance-20",
+    "Modality": "video",
+    "Base": "https://kinovi.ai",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 50,
+    "Weight": 1,
+    "Config": {
+      "vendor": "kinovi",
+      "sourceModel": "ld-sd-2-4",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_kinovi_4b3cc3f90fba26c63858",
+    "Vendor": "kinovi",
+    "Model": "ld-sd-2-7",
+    "Upstream": "seedance-20",
+    "Modality": "video",
+    "Base": "https://kinovi.ai",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 50,
+    "Weight": 1,
+    "Config": {
+      "vendor": "kinovi",
+      "sourceModel": "ld-sd-2-7",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_kinovi_mjv8_gen",
+    "Vendor": "kinovi",
+    "Model": "midjourney-v8",
+    "Upstream": "midjourney-v8",
+    "Modality": "image",
+    "Base": "https://kinovi.ai",
+    "Enabled": false,
+    "Primary": true,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "kinovi",
+      "sourceModel": "midjourney-v8",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_kinovi_61181c5f051b2f0091da",
+    "Vendor": "kinovi",
+    "Model": "nano-banana-2",
+    "Upstream": "nanobanana2",
+    "Modality": "image",
+    "Base": "https://kinovi.ai",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 50,
+    "Weight": 1,
+    "Config": {
+      "vendor": "kinovi",
+      "sourceModel": "nano-banana-2",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_kinovi_e8d46be7ca95b5b6098b",
+    "Vendor": "kinovi",
+    "Model": "nano-banana-2-2k",
+    "Upstream": "nanobanana2",
+    "Modality": "image",
+    "Base": "https://kinovi.ai",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 50,
+    "Weight": 1,
+    "Config": {
+      "vendor": "kinovi",
+      "sourceModel": "nano-banana-2-2k",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_kinovi_7b09ef13018031354cd5",
+    "Vendor": "kinovi",
+    "Model": "nano-banana-2-4k",
+    "Upstream": "nanobanana2",
+    "Modality": "image",
+    "Base": "https://kinovi.ai",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 50,
+    "Weight": 1,
+    "Config": {
+      "vendor": "kinovi",
+      "sourceModel": "nano-banana-2-4k",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_kinovi_295f5df1ad14babe7b5f",
+    "Vendor": "kinovi",
+    "Model": "nano-banana-2-ccgo",
+    "Upstream": "nanobanana-pro",
+    "Modality": "image",
+    "Base": "https://kinovi.ai",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 50,
+    "Weight": 1,
+    "Config": {
+      "vendor": "kinovi",
+      "sourceModel": "nano-banana-2-ccgo",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_kinovi_2d4970331a413979d33a",
+    "Vendor": "kinovi",
+    "Model": "seedance-2-afti",
+    "Upstream": "seedance-20",
+    "Modality": "video",
+    "Base": "https://kinovi.ai",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 50,
+    "Weight": 1,
+    "Config": {
+      "vendor": "kinovi",
+      "sourceModel": "seedance-2-afti",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_kinovi_b1c4b7603a49535c2a32",
+    "Vendor": "kinovi",
+    "Model": "seedance-2-bytedance",
+    "Upstream": "seedance-20",
+    "Modality": "video",
+    "Base": "https://kinovi.ai",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 50,
+    "Weight": 1,
+    "Config": {
+      "vendor": "kinovi",
+      "sourceModel": "seedance-2-bytedance",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_kinovi_25246e32c3af8baa4488",
+    "Vendor": "kinovi",
+    "Model": "seedance-2-fast-afti",
+    "Upstream": "seedance2-fast",
+    "Modality": "video",
+    "Base": "https://kinovi.ai",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 50,
+    "Weight": 1,
+    "Config": {
+      "vendor": "kinovi",
+      "sourceModel": "seedance-2-fast-afti",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_kinovi_88cf8f320daf5339930e",
+    "Vendor": "kinovi",
+    "Model": "seedance-2-fast-bytedance",
+    "Upstream": "seedance2-fast",
+    "Modality": "video",
+    "Base": "https://kinovi.ai",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 50,
+    "Weight": 1,
+    "Config": {
+      "vendor": "kinovi",
+      "sourceModel": "seedance-2-fast-bytedance",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_kinovi_130ada629bba1c320914",
+    "Vendor": "kinovi",
+    "Model": "seedance-2-fast-runware",
+    "Upstream": "seedance2-fast",
+    "Modality": "video",
+    "Base": "https://kinovi.ai",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 50,
+    "Weight": 1,
+    "Config": {
+      "vendor": "kinovi",
+      "sourceModel": "seedance-2-fast-runware",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_kinovi_ccf9dcbb203ffb2c291a",
+    "Vendor": "kinovi",
+    "Model": "seedance-2-runware",
+    "Upstream": "seedance-20",
+    "Modality": "video",
+    "Base": "https://kinovi.ai",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 50,
+    "Weight": 1,
+    "Config": {
+      "vendor": "kinovi",
+      "sourceModel": "seedance-2-runware",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_kinovi_4df53e145522272272cb",
+    "Vendor": "kinovi",
+    "Model": "seedance-2-ultra-afti",
+    "Upstream": "seedance-20",
+    "Modality": "video",
+    "Base": "https://kinovi.ai",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 50,
+    "Weight": 1,
+    "Config": {
+      "vendor": "kinovi",
+      "sourceModel": "seedance-2-ultra-afti",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_kinovi_a48e9a1ff13a06cc5add",
+    "Vendor": "kinovi",
+    "Model": "seedance-v2",
+    "Upstream": "seedance-20",
+    "Modality": "video",
+    "Base": "https://kinovi.ai",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 50,
+    "Weight": 1,
+    "Config": {
+      "vendor": "kinovi",
+      "sourceModel": "seedance-v2",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_kinovi_028f849daffb9b838d9f",
+    "Vendor": "kinovi",
+    "Model": "seedance-v2-beta",
+    "Upstream": "seedance-20",
+    "Modality": "video",
+    "Base": "https://kinovi.ai",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 50,
+    "Weight": 1,
+    "Config": {
+      "vendor": "kinovi",
+      "sourceModel": "seedance-v2-beta",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_kinovi_5bcdb08e7e9d750dc8ea",
+    "Vendor": "kinovi",
+    "Model": "seedance-v2-beta-face",
+    "Upstream": "seedance-20",
+    "Modality": "video",
+    "Base": "https://kinovi.ai",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 50,
+    "Weight": 1,
+    "Config": {
+      "vendor": "kinovi",
+      "sourceModel": "seedance-v2-beta-face",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_kinovi_efafe9d77ca4aed0d7a2",
+    "Vendor": "kinovi",
+    "Model": "seedance-v2-fast",
+    "Upstream": "seedance2-fast",
+    "Modality": "video",
+    "Base": "https://kinovi.ai",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 50,
+    "Weight": 1,
+    "Config": {
+      "vendor": "kinovi",
+      "sourceModel": "seedance-v2-fast",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_kinovi_0598afdb6eca5b15b55c",
+    "Vendor": "kinovi",
+    "Model": "seedance-v2-fast-beta",
+    "Upstream": "seedance2-fast",
+    "Modality": "video",
+    "Base": "https://kinovi.ai",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 50,
+    "Weight": 1,
+    "Config": {
+      "vendor": "kinovi",
+      "sourceModel": "seedance-v2-fast-beta",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_kinovi_5b724c35e0d464e36f6d",
+    "Vendor": "kinovi",
+    "Model": "seedance-v2-fast-beta-face",
+    "Upstream": "seedance2-fast",
+    "Modality": "video",
+    "Base": "https://kinovi.ai",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 50,
+    "Weight": 1,
+    "Config": {
+      "vendor": "kinovi",
+      "sourceModel": "seedance-v2-fast-beta-face",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_kinovi_b11194a89c8223b3861f",
+    "Vendor": "kinovi",
+    "Model": "seedance-v2-intl",
+    "Upstream": "seedance-20",
+    "Modality": "video",
+    "Base": "https://kinovi.ai",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 50,
+    "Weight": 1,
+    "Config": {
+      "vendor": "kinovi",
+      "sourceModel": "seedance-v2-intl",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_kinovi_e5425a9371aebd5bce5d",
+    "Vendor": "kinovi",
+    "Model": "seedance-v2-intl-fast",
+    "Upstream": "seedance2-fast",
+    "Modality": "video",
+    "Base": "https://kinovi.ai",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 50,
+    "Weight": 1,
+    "Config": {
+      "vendor": "kinovi",
+      "sourceModel": "seedance-v2-intl-fast",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_kinovi_fed0281d35895bce871d",
+    "Vendor": "kinovi",
+    "Model": "seedance-v2-intl-xl",
+    "Upstream": "seedance-20",
+    "Modality": "video",
+    "Base": "https://kinovi.ai",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 50,
+    "Weight": 1,
+    "Config": {
+      "vendor": "kinovi",
+      "sourceModel": "seedance-v2-intl-xl",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_kinovi_3e9f550a233b6515eb20",
+    "Vendor": "kinovi",
+    "Model": "seedance-v2-intl-xl-fast",
+    "Upstream": "seedance2-fast",
+    "Modality": "video",
+    "Base": "https://kinovi.ai",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 50,
+    "Weight": 1,
+    "Config": {
+      "vendor": "kinovi",
+      "sourceModel": "seedance-v2-intl-xl-fast",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_kinovi_761f37d0b1bc1dab6ceb",
+    "Vendor": "kinovi",
+    "Model": "seedance-v2-official",
+    "Upstream": "seedance-20",
+    "Modality": "video",
+    "Base": "https://kinovi.ai",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 50,
+    "Weight": 1,
+    "Config": {
+      "vendor": "kinovi",
+      "sourceModel": "seedance-v2-official",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_kinovi_8cfbee08252728f31d6a",
+    "Vendor": "kinovi",
+    "Model": "seedance-v2-official2",
+    "Upstream": "seedance-20",
+    "Modality": "video",
+    "Base": "https://kinovi.ai",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 50,
+    "Weight": 1,
+    "Config": {
+      "vendor": "kinovi",
+      "sourceModel": "seedance-v2-official2",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_kinovi_23e36500875be7e77667",
+    "Vendor": "kinovi",
+    "Model": "seedance-v2-official2-fast",
+    "Upstream": "seedance2-fast",
+    "Modality": "video",
+    "Base": "https://kinovi.ai",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 50,
+    "Weight": 1,
+    "Config": {
+      "vendor": "kinovi",
+      "sourceModel": "seedance-v2-official2-fast",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_kinovi_92d8b602769646756832",
+    "Vendor": "kinovi",
+    "Model": "seedream-5.0-pro-bytedance",
+    "Upstream": "seedream-5.0-pro",
+    "Modality": "image",
+    "Base": "https://kinovi.ai",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 50,
+    "Weight": 1,
+    "Config": {
+      "vendor": "kinovi",
+      "sourceModel": "seedream-5.0-pro-bytedance",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_kinovi_c6427d6e859d4d49813f",
+    "Vendor": "kinovi",
+    "Model": "suno-v5-5-mxapi",
+    "Upstream": "suno-music",
+    "Modality": "audio",
+    "Base": "https://kinovi.ai",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 50,
+    "Weight": 1,
+    "Config": {
+      "vendor": "kinovi",
+      "sourceModel": "suno-v5-5-mxapi",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_kinovi_a33cbf7156b91fdadd7b",
+    "Vendor": "kinovi",
+    "Model": "wan3.0-video",
+    "Upstream": "",
+    "Modality": "video",
+    "Base": "https://kinovi.ai",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 50,
+    "Weight": 1,
+    "Config": {
+      "vendor": "kinovi",
+      "sourceModel": "wan3.0-video",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_kinovi_fe0e0927213ba3cdfc72",
+    "Vendor": "kinovi",
+    "Model": "wan3.0-video-prime",
+    "Upstream": "",
+    "Modality": "video",
+    "Base": "https://kinovi.ai",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 50,
+    "Weight": 1,
+    "Config": {
+      "vendor": "kinovi",
+      "sourceModel": "wan3.0-video-prime",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_route_60nkxpo",
+    "Vendor": "LD",
+    "Model": "gpt-image-2",
+    "Upstream": "",
+    "Modality": "image",
+    "Base": "https://api.perbell.com/v1",
+    "Enabled": true,
+    "Primary": false,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "LD",
+      "sourceModel": "gpt-image-2",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_route_o3z2jd9",
+    "Vendor": "LD",
+    "Model": "gpt-image-2-LD",
+    "Upstream": "",
+    "Modality": "image",
+    "Base": "https://api.perbell.com/v1",
+    "Enabled": true,
+    "Primary": false,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "LD",
+      "sourceModel": "gpt-image-2-LD",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_route_ga8bvv3",
+    "Vendor": "LD",
+    "Model": "gpt-image-2-vip-APIYI",
+    "Upstream": "gpt-image-2",
+    "Modality": "image",
+    "Base": "https://api.perbell.com/v1",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 300,
+    "Weight": 1,
+    "Config": {
+      "vendor": "LD",
+      "sourceModel": "gpt-image-2-vip-APIYI",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_mjapi_gpt_c8bec57965d070ba",
+    "Vendor": "midjourney-api",
+    "Model": "gpt-image-2",
+    "Upstream": "gpt-image-2",
+    "Modality": "image",
+    "Base": "https://api.midjourney-api.com",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 50,
+    "Weight": 1,
+    "Config": {
+      "vendor": "midjourney-api",
+      "sourceModel": "gpt-image-2",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_mjapi_gpt_3862a93b94d61454",
+    "Vendor": "midjourney-api",
+    "Model": "gpt-image-2-APIYI",
+    "Upstream": "gpt-image-2",
+    "Modality": "image",
+    "Base": "https://api.midjourney-api.com",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 50,
+    "Weight": 1,
+    "Config": {
+      "vendor": "midjourney-api",
+      "sourceModel": "gpt-image-2-APIYI",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_mjapi_gpt_a94bfb500b7d0e43",
+    "Vendor": "midjourney-api",
+    "Model": "gpt-image-2-CA",
+    "Upstream": "gpt-image-2",
+    "Modality": "image",
+    "Base": "https://api.midjourney-api.com",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 50,
+    "Weight": 1,
+    "Config": {
+      "vendor": "midjourney-api",
+      "sourceModel": "gpt-image-2-CA",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_mjapi_gpt_a17f666875b1a379",
+    "Vendor": "midjourney-api",
+    "Model": "gpt-image-2-ccgo-adobe",
+    "Upstream": "gpt-image-2",
+    "Modality": "image",
+    "Base": "https://api.midjourney-api.com",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 50,
+    "Weight": 1,
+    "Config": {
+      "vendor": "midjourney-api",
+      "sourceModel": "gpt-image-2-ccgo-adobe",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_mjapi_gpt_fb174c2fc4bf86e2",
+    "Vendor": "midjourney-api",
+    "Model": "gpt-image-2-ccgo-az",
+    "Upstream": "gpt-image-2",
+    "Modality": "image",
+    "Base": "https://api.midjourney-api.com",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 50,
+    "Weight": 1,
+    "Config": {
+      "vendor": "midjourney-api",
+      "sourceModel": "gpt-image-2-ccgo-az",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_mjapi_gpt_1468cdc64d592c2a",
+    "Vendor": "midjourney-api",
+    "Model": "gpt-image-2-LD",
+    "Upstream": "gpt-image-2",
+    "Modality": "image",
+    "Base": "https://api.midjourney-api.com",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 50,
+    "Weight": 1,
+    "Config": {
+      "vendor": "midjourney-api",
+      "sourceModel": "gpt-image-2-LD",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_mjapi_gpt_60ad36ad9375a52b",
+    "Vendor": "midjourney-api",
+    "Model": "gpt-image-2-Mk",
+    "Upstream": "gpt-image-2",
+    "Modality": "image",
+    "Base": "https://api.midjourney-api.com",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 50,
+    "Weight": 1,
+    "Config": {
+      "vendor": "midjourney-api",
+      "sourceModel": "gpt-image-2-Mk",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_mjapi_gpt_9ccaaeebfeddd560",
+    "Vendor": "midjourney-api",
+    "Model": "gpt-image-2-official",
+    "Upstream": "gpt-image-2",
+    "Modality": "image",
+    "Base": "https://api.midjourney-api.com",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 50,
+    "Weight": 1,
+    "Config": {
+      "vendor": "midjourney-api",
+      "sourceModel": "gpt-image-2-official",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_mjapi_gpt_d479264ce4250fcc",
+    "Vendor": "midjourney-api",
+    "Model": "gpt-image-2-openrouter",
+    "Upstream": "gpt-image-2",
+    "Modality": "image",
+    "Base": "https://api.midjourney-api.com",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 50,
+    "Weight": 1,
+    "Config": {
+      "vendor": "midjourney-api",
+      "sourceModel": "gpt-image-2-openrouter",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_mjapi_gpt_cb52443d47975562",
+    "Vendor": "midjourney-api",
+    "Model": "gpt-image-2-vip-APIYI",
+    "Upstream": "gpt-image-2",
+    "Modality": "image",
+    "Base": "https://api.midjourney-api.com",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 50,
+    "Weight": 1,
+    "Config": {
+      "vendor": "midjourney-api",
+      "sourceModel": "gpt-image-2-vip-APIYI",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_gpt25_475d0f72ee8e09bc7b6daf0",
+    "Vendor": "midjourney-api",
+    "Model": "gpt-image-2.5",
+    "Upstream": "gpt-image-2.5",
+    "Modality": "image",
+    "Base": "https://api.midjourney-api.com",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 50,
+    "Weight": 1,
+    "Config": {
+      "vendor": "midjourney-api",
+      "sourceModel": "gpt-image-2.5",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_mjapi_v81",
+    "Vendor": "midjourney-api",
+    "Model": "midjourney-v8",
+    "Upstream": "8.1",
+    "Modality": "image",
+    "Base": "https://api.midjourney-api.com",
+    "Enabled": true,
+    "Primary": false,
+    "Priority": 50,
+    "Weight": 1,
+    "Config": {
+      "vendor": "midjourney-api",
+      "sourceModel": "midjourney-v8",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_mjapi_v82",
+    "Vendor": "midjourney-api",
+    "Model": "midjourney-v8.2",
+    "Upstream": "8.2",
+    "Modality": "image",
+    "Base": "https://api.midjourney-api.com",
+    "Enabled": true,
+    "Primary": false,
+    "Priority": 50,
+    "Weight": 1,
+    "Config": {
+      "vendor": "midjourney-api",
+      "sourceModel": "midjourney-v8.2",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_astra_mikotopro",
+    "Vendor": "MikotoPro",
+    "Model": "gpt-6-astra",
+    "Upstream": "gpt-6-astra",
+    "Modality": "text",
+    "Base": "",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "MikotoPro",
+      "sourceModel": "gpt-6-astra",
+      "operation": "",
+      "chatAPI": "chat",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_route_6dj7u8d",
+    "Vendor": "MikotoPro",
+    "Model": "gpt-image-2",
+    "Upstream": "",
+    "Modality": "image",
+    "Base": "https://api.mikoto.vip",
+    "Enabled": true,
+    "Primary": true,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "MikotoPro",
+      "sourceModel": "gpt-image-2",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_route_geeklq4",
+    "Vendor": "MikotoPro",
+    "Model": "gpt-image-2-Mk",
+    "Upstream": "",
+    "Modality": "image",
+    "Base": "https://api.mikoto.vip",
+    "Enabled": true,
+    "Primary": false,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "MikotoPro",
+      "sourceModel": "gpt-image-2-Mk",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_route_1qrrowz",
+    "Vendor": "MikotoPro",
+    "Model": "gpt-image-2-vip-APIYI",
+    "Upstream": "gpt-image-2",
+    "Modality": "image",
+    "Base": "https://api.mikoto.vip",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 200,
+    "Weight": 1,
+    "Config": {
+      "vendor": "MikotoPro",
+      "sourceModel": "gpt-image-2-vip-APIYI",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_gpt25_121b1ddc353624ceade6d68",
+    "Vendor": "MikotoPro",
+    "Model": "gpt-image-2.5",
+    "Upstream": "gpt-image-2.5-flare",
+    "Modality": "image",
+    "Base": "https://api.mikoto.vip",
+    "Enabled": true,
+    "Primary": false,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "MikotoPro",
+      "sourceModel": "gpt-image-2.5",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_mikoto_wan3_video",
+    "Vendor": "MikotoPro",
+    "Model": "wan3.0-video",
+    "Upstream": "wan3.0",
+    "Modality": "video",
+    "Base": "https://api.mikoto.vip",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 0,
+    "Weight": 1,
+    "Config": {
+      "vendor": "MikotoPro",
+      "sourceModel": "wan3.0-video",
+      "operation": "generation",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_mikoto_wan3_video_prime",
+    "Vendor": "MikotoPro",
+    "Model": "wan3.0-video-prime",
+    "Upstream": "wan3.0",
+    "Modality": "video",
+    "Base": "https://api.mikoto.vip",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 0,
+    "Weight": 1,
+    "Config": {
+      "vendor": "MikotoPro",
+      "sourceModel": "wan3.0-video-prime",
+      "operation": "generation",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_route_suno-sfx-mxapi",
+    "Vendor": "mxapi",
+    "Model": "suno-sfx-mxapi",
+    "Upstream": "",
+    "Modality": "audio",
+    "Base": "https://open.mxapi.org",
+    "Enabled": true,
+    "Primary": true,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "mxapi",
+      "sourceModel": "suno-sfx-mxapi",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_route_suno-v4-5-mxapi",
+    "Vendor": "mxapi",
+    "Model": "suno-v4-5-mxapi",
+    "Upstream": "",
+    "Modality": "audio",
+    "Base": "https://open.mxapi.org",
+    "Enabled": true,
+    "Primary": true,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "mxapi",
+      "sourceModel": "suno-v4-5-mxapi",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_route_suno-v4-mxapi",
+    "Vendor": "mxapi",
+    "Model": "suno-v4-mxapi",
+    "Upstream": "",
+    "Modality": "audio",
+    "Base": "https://open.mxapi.org",
+    "Enabled": true,
+    "Primary": true,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "mxapi",
+      "sourceModel": "suno-v4-mxapi",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_route_suno-v5-5-mxapi",
+    "Vendor": "mxapi",
+    "Model": "suno-v5-5-mxapi",
+    "Upstream": "",
+    "Modality": "audio",
+    "Base": "https://open.mxapi.org",
+    "Enabled": true,
+    "Primary": true,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "mxapi",
+      "sourceModel": "suno-v5-5-mxapi",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_route_suno-v5-mxapi",
+    "Vendor": "mxapi",
+    "Model": "suno-v5-mxapi",
+    "Upstream": "",
+    "Modality": "audio",
+    "Base": "https://open.mxapi.org",
+    "Enabled": true,
+    "Primary": true,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "mxapi",
+      "sourceModel": "suno-v5-mxapi",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_route_c7reixs",
+    "Vendor": "MYAPI",
+    "Model": "gpt-5.4",
+    "Upstream": "",
+    "Modality": "text",
+    "Base": "https://api.mikoto.vip",
+    "Enabled": true,
+    "Primary": false,
+    "Priority": 200,
+    "Weight": 1,
+    "Config": {
+      "vendor": "MYAPI",
+      "sourceModel": "gpt-5.4",
+      "operation": "",
+      "chatAPI": "responses",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_route_3co7gpc",
+    "Vendor": "MYAPI",
+    "Model": "gpt-5.4-mini",
+    "Upstream": "",
+    "Modality": "text",
+    "Base": "https://api.mikoto.vip",
+    "Enabled": true,
+    "Primary": false,
+    "Priority": 200,
+    "Weight": 1,
+    "Config": {
+      "vendor": "MYAPI",
+      "sourceModel": "gpt-5.4-mini",
+      "operation": "",
+      "chatAPI": "responses",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_route_ikorjx6",
+    "Vendor": "MYAPI",
+    "Model": "gpt-5.5",
+    "Upstream": "",
+    "Modality": "text",
+    "Base": "https://api.mikoto.vip",
+    "Enabled": true,
+    "Primary": false,
+    "Priority": 300,
+    "Weight": 1,
+    "Config": {
+      "vendor": "MYAPI",
+      "sourceModel": "gpt-5.5",
+      "operation": "",
+      "chatAPI": "responses",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_route_stk88d2",
+    "Vendor": "MYAPI",
+    "Model": "gpt-5.5-APIYI",
+    "Upstream": "gpt-5.5",
+    "Modality": "text",
+    "Base": "https://api.mikoto.vip",
+    "Enabled": true,
+    "Primary": false,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "MYAPI",
+      "sourceModel": "gpt-5.5-APIYI",
+      "operation": "",
+      "chatAPI": "responses",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_route_mzhx28h",
+    "Vendor": "MYAPI",
+    "Model": "gpt-5.6-luna",
+    "Upstream": "",
+    "Modality": "text",
+    "Base": "https://api.mikoto.vip",
+    "Enabled": true,
+    "Primary": false,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "MYAPI",
+      "sourceModel": "gpt-5.6-luna",
+      "operation": "",
+      "chatAPI": "responses",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_route_4zzydrq",
+    "Vendor": "MYAPI",
+    "Model": "gpt-5.6-sol",
+    "Upstream": "",
+    "Modality": "text",
+    "Base": "https://api.mikoto.vip",
+    "Enabled": true,
+    "Primary": false,
+    "Priority": 200,
+    "Weight": 1,
+    "Config": {
+      "vendor": "MYAPI",
+      "sourceModel": "gpt-5.6-sol",
+      "operation": "",
+      "chatAPI": "responses",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_route_v7c2vwg",
+    "Vendor": "MYAPI",
+    "Model": "gpt-5.6-terra",
+    "Upstream": "",
+    "Modality": "text",
+    "Base": "https://api.mikoto.vip",
+    "Enabled": true,
+    "Primary": false,
+    "Priority": 200,
+    "Weight": 1,
+    "Config": {
+      "vendor": "MYAPI",
+      "sourceModel": "gpt-5.6-terra",
+      "operation": "",
+      "chatAPI": "responses",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_astra_myapi",
+    "Vendor": "MYAPI",
+    "Model": "gpt-6-astra",
+    "Upstream": "gpt-6-astra",
+    "Modality": "text",
+    "Base": "",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "MYAPI",
+      "sourceModel": "gpt-6-astra",
+      "operation": "",
+      "chatAPI": "chat",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_route_jp95nk9",
+    "Vendor": "MYAPI",
+    "Model": "gpt-image-2",
+    "Upstream": "",
+    "Modality": "image",
+    "Base": "http://45.129.9.229:8080",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "MYAPI",
+      "sourceModel": "gpt-image-2",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_gpt25_991083683c384b2e760ab8f",
+    "Vendor": "MYAPI",
+    "Model": "gpt-image-2.5",
+    "Upstream": "gpt-image-2.5",
+    "Modality": "image",
+    "Base": "http://45.129.9.229:8080",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "MYAPI",
+      "sourceModel": "gpt-image-2.5",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_route_k1645in",
+    "Vendor": "MYNEWAPI",
+    "Model": "DeepSeek-V3.2",
+    "Upstream": "",
+    "Modality": "text",
+    "Base": "https://api.dlapi.xyz",
+    "Enabled": true,
+    "Primary": true,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "MYNEWAPI",
+      "sourceModel": "DeepSeek-V3.2",
+      "operation": "",
+      "chatAPI": "chat",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_astra_mynewapi",
+    "Vendor": "MYNEWAPI",
+    "Model": "gpt-6-astra",
+    "Upstream": "gpt-6-astra",
+    "Modality": "text",
+    "Base": "",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "MYNEWAPI",
+      "sourceModel": "gpt-6-astra",
+      "operation": "",
+      "chatAPI": "chat",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_route_idsdksg",
+    "Vendor": "MYNEWAPI",
+    "Model": "gpt-image-2",
+    "Upstream": "",
+    "Modality": "image",
+    "Base": "http://38.45.72.151:3000",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 100,
+    "Weight": 3,
+    "Config": {
+      "vendor": "MYNEWAPI",
+      "sourceModel": "gpt-image-2",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_route_qx5jl32",
+    "Vendor": "MYNEWAPI",
+    "Model": "gpt-image-2",
+    "Upstream": "",
+    "Modality": "image",
+    "Base": "https://api.oaipro.com",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "MYNEWAPI",
+      "sourceModel": "gpt-image-2",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_route_7dbrk4o",
+    "Vendor": "MYNEWAPI",
+    "Model": "nano-banana-2",
+    "Upstream": "",
+    "Modality": "image",
+    "Base": "http://38.45.72.151:3000",
+    "Enabled": true,
+    "Primary": false,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "MYNEWAPI",
+      "sourceModel": "nano-banana-2",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_route_5npj5i6",
+    "Vendor": "MYNEWAPI",
+    "Model": "nano-banana-2-2k",
+    "Upstream": "",
+    "Modality": "image",
+    "Base": "http://38.45.72.151:3000",
+    "Enabled": true,
+    "Primary": false,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "MYNEWAPI",
+      "sourceModel": "nano-banana-2-2k",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_route_sovjcov",
+    "Vendor": "MYNEWAPI",
+    "Model": "nano-banana-2-4k",
+    "Upstream": "",
+    "Modality": "image",
+    "Base": "http://38.45.72.151:3000",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "MYNEWAPI",
+      "sourceModel": "nano-banana-2-4k",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_route_9260u30",
+    "Vendor": "official-openai",
+    "Model": "gpt-image-2",
+    "Upstream": "",
+    "Modality": "image",
+    "Base": "https://api.oaipro.com",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "official-openai",
+      "sourceModel": "gpt-image-2",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_route_894qqzu",
+    "Vendor": "official-openai",
+    "Model": "gpt-image-2-APIYI",
+    "Upstream": "openai/gpt-image-2",
+    "Modality": "image",
+    "Base": "https://openrouter.ai/api",
+    "Enabled": false,
+    "Primary": true,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "official-openai",
+      "sourceModel": "gpt-image-2-APIYI",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_route_b8ofb1t",
+    "Vendor": "official-openai",
+    "Model": "gpt-image-2-APIYI",
+    "Upstream": "",
+    "Modality": "image",
+    "Base": "https://api.uniapi.io",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "official-openai",
+      "sourceModel": "gpt-image-2-APIYI",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {
+        "gpt-image-2-APIYI": "gpt-image-2"
+      }
+    }
+  },
+  {
+    "ID": "pr_route_i82tf8u",
+    "Vendor": "official-openai",
+    "Model": "gpt-image-2-LD",
+    "Upstream": "",
+    "Modality": "image",
+    "Base": "https://www.qflowapi.com",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "official-openai",
+      "sourceModel": "gpt-image-2-LD",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_route_wc6hcn4",
+    "Vendor": "openrouter",
+    "Model": "gpt-image-2-APIYI",
+    "Upstream": "",
+    "Modality": "image",
+    "Base": "https://openrouter.ai/api",
+    "Enabled": true,
+    "Primary": false,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "openrouter",
+      "sourceModel": "gpt-image-2-APIYI",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {
+        "gpt-image-2-APIYI": "openai/gpt-image-2"
+      }
+    }
+  },
+  {
+    "ID": "pr_route_geam70m",
+    "Vendor": "openrouter",
+    "Model": "gpt-image-2-vip-APIYI",
+    "Upstream": "",
+    "Modality": "image",
+    "Base": "https://openrouter.ai/api",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 50,
+    "Weight": 1,
+    "Config": {
+      "vendor": "openrouter",
+      "sourceModel": "gpt-image-2-vip-APIYI",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {
+        "gpt-image-2-vip-APIYI": "openai/gpt-image-2"
+      }
+    }
+  },
+  {
+    "ID": "pr_gpt25_b5963a4ad8fc97c06dfbb12",
+    "Vendor": "openrouter",
+    "Model": "gpt-image-2.5",
+    "Upstream": "openai/gpt-image-2.5",
+    "Modality": "image",
+    "Base": "https://openrouter.ai/api",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "openrouter",
+      "sourceModel": "gpt-image-2.5",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {
+        "gpt-image-2-APIYI": "openai/gpt-image-2"
+      }
+    }
+  },
+  {
+    "ID": "pr_route_5gbnn5x",
+    "Vendor": "openrouter",
+    "Model": "grok-imagine-image-quality",
+    "Upstream": "",
+    "Modality": "image",
+    "Base": "https://openrouter.ai/api",
+    "Enabled": true,
+    "Primary": true,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "openrouter",
+      "sourceModel": "grok-imagine-image-quality",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {
+        "grok-imagine-image-quality": "x-ai/grok-imagine-image-quality"
+      }
+    }
+  },
+  {
+    "ID": "pr_route_mtsh3j1",
+    "Vendor": "openrouter",
+    "Model": "grok-imagine-video",
+    "Upstream": "",
+    "Modality": "video",
+    "Base": "https://openrouter.ai/api",
+    "Enabled": true,
+    "Primary": true,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "openrouter",
+      "sourceModel": "grok-imagine-video",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {
+        "grok-imagine-video": "x-ai/grok-imagine-video"
+      }
+    }
+  },
+  {
+    "ID": "pr_route_gvk9ejt",
+    "Vendor": "openrouter",
+    "Model": "grok-imagine-video-1.5-preview",
+    "Upstream": "",
+    "Modality": "video",
+    "Base": "https://openrouter.ai/api",
+    "Enabled": true,
+    "Primary": false,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "openrouter",
+      "sourceModel": "grok-imagine-video-1.5-preview",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {
+        "grok-imagine-video-1.5-preview": "x-ai/grok-imagine-video-1.5"
+      }
+    }
+  },
+  {
+    "ID": "pr_route_0z1n0br",
+    "Vendor": "openrouter",
+    "Model": "lyria-3-clip-openrouter",
+    "Upstream": "",
+    "Modality": "audio",
+    "Base": "https://openrouter.ai/api",
+    "Enabled": true,
+    "Primary": false,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "openrouter",
+      "sourceModel": "lyria-3-clip-openrouter",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_route_tm0522g",
+    "Vendor": "openrouter",
+    "Model": "lyria-3-openrouter",
+    "Upstream": "",
+    "Modality": "audio",
+    "Base": "https://openrouter.ai/api",
+    "Enabled": true,
+    "Primary": false,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "openrouter",
+      "sourceModel": "lyria-3-openrouter",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_route_v5sdrhx",
+    "Vendor": "openrouter",
+    "Model": "tts-gemini-openrouter",
+    "Upstream": "",
+    "Modality": "audio",
+    "Base": "https://openrouter.ai/api",
+    "Enabled": true,
+    "Primary": false,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "openrouter",
+      "sourceModel": "tts-gemini-openrouter",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_route_81g8e0k",
+    "Vendor": "openrouter",
+    "Model": "tts-mai-openrouter",
+    "Upstream": "",
+    "Modality": "audio",
+    "Base": "https://openrouter.ai/api",
+    "Enabled": true,
+    "Primary": false,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "openrouter",
+      "sourceModel": "tts-mai-openrouter",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_route_721ga33",
+    "Vendor": "openrouter",
+    "Model": "tts-voxtral-openrouter",
+    "Upstream": "",
+    "Modality": "audio",
+    "Base": "https://openrouter.ai/api",
+    "Enabled": true,
+    "Primary": false,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "openrouter",
+      "sourceModel": "tts-voxtral-openrouter",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_rolldek_gptimg25",
+    "Vendor": "rolldek",
+    "Model": "gpt-image-2.5",
+    "Upstream": "gpt-image-2.5",
+    "Modality": "image",
+    "Base": "",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 0,
+    "Weight": 1,
+    "Config": {
+      "vendor": "rolldek",
+      "sourceModel": "gpt-image-2.5",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_rolldek_wan3_video",
+    "Vendor": "rolldek",
+    "Model": "wan3.0-video",
+    "Upstream": "wan3.0-video-720p",
+    "Modality": "video",
+    "Base": "https://rolldek.com",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 0,
+    "Weight": 1,
+    "Config": {
+      "vendor": "rolldek",
+      "sourceModel": "wan3.0-video",
+      "operation": "generation",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_rolldek_wan3_video_prime",
+    "Vendor": "rolldek",
+    "Model": "wan3.0-video-prime",
+    "Upstream": "wan3.0-video-prime-720p",
+    "Modality": "video",
+    "Base": "https://rolldek.com",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 0,
+    "Weight": 1,
+    "Config": {
+      "vendor": "rolldek",
+      "sourceModel": "wan3.0-video-prime",
+      "operation": "generation",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_route_gtpyq7r",
+    "Vendor": "runninghub",
+    "Model": "gpt-image-2",
+    "Upstream": "",
+    "Modality": "image",
+    "Base": "https://www.runninghub.cn",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "runninghub",
+      "sourceModel": "gpt-image-2",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_rh_upscale",
+    "Vendor": "runninghub-upscale",
+    "Model": "rh-upscale",
+    "Upstream": "",
+    "Modality": "upscale",
+    "Base": "https://www.runninghub.cn",
+    "Enabled": true,
+    "Primary": false,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "runninghub-upscale",
+      "sourceModel": "rh-upscale",
+      "operation": "upscale",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_route_3qfqzhb",
+    "Vendor": "runware",
+    "Model": "gpt-image-2-official",
+    "Upstream": "",
+    "Modality": "image",
+    "Base": "https://api.runware.ai/v1",
+    "Enabled": true,
+    "Primary": false,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "runware",
+      "sourceModel": "gpt-image-2-official",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_gpt25_b35b89e31030844efc1b8da",
+    "Vendor": "runware",
+    "Model": "gpt-image-2.5",
+    "Upstream": "openai:gpt-image@2.5",
+    "Modality": "image",
+    "Base": "https://api.runware.ai/v1",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "runware",
+      "sourceModel": "gpt-image-2.5",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_route_tpso7ri",
+    "Vendor": "runware",
+    "Model": "happyhorse-1-runware",
+    "Upstream": "",
+    "Modality": "video",
+    "Base": "https://api.runware.ai/v1",
+    "Enabled": true,
+    "Primary": false,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "runware",
+      "sourceModel": "happyhorse-1-runware",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_route_vtw98mg",
+    "Vendor": "runware",
+    "Model": "kling-video-3-4k-runware",
+    "Upstream": "",
+    "Modality": "video",
+    "Base": "https://api.runware.ai/v1",
+    "Enabled": true,
+    "Primary": false,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "runware",
+      "sourceModel": "kling-video-3-4k-runware",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_route_312qs80",
+    "Vendor": "runware",
+    "Model": "kling-video-3-pro-runware",
+    "Upstream": "",
+    "Modality": "video",
+    "Base": "https://api.runware.ai/v1",
+    "Enabled": true,
+    "Primary": false,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "runware",
+      "sourceModel": "kling-video-3-pro-runware",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_route_tfz84pe",
+    "Vendor": "runware",
+    "Model": "kling-video-3-standard-runware",
+    "Upstream": "",
+    "Modality": "video",
+    "Base": "https://api.runware.ai/v1",
+    "Enabled": true,
+    "Primary": false,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "runware",
+      "sourceModel": "kling-video-3-standard-runware",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_route_q4v04xh",
+    "Vendor": "runware",
+    "Model": "minimax-hailuo-02-runware",
+    "Upstream": "",
+    "Modality": "video",
+    "Base": "https://api.runware.ai/v1",
+    "Enabled": true,
+    "Primary": false,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "runware",
+      "sourceModel": "minimax-hailuo-02-runware",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_route_ai1kmp9",
+    "Vendor": "runware",
+    "Model": "minimax-hailuo-2-3-runware",
+    "Upstream": "",
+    "Modality": "video",
+    "Base": "https://api.runware.ai/v1",
+    "Enabled": true,
+    "Primary": false,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "runware",
+      "sourceModel": "minimax-hailuo-2-3-runware",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_route_ey59jdi",
+    "Vendor": "runware",
+    "Model": "seedance-2-fast-runware",
+    "Upstream": "",
+    "Modality": "video",
+    "Base": "https://api.runware.ai/v1",
+    "Enabled": true,
+    "Primary": false,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "runware",
+      "sourceModel": "seedance-2-fast-runware",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_route_jbhovac",
+    "Vendor": "runware",
+    "Model": "seedance-2-runware",
+    "Upstream": "",
+    "Modality": "video",
+    "Base": "https://api.runware.ai/v1",
+    "Enabled": true,
+    "Primary": false,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "runware",
+      "sourceModel": "seedance-2-runware",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_secskill_img2_gen",
+    "Vendor": "secure-skill",
+    "Model": "gpt-image-2",
+    "Upstream": "gpt-image-2",
+    "Modality": "image",
+    "Base": "https://token.secure-skill.com",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "secure-skill",
+      "sourceModel": "gpt-image-2",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_secskill_img2a_gen",
+    "Vendor": "secure-skill",
+    "Model": "gpt-image-2-APIYI",
+    "Upstream": "gpt-image-2",
+    "Modality": "image",
+    "Base": "https://token.secure-skill.com",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "secure-skill",
+      "sourceModel": "gpt-image-2-APIYI",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_secskill_img2v_gen",
+    "Vendor": "secure-skill",
+    "Model": "gpt-image-2-vip-APIYI",
+    "Upstream": "gpt-image-2",
+    "Modality": "image",
+    "Base": "https://token.secure-skill.com",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "secure-skill",
+      "sourceModel": "gpt-image-2-vip-APIYI",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_gpt25_0edbbabc307cd7715f3f63e",
+    "Vendor": "secure-skill",
+    "Model": "gpt-image-2.5",
+    "Upstream": "gpt-image-2.5",
+    "Modality": "image",
+    "Base": "https://token.secure-skill.com",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "secure-skill",
+      "sourceModel": "gpt-image-2.5",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_route_5kg1r5r",
+    "Vendor": "secure-skill",
+    "Model": "grok-imagine-image-quality",
+    "Upstream": "",
+    "Modality": "image",
+    "Base": "https://token.secure-skill.com",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "secure-skill",
+      "sourceModel": "grok-imagine-image-quality",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_route_6wps7x9",
+    "Vendor": "secure-skill",
+    "Model": "grok-imagine-video",
+    "Upstream": "",
+    "Modality": "video",
+    "Base": "https://token.secure-skill.com",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "secure-skill",
+      "sourceModel": "grok-imagine-video",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_route_cf60xtk",
+    "Vendor": "secure-skill",
+    "Model": "grok-imagine-video-1.5-preview",
+    "Upstream": "",
+    "Modality": "video",
+    "Base": "https://token.secure-skill.com",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "secure-skill",
+      "sourceModel": "grok-imagine-video-1.5-preview",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_secskill_seedance20_fastvip",
+    "Vendor": "secure-skill",
+    "Model": "jimeng-video-seedance-2.0-fast-vip-Dimensio",
+    "Upstream": "video-2.0-fast",
+    "Modality": "video",
+    "Base": "https://token.secure-skill.com",
+    "Enabled": true,
+    "Primary": false,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "secure-skill",
+      "sourceModel": "jimeng-video-seedance-2.0-fast-vip-Dimensio",
+      "operation": "generation",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "jv20vip_7f8c63421690",
+    "Vendor": "secure-skill",
+    "Model": "jimeng-video-seedance-2.0-vip",
+    "Upstream": "video-2.0-pro",
+    "Modality": "video",
+    "Base": "https://token.secure-skill.com",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "secure-skill",
+      "sourceModel": "jimeng-video-seedance-2.0-vip",
+      "operation": "generation",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_secskill_seedance20_vip",
+    "Vendor": "secure-skill",
+    "Model": "jimeng-video-seedance-2.0-vip-Dimensio",
+    "Upstream": "video-2.0-pro",
+    "Modality": "video",
+    "Base": "https://token.secure-skill.com",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "secure-skill",
+      "sourceModel": "jimeng-video-seedance-2.0-vip-Dimensio",
+      "operation": "generation",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_secskill_seedance25",
+    "Vendor": "secure-skill",
+    "Model": "jmg-video-seedance-2.5-Dimensio",
+    "Upstream": "seedance-2.5",
+    "Modality": "video",
+    "Base": "https://token.secure-skill.com",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "secure-skill",
+      "sourceModel": "jmg-video-seedance-2.5-Dimensio",
+      "operation": "generation",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_route_bg5vb0n",
+    "Vendor": "secure-skill",
+    "Model": "minimax-h3-vip",
+    "Upstream": "minimax-h3",
+    "Modality": "video",
+    "Base": "https://token.secure-skill.com",
+    "Enabled": false,
+    "Primary": true,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "secure-skill",
+      "sourceModel": "minimax-h3-vip",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_secskill_wan3",
+    "Vendor": "secure-skill",
+    "Model": "wan3.0-video",
+    "Upstream": "wan3.0-video",
+    "Modality": "video",
+    "Base": "https://token.secure-skill.com",
+    "Enabled": true,
+    "Primary": true,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "secure-skill",
+      "sourceModel": "wan3.0-video",
+      "operation": "generation",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_secskill_wan3_prime",
+    "Vendor": "secure-skill",
+    "Model": "wan3.0-video-prime",
+    "Upstream": "wan3.0-video-prime",
+    "Modality": "video",
+    "Base": "https://token.secure-skill.com",
+    "Enabled": true,
+    "Primary": true,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "secure-skill",
+      "sourceModel": "wan3.0-video-prime",
+      "operation": "generation",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_secskill_out_s20_fast",
+    "Vendor": "secure-skill-out",
+    "Model": "jimeng-video-seedance-2.0-fast-vip-Dimensio",
+    "Upstream": "video-2.0-fast",
+    "Modality": "video",
+    "Base": "https://token.secure-skill.com",
+    "Enabled": true,
+    "Primary": false,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "secure-skill-out",
+      "sourceModel": "jimeng-video-seedance-2.0-fast-vip-Dimensio",
+      "operation": "generation",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_secskill_out_s20_mini",
+    "Vendor": "secure-skill-out",
+    "Model": "jimeng-video-seedance-2.0-mini-Dimensio",
+    "Upstream": "video-2.0-mini",
+    "Modality": "video",
+    "Base": "https://token.secure-skill.com",
+    "Enabled": true,
+    "Primary": false,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "secure-skill-out",
+      "sourceModel": "jimeng-video-seedance-2.0-mini-Dimensio",
+      "operation": "generation",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "jv20vip_395d9572f3b5",
+    "Vendor": "secure-skill-out",
+    "Model": "jimeng-video-seedance-2.0-vip",
+    "Upstream": "video-2.0-pro",
+    "Modality": "video",
+    "Base": "https://token.secure-skill.com",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "secure-skill-out",
+      "sourceModel": "jimeng-video-seedance-2.0-vip",
+      "operation": "generation",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_secskill_out_s20_vip",
+    "Vendor": "secure-skill-out",
+    "Model": "jimeng-video-seedance-2.0-vip-Dimensio",
+    "Upstream": "video-2.0-pro",
+    "Modality": "video",
+    "Base": "https://token.secure-skill.com",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "secure-skill-out",
+      "sourceModel": "jimeng-video-seedance-2.0-vip-Dimensio",
+      "operation": "generation",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_secskill_special_s20_fast",
+    "Vendor": "secure-skill-sepcial",
+    "Model": "jimeng-video-seedance-2.0-fast-vip-Dimensio",
+    "Upstream": "video-2.0-fast",
+    "Modality": "video",
+    "Base": "https://token.secure-skill.com",
+    "Enabled": true,
+    "Primary": false,
+    "Priority": 300,
+    "Weight": 1,
+    "Config": {
+      "vendor": "secure-skill-sepcial",
+      "sourceModel": "jimeng-video-seedance-2.0-fast-vip-Dimensio",
+      "operation": "generation",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_secskill_special_s20_mini",
+    "Vendor": "secure-skill-sepcial",
+    "Model": "jimeng-video-seedance-2.0-mini-Dimensio",
+    "Upstream": "video-2.0-mini",
+    "Modality": "video",
+    "Base": "https://token.secure-skill.com",
+    "Enabled": true,
+    "Primary": false,
+    "Priority": 300,
+    "Weight": 1,
+    "Config": {
+      "vendor": "secure-skill-sepcial",
+      "sourceModel": "jimeng-video-seedance-2.0-mini-Dimensio",
+      "operation": "generation",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "jv20vip_cf4316f6e9e4",
+    "Vendor": "secure-skill-sepcial",
+    "Model": "jimeng-video-seedance-2.0-vip",
+    "Upstream": "video-2.0-pro",
+    "Modality": "video",
+    "Base": "https://token.secure-skill.com",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 300,
+    "Weight": 1,
+    "Config": {
+      "vendor": "secure-skill-sepcial",
+      "sourceModel": "jimeng-video-seedance-2.0-vip",
+      "operation": "generation",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_secskill_special_s20_vip",
+    "Vendor": "secure-skill-sepcial",
+    "Model": "jimeng-video-seedance-2.0-vip-Dimensio",
+    "Upstream": "video-2.0-pro",
+    "Modality": "video",
+    "Base": "https://token.secure-skill.com",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 300,
+    "Weight": 1,
+    "Config": {
+      "vendor": "secure-skill-sepcial",
+      "sourceModel": "jimeng-video-seedance-2.0-vip-Dimensio",
+      "operation": "generation",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_uniart_seedance20_fast",
+    "Vendor": "uniart",
+    "Model": "jimeng-video-seedance-2.0-fast-vip-Dimensio",
+    "Upstream": "seedance-2.0-fast-vip",
+    "Modality": "video",
+    "Base": "https://uniart.fun",
+    "Enabled": true,
+    "Primary": false,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "uniart",
+      "sourceModel": "jimeng-video-seedance-2.0-fast-vip-Dimensio",
+      "operation": "generation",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "jv20vip_b0ca101b3a17",
+    "Vendor": "uniart",
+    "Model": "jimeng-video-seedance-2.0-vip",
+    "Upstream": "seedance-2.0-vip",
+    "Modality": "video",
+    "Base": "https://uniart.fun",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "uniart",
+      "sourceModel": "jimeng-video-seedance-2.0-vip",
+      "operation": "generation",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_uniart_seedance20_vip",
+    "Vendor": "uniart",
+    "Model": "jimeng-video-seedance-2.0-vip-Dimensio",
+    "Upstream": "seedance-2.0-vip",
+    "Modality": "video",
+    "Base": "https://uniart.fun",
+    "Enabled": true,
+    "Primary": true,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "uniart",
+      "sourceModel": "jimeng-video-seedance-2.0-vip-Dimensio",
+      "operation": "generation",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_route_22xj0sp",
+    "Vendor": "uniart",
+    "Model": "minimax-h3-vip",
+    "Upstream": "minimax-h3-vip",
+    "Modality": "video",
+    "Base": "https://uniart.fun",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "uniart",
+      "sourceModel": "minimax-h3-vip",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_uniart_minimax_h3_vip",
+    "Vendor": "uniart",
+    "Model": "minimax-h3-vip",
+    "Upstream": "minimax-h3-vip",
+    "Modality": "video",
+    "Base": "https://uniart.fun",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "uniart",
+      "sourceModel": "minimax-h3-vip",
+      "operation": "generation",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_ws_upscale_bytedance",
+    "Vendor": "wavespeed",
+    "Model": "bytedance/video-upscaler",
+    "Upstream": "",
+    "Modality": "upscale",
+    "Base": "https://api.wavespeed.ai",
+    "Enabled": true,
+    "Primary": true,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "wavespeed",
+      "sourceModel": "bytedance/video-upscaler",
+      "operation": "upscale",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_ws_upscale_standard",
+    "Vendor": "wavespeed",
+    "Model": "wavespeed-ai/video-upscaler",
+    "Upstream": "",
+    "Modality": "upscale",
+    "Base": "https://api.wavespeed.ai",
+    "Enabled": true,
+    "Primary": true,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "wavespeed",
+      "sourceModel": "wavespeed-ai/video-upscaler",
+      "operation": "upscale",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_ws_upscale_pro",
+    "Vendor": "wavespeed",
+    "Model": "wavespeed-ai/video-upscaler-pro",
+    "Upstream": "",
+    "Modality": "upscale",
+    "Base": "https://api.wavespeed.ai",
+    "Enabled": true,
+    "Primary": true,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "wavespeed",
+      "sourceModel": "wavespeed-ai/video-upscaler-pro",
+      "operation": "upscale",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "jv20vip_56fa06d1140f",
+    "Vendor": "wxart",
+    "Model": "jimeng-video-seedance-2.0-vip",
+    "Upstream": "seedance2.5",
+    "Modality": "video",
+    "Base": "https://api.wxart.space",
+    "Enabled": true,
+    "Primary": true,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "wxart",
+      "sourceModel": "jimeng-video-seedance-2.0-vip",
+      "operation": "generation",
+      "chatAPI": "",
+      "modelMap": {},
+      "submit_path_override": "/v1/videos",
+      "poll_path_override": "/v1/videos/{id}"
+    }
+  },
+  {
+    "ID": "pr_wxart_seedance20_vip",
+    "Vendor": "wxart",
+    "Model": "jimeng-video-seedance-2.0-vip-Dimensio",
+    "Upstream": "seedance2.5",
+    "Modality": "video",
+    "Base": "https://api.wxart.space",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "wxart",
+      "sourceModel": "jimeng-video-seedance-2.0-vip-Dimensio",
+      "operation": "generation",
+      "chatAPI": "",
+      "modelMap": {},
+      "submit_path_override": "/v1/videos",
+      "poll_path_override": "/v1/videos/{id}"
+    }
+  },
+  {
+    "ID": "jv25_dbb03ab95eae",
+    "Vendor": "wxart",
+    "Model": "jmg-video-seedance-2.5",
+    "Upstream": "seedance2.5",
+    "Modality": "video",
+    "Base": "https://api.wxart.space",
+    "Enabled": true,
+    "Primary": false,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "wxart",
+      "sourceModel": "jmg-video-seedance-2.5",
+      "operation": "generation",
+      "chatAPI": "",
+      "modelMap": {},
+      "submit_path_override": "/v1/videos",
+      "poll_path_override": "/v1/videos/{id}"
+    }
+  },
+  {
+    "ID": "pr_wxart_seedance25",
+    "Vendor": "wxart",
+    "Model": "jmg-video-seedance-2.5-Dimensio",
+    "Upstream": "seedance2.5",
+    "Modality": "video",
+    "Base": "",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "wxart",
+      "sourceModel": "jmg-video-seedance-2.5-Dimensio",
+      "operation": "generation",
+      "chatAPI": "",
+      "modelMap": {},
+      "submit_path_override": "/v1/videos",
+      "poll_path_override": "/v1/videos/{id}"
+    }
+  },
+  {
+    "ID": "pr_wxart_minimax_h3_vip",
+    "Vendor": "wxart",
+    "Model": "minimax-h3-vip",
+    "Upstream": "minimax-h3",
+    "Modality": "video",
+    "Base": "https://api.wxart.space",
+    "Enabled": true,
+    "Primary": false,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "wxart",
+      "sourceModel": "minimax-h3-vip",
+      "operation": "generation",
+      "chatAPI": "",
+      "modelMap": {},
+      "submit_path_override": "/v1/videos",
+      "poll_path_override": "/v1/videos/{id}"
+    }
+  },
+  {
+    "ID": "pr_route_jgwymle",
+    "Vendor": "zhubo",
+    "Model": "gpt-image-2-vip-APIYI",
+    "Upstream": "gpt-image-2",
+    "Modality": "image",
+    "Base": "https://video.zhubo.asia",
+    "Enabled": false,
+    "Primary": true,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "zhubo",
+      "sourceModel": "gpt-image-2-vip-APIYI",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_gpt25_03f008b820962b3473364b2",
+    "Vendor": "zhubo",
+    "Model": "gpt-image-2.5",
+    "Upstream": "gpt-image-2.5",
+    "Modality": "image",
+    "Base": "https://video.zhubo.asia",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "zhubo",
+      "sourceModel": "gpt-image-2.5",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_zhubo_custom_video",
+    "Vendor": "zhubo",
+    "Model": "zhubo_video",
+    "Upstream": "",
+    "Modality": "video",
+    "Base": "https://video.zhubo.asia",
+    "Enabled": true,
+    "Primary": true,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "zhubo",
+      "sourceModel": "zhubo_video",
+      "operation": "generation",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_astra_zzshu",
+    "Vendor": "zzshu",
+    "Model": "gpt-6-astra",
+    "Upstream": "gpt-6-astra",
+    "Modality": "text",
+    "Base": "",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "zzshu",
+      "sourceModel": "gpt-6-astra",
+      "operation": "",
+      "chatAPI": "chat",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_route_r37us5y",
+    "Vendor": "zzshu",
+    "Model": "gpt-image-2",
+    "Upstream": "",
+    "Modality": "image",
+    "Base": "https://zzshu.cc",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "zzshu",
+      "sourceModel": "gpt-image-2",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  },
+  {
+    "ID": "pr_gpt25_18e6cbbd6de7b520877476c",
+    "Vendor": "zzshu",
+    "Model": "gpt-image-2.5",
+    "Upstream": "gpt-image-2.5",
+    "Modality": "image",
+    "Base": "https://zzshu.cc",
+    "Enabled": false,
+    "Primary": false,
+    "Priority": 100,
+    "Weight": 1,
+    "Config": {
+      "vendor": "zzshu",
+      "sourceModel": "gpt-image-2.5",
+      "operation": "",
+      "chatAPI": "",
+      "modelMap": {}
+    }
+  }
+]

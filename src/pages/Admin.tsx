@@ -1510,8 +1510,11 @@ function ProviderAdmin() {
                     </button>
                   )}
                   {p.protocol === "inventory" && (
-                    <Link className="button primary" to="/admin/inventory">
-                      管理独立路由
+                    <Link
+                      className="button primary"
+                      to={`/admin/inventory?provider=${encodeURIComponent(p.id)}`}
+                    >
+                      配置路由与 API Key
                     </Link>
                   )}
                   {p.protocol !== "media-upload" &&
@@ -1598,7 +1601,7 @@ function ProviderForm({
 }) {
   const [form, setForm] = useState<RecordData>({
     name: "",
-    protocol: "openai-image",
+    protocol: "",
     base_url: "",
     apiKey: "",
     enabled: true,
@@ -1608,6 +1611,11 @@ function ProviderForm({
   const [config, setConfig] = useState(
     JSON.stringify(initial.config || {}, null, 2),
   );
+  const { data: allProviders } = useApi<RecordData[]>("/admin/providers");
+  const presets = (allProviders || [])
+    .filter((p) => p.protocol === "inventory")
+    .sort((a, b) => a.name.localeCompare(b.name));
+  const [preset, setPreset] = useState<RecordData | null>(null);
   const { act, busy } = useAction();
   const refresh = useRefresh();
   const set = (k: string, v: any) => setForm((f) => ({ ...f, [k]: v }));
@@ -1620,8 +1628,9 @@ function ProviderForm({
       wide
     >
       <Form
-        onSubmit={() =>
-          act(async () => {
+        onSubmit={() => {
+          if (preset) return;
+          return act(async () => {
             await post(
               "/admin/providers" + (initial.id ? "/" + initial.id : ""),
               { ...form, config: JSON.parse(config) },
@@ -1629,22 +1638,31 @@ function ProviderForm({
             );
             refresh("/admin/providers", "/admin/models", "/models");
             onClose();
-          }, "渠道已保存")
-        }
+          }, "渠道已保存");
+        }}
       >
         <div className="two-columns">
           <Field label="渠道名称">
             <input
-              value={form.name}
+              value={preset?.name || form.name}
+              readOnly={!!preset}
               onChange={(e) => set("name", e.target.value)}
               required
             />
           </Field>
           <Field label="接入协议">
             <select
-              value={form.protocol}
+              value={preset ? `preset:${preset.id}` : form.protocol}
+              disabled={initial.protocol === "inventory"}
               onChange={(e) => {
                 const protocol = e.target.value;
+                if (protocol.startsWith("preset:")) {
+                  setPreset(
+                    presets.find((p) => p.id === protocol.slice(7)) || null,
+                  );
+                  return;
+                }
+                setPreset(null);
                 setForm((current) => ({
                   ...current,
                   protocol,
@@ -1658,6 +1676,25 @@ function ProviderForm({
                 }));
               }}
             >
+              {!initial.id && (
+                <option value="" disabled>
+                  选择供应商或接入协议
+                </option>
+              )}
+              {!initial.id && presets.length > 0 && (
+                <optgroup label="清单供应商 · 启动时已预置">
+                  {presets.map((p) => (
+                    <option key={p.id} value={`preset:${p.id}`}>
+                      {p.name} 专用适配（已预置）
+                    </option>
+                  ))}
+                </optgroup>
+              )}
+              {initial.protocol === "inventory" && (
+                <option value="inventory">
+                  {initial.name} 专用适配 · 独立路由
+                </option>
+              )}
               <option value="openai-image">OpenAI 兼容图片接口</option>
               <option value="openai-video">OpenAI 兼容视频接口</option>
               <option value="json-async">通用 JSON 异步任务</option>
@@ -1675,91 +1712,136 @@ function ProviderForm({
             </select>
           </Field>
         </div>
-        <Field
-          label="API 基础地址"
-          hint={
-            form.protocol === "opencrow"
-              ? "OpenCrow 文档地址：https://api.router.ai/v1。保存后同步模型，确认本站价格再启用。"
-              : "填写到版本前缀，例如 https://your-provider.com/v1"
-          }
-        >
-          <input
-            type={form.protocol === "demo" ? "text" : "url"}
-            value={form.base_url}
-            onChange={(e) => set("base_url", e.target.value)}
-            required={form.protocol !== "demo"}
-            placeholder="https://your-provider.com/v1"
-          />
-        </Field>
-        <Field
-          label="API Key"
-          hint={
-            initial.hasKey
-              ? "已配置密钥；留空保留原密钥。"
-              : "密钥只会保存到服务端，不会返回到前端。"
-          }
-        >
-          <input
-            type="password"
-            value={form.apiKey}
-            autoFocus={form.protocol === "opencrow" && !initial.hasKey}
-            onChange={(e) => set("apiKey", e.target.value)}
-            placeholder={
-              initial.hasKey ? "••••••••（留空不修改）" : "输入供应商 API Key"
-            }
-            autoComplete="new-password"
-          />
-        </Field>
-        <Field label="状态">
-          <select
-            value={String(form.enabled)}
-            onChange={(e) => set("enabled", e.target.value === "true")}
-          >
-            <option value="true">启用</option>
-            <option value="false">停用</option>
-          </select>
-        </Field>
-        <details>
-          <summary>高级接口配置</summary>
-          <p className="muted small">
-            通用协议可配置 submitPath、statusPath（包含 {`{id}`}
-            ）、idPath、statusField、outputPath、pollInterval。输出路径使用点分隔。
-          </p>
-          <JsonEditor value={config} onChange={setConfig} />
-          <button
-            type="button"
-            className="button"
-            onClick={() =>
-              setConfig(
-                JSON.stringify(
-                  {
-                    submitPath: "/generate/video",
-                    statusPath: "/tasks/{id}",
-                    idPath: "data.task_id",
-                    statusField: "data.status",
-                    outputPath: "data.result_urls",
-                    pollInterval: 3000,
-                  },
-                  null,
-                  2,
-                ),
-              )
-            }
-          >
-            填入通用协议示例
-          </button>
-        </details>
-        <div className="modal-footer">
-          <span />
-          <div>
-            <button className="button" type="button" onClick={onClose}>
-              取消
-            </button>
-            <button className="button primary" disabled={busy}>
-              保存渠道
-            </button>
+        {preset ? (
+          <div className="dialog-info">
+            <div>
+              <p>
+                {preset.name} 已自动添加，包含 {preset.supportedCount || 0}{" "}
+                条路由。已有地址、协议和上游模型映射均已预置。
+              </p>
+              <p>
+                不同路由可能使用不同密钥，请进入此供应商的路由页填写 API
+                Key，无需重复新增渠道。
+              </p>
+              <Link
+                className="button primary"
+                to={`/admin/inventory?provider=${encodeURIComponent(preset.id)}`}
+                onClick={onClose}
+              >
+                配置 {preset.name} 的 API Key
+              </Link>
+            </div>
           </div>
-        </div>
+        ) : (
+          <>
+            {form.protocol === "inventory" ? (
+              <p className="muted">
+                此供应商的地址与密钥按路由保存。
+                <Link
+                  to={`/admin/inventory?provider=${encodeURIComponent(initial.id)}`}
+                  onClick={onClose}
+                >
+                  前往配置路由与 API Key
+                </Link>
+              </p>
+            ) : (
+              <>
+                <Field
+                  label="API 基础地址"
+                  hint={
+                    form.protocol === "opencrow"
+                      ? "OpenCrow 文档地址：https://api.router.ai/v1。保存后同步模型，确认本站价格再启用。"
+                      : "填写到版本前缀，例如 https://your-provider.com/v1"
+                  }
+                >
+                  <input
+                    type={form.protocol === "demo" ? "text" : "url"}
+                    value={form.base_url}
+                    onChange={(e) => set("base_url", e.target.value)}
+                    required={form.protocol !== "demo"}
+                    placeholder="https://your-provider.com/v1"
+                  />
+                </Field>
+                <Field
+                  label="API Key"
+                  hint={
+                    initial.hasKey
+                      ? "已配置密钥；留空保留原密钥。"
+                      : "密钥只会保存到服务端，不会返回到前端。"
+                  }
+                >
+                  <input
+                    type="password"
+                    value={form.apiKey}
+                    autoFocus={form.protocol === "opencrow" && !initial.hasKey}
+                    onChange={(e) => set("apiKey", e.target.value)}
+                    placeholder={
+                      initial.hasKey
+                        ? "••••••••（留空不修改）"
+                        : "输入供应商 API Key"
+                    }
+                    autoComplete="new-password"
+                  />
+                </Field>
+              </>
+            )}
+            <Field label="状态">
+              <select
+                value={String(form.enabled)}
+                onChange={(e) => set("enabled", e.target.value === "true")}
+              >
+                <option value="true">启用</option>
+                <option value="false">停用</option>
+              </select>
+            </Field>
+            {form.protocol !== "inventory" && (
+              <details>
+                <summary>高级接口配置</summary>
+                <p className="muted small">
+                  通用协议可配置 submitPath、statusPath（包含 {`{id}`}
+                  ）、idPath、statusField、outputPath、pollInterval。输出路径使用点分隔。
+                </p>
+                <JsonEditor value={config} onChange={setConfig} />
+                <button
+                  type="button"
+                  className="button"
+                  onClick={() =>
+                    setConfig(
+                      JSON.stringify(
+                        {
+                          submitPath: "/generate/video",
+                          statusPath: "/tasks/{id}",
+                          idPath: "data.task_id",
+                          statusField: "data.status",
+                          outputPath: "data.result_urls",
+                          pollInterval: 3000,
+                        },
+                        null,
+                        2,
+                      ),
+                    )
+                  }
+                >
+                  填入通用协议示例
+                </button>
+              </details>
+            )}
+            <div className="modal-footer">
+              <span />
+              <div>
+                <button className="button" type="button" onClick={onClose}>
+                  取消
+                </button>
+                <button
+                  className="button primary"
+                  disabled={busy || !form.protocol}
+                >
+                  保存渠道
+                </button>
+              </div>
+            </div>
+          </>
+        )}
       </Form>
     </Modal>
   );

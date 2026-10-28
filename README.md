@@ -12,7 +12,7 @@
 
 ## 生成结果存储
 
-供应商 CSV 接入、独立路由密钥与同名价格继承见 [供应商清单接入](docs/PROVIDER-INVENTORY.md)；本轮模拟测试与待配置事项见 [供应商接入回归记录](docs/PROVIDER-INTEGRATION-QA-2026-10-26.md)。
+启动时自动准备原清单的 34 家供应商、249 条非 3D 路由，连同 OpenCrow 共 35 家。已知地址和模型映射直接预置，API Key 按路由填写或通过原 CSV 导入；已有配置不会被启动预设覆盖。详见 [供应商清单接入](docs/PROVIDER-INVENTORY.md)；此前模拟测试与待配置事项见 [供应商接入回归记录](docs/PROVIDER-INTEGRATION-QA-2026-10-26.md)。
 
 OpenCrow 专用渠道、模型同步及价格处理见 [OpenCrow 接入说明](docs/OPENCROW.md)。
 

@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { Upload, Settings2, RefreshCw } from "lucide-react";
 import {
   api,
@@ -21,8 +21,10 @@ import {
 } from "../lib";
 
 function routeState(row: RecordData) {
-  if (!row.providerEnabled) return "供应商已停用";
-  if (!row.sourceEnabled) return "源路由已停用";
+  if (!row.providerEnabled)
+    return row.baseURL ? "供应商已停用" : "供应商已停用 · 待补地址";
+  if (!row.sourceEnabled)
+    return row.baseURL ? "源路由已停用" : "源路由已停用 · 待补地址";
   if (!row.baseURL) return "待补地址";
   if (!row.hasKey) return "待补密钥";
   if (!row.hasPrices) return "待定价";
@@ -30,6 +32,14 @@ function routeState(row: RecordData) {
 }
 
 export default function ProviderInventory() {
+  const [query] = useSearchParams();
+  const providerId = query.get("provider");
+  return (
+    <ProviderInventoryScope key={providerId || "all"} providerId={providerId} />
+  );
+}
+
+function ProviderInventoryScope({ providerId }: { providerId: string | null }) {
   const { data, isLoading, error, refetch } = useApi<RecordData[]>(
     "/admin/provider-inventory",
   );
@@ -44,7 +54,10 @@ export default function ProviderInventory() {
   const { act, busy } = useAction();
   const refresh = useRefresh();
   const confirm = useConfirm();
-  const rows = (data || []).filter((row) =>
+  const scoped = (data || []).filter(
+    (row) => !providerId || row.providerId === providerId,
+  );
+  const rows = scoped.filter((row) =>
     `${row.vendor} ${row.model} ${row.upstreamModel} ${row.id} ${routeState(row)}`
       .toLowerCase()
       .includes(search.toLowerCase()),
@@ -66,6 +79,11 @@ export default function ProviderInventory() {
         title="供应商路由"
         description="每条路由独立保存地址、密钥和模型映射。缺少配置或价格的模型无法发起生成。"
       >
+        {providerId && (
+          <Link className="button" to="/admin/inventory">
+            全部供应商
+          </Link>
+        )}
         <input
           type="file"
           accept=".csv,text/csv"
@@ -104,8 +122,8 @@ export default function ProviderInventory() {
           placeholder="搜索供应商、模型、路由或待配置状态"
         />
         <span className="muted">
-          {new Set((data || []).map((r) => r.vendor)).size} 家供应商 ·{" "}
-          {data?.length || 0} 条路由
+          {new Set(scoped.map((r) => r.vendor)).size} 家供应商 · {scoped.length}{" "}
+          条路由
         </span>
       </div>
       {isLoading ? (
@@ -267,7 +285,7 @@ export default function ProviderInventory() {
             onSubmit={() =>
               act(async () => {
                 await post(
-                  `/admin/provider-inventory/${edit.id}`,
+                  `/admin/provider-inventory/${encodeURIComponent(edit.id)}`,
                   {
                     baseURL: edit.baseURL,
                     apiKey: key,
@@ -293,6 +311,7 @@ export default function ProviderInventory() {
               <input
                 type="password"
                 autoComplete="new-password"
+                autoFocus
                 value={key}
                 onChange={(e) => setKey(e.target.value)}
                 placeholder={
@@ -311,7 +330,7 @@ export default function ProviderInventory() {
               允许此路由参与调用
             </label>
             <p className="muted">
-              模型还需配置价格并启用。密钥保存后不会回显。
+              模型还需配置价格并启用。更换地址或停用路由会停用模型，请核对后重新启用。密钥保存后不会回显。
             </p>
             <button className="button primary full" disabled={busy}>
               保存路由

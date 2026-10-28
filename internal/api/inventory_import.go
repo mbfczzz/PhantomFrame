@@ -171,7 +171,7 @@ func (a *App) importProviderInventory(input io.Reader, apply, startup bool) (Row
 	}
 	err = try(func() {
 		a.Tx(func(s Store) {
-			s.Exec("INSERT IGNORE INTO invariant_locks(name) VALUES('provider_inventory')")
+			s.Exec("INSERT INTO invariant_locks(name) VALUES('provider_inventory') ON DUPLICATE KEY UPDATE name='provider_inventory'")
 			s.One("SELECT name FROM invariant_locks WHERE name='provider_inventory' FOR UPDATE")
 			fingerprint := hash(jsonText(routes))
 			if startup {
@@ -187,6 +187,16 @@ func (a *App) importProviderInventory(input io.Reader, apply, startup bool) (Row
 			for _, r := range routes {
 				pid := inventoryProviderID(r.Vendor)
 				s.Exec("INSERT IGNORE INTO providers(id,name,protocol,base_url,api_key,enabled,config) VALUES(?,?,'inventory',?,'',1,'{}')", pid, r.Vendor, r.Base)
+				if provider := s.One("SELECT protocol FROM providers WHERE id=? FOR UPDATE", pid); provider == nil || provider["protocol"] != "inventory" {
+					fail(409, "清单供应商标识与已有渠道冲突，未修改配置")
+				}
+				mid := inventoryModelID(r.ID)
+				if model := s.One("SELECT inventory_route_id FROM models WHERE id=? FOR UPDATE", mid); model != nil && str(model["inventory_route_id"]) != r.ID {
+					fail(409, "清单模型标识与已有模型冲突，未修改配置")
+				}
+				if bound := s.One("SELECT id FROM models WHERE inventory_route_id=? AND id<>? LIMIT 1 FOR UPDATE", r.ID, mid); bound != nil {
+					fail(409, "清单路由已绑定其他模型，未修改配置")
+				}
 				old := s.One("SELECT * FROM inventory_routes WHERE id=? FOR UPDATE", r.ID)
 				if old != nil && (!strings.EqualFold(str(old["vendor"]), r.Vendor) || old["model"] != r.Model || old["modality"] != r.Modality) {
 					fail(409, "清单不能复用已有路由编号绑定不同供应商、模型或类型，请为新模型使用新的 route_id")
@@ -199,7 +209,6 @@ func (a *App) importProviderInventory(input io.Reader, apply, startup bool) (Row
 					}
 				}
 				s.Exec("INSERT INTO inventory_routes(id,provider_id,vendor,model,upstream_model,modality,base_url,api_key,source_enabled,is_primary,priority,weight,config) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?) ON DUPLICATE KEY UPDATE provider_id=VALUES(provider_id),vendor=VALUES(vendor),model=VALUES(model),upstream_model=VALUES(upstream_model),modality=VALUES(modality),base_url=VALUES(base_url),api_key=VALUES(api_key),source_enabled=VALUES(source_enabled),is_primary=VALUES(is_primary),priority=VALUES(priority),weight=VALUES(weight),config=VALUES(config),updated_at=CURRENT_TIMESTAMP(3)", r.ID, pid, r.Vendor, r.Model, r.Upstream, r.Modality, r.Base, encrypted, r.Enabled, r.Primary, r.Priority, r.Weight, jsonText(r.Config))
-				mid := inventoryModelID(r.ID)
 				name := []rune(r.Vendor + " · " + r.Model)
 				if len(name) > 120 {
 					name = name[:120]
@@ -261,7 +270,7 @@ func (a *App) inventoryRoutes(m *http.ServeMux) {
 			if row == nil {
 				fail(404, "路由不存在")
 			}
-			base := trimField(body, "baseURL", 0, 500, str(row["base_url"]))
+			base := strings.TrimRight(trimField(body, "baseURL", 0, 500, str(row["base_url"])), "/")
 			if base != "" && !validBaseURL(base) {
 				fail(400, "供应商地址不正确")
 			}
@@ -274,8 +283,8 @@ func (a *App) inventoryRoutes(m *http.ServeMux) {
 				encrypted = a.encrypt(key)
 			}
 			enabled := boolField(body, "sourceEnabled", truth(row["source_enabled"]))
-			s.Exec("UPDATE inventory_routes SET base_url=?,api_key=?,source_enabled=?,updated_at=CURRENT_TIMESTAMP(3) WHERE id=?", strings.TrimRight(base, "/"), encrypted, enabled, r.ID())
-			if !enabled {
+			s.Exec("UPDATE inventory_routes SET base_url=?,api_key=?,source_enabled=?,updated_at=CURRENT_TIMESTAMP(3) WHERE id=?", base, encrypted, enabled, r.ID())
+			if !enabled || base == "" || base != strings.TrimRight(str(row["base_url"]), "/") {
 				s.Exec("UPDATE models SET enabled=0 WHERE inventory_route_id=?", r.ID())
 			}
 			s.Audit(r.UID(), "inventory.route.update", Row{"routeId": r.ID(), "enabled": enabled, "keyChanged": key != ""})
@@ -305,7 +314,7 @@ func (a *App) inventoryRoutes(m *http.ServeMux) {
 			key, err := a.decrypt(str(row["api_key"]))
 			ready := err == nil && inventoryCredentialReady(key)
 
-			items = append(items, Row{"providerEnabled": truth(row["provider_enabled"]), "id": row["id"], "vendor": row["vendor"], "model": row["model"], "upstreamModel": row["upstream_model"], "type": row["modality"], "baseURL": row["base_url"], "hasKey": ready, "hasPrices": integer(row["price_count"]) > 0, "sourceEnabled": truth(row["source_enabled"]), "enabled": truth(row["model_enabled"]), "modelId": row["model_id"], "priority": row["priority"], "weight": row["weight"]})
+			items = append(items, Row{"providerId": row["provider_id"], "providerEnabled": truth(row["provider_enabled"]), "id": row["id"], "vendor": row["vendor"], "model": row["model"], "upstreamModel": row["upstream_model"], "type": row["modality"], "baseURL": row["base_url"], "hasKey": ready, "hasPrices": integer(row["price_count"]) > 0, "sourceEnabled": truth(row["source_enabled"]), "enabled": truth(row["model_enabled"]), "modelId": row["model_id"], "priority": row["priority"], "weight": row["weight"]})
 		}
 		return items
 	})

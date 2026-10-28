@@ -148,7 +148,130 @@ try {
   const page = await ctx.newPage();
   page.setDefaultTimeout(15000);
   page.on("pageerror", (e) => errors.push(e.message));
+  const startupRoutes = await api(ctx, "/admin/provider-inventory");
+  assert.equal(startupRoutes.length, 249);
+  assert.equal(new Set(startupRoutes.map((r) => r.vendor)).size, 34);
+  assert.ok(
+    startupRoutes.every((r) => !r.hasKey && !r.enabled && r.type !== "3d"),
+  );
+  assert.equal(requests.length, 0);
+  await page.goto(base + "/admin/providers", { waitUntil: "networkidle" });
+  await page.getByRole("button", { name: "新增渠道", exact: true }).click();
+  let presetDialog = page.getByRole("dialog", {
+    name: "新增供应商渠道",
+    exact: true,
+  });
+  const supplierOptions = await presetDialog
+    .locator('optgroup[label="清单供应商 · 启动时已预置"] option')
+    .allTextContents();
+  assert.equal(supplierOptions.length, 34);
+  for (const vendor of new Set(startupRoutes.map((r) => r.vendor)))
+    assert.ok(
+      supplierOptions.some((text) => text.includes(vendor + " 专用适配")),
+    );
+  const apiYiId = startupRoutes.find((r) => r.vendor === "APIYI").providerId;
+  await presetDialog
+    .getByLabel("接入协议", { exact: true })
+    .selectOption("preset:" + apiYiId);
+  assert.equal(
+    await presetDialog.getByLabel("渠道名称", { exact: true }).inputValue(),
+    "APIYI",
+  );
+  await page.screenshot({
+    path: join(output, "supplier-preset-desktop.png"),
+    fullPage: false,
+    animations: "disabled",
+  });
+  await presetDialog
+    .getByRole("link", { name: "配置 APIYI 的 API Key", exact: true })
+    .click();
+  await page.waitForURL(
+    base + "/admin/inventory?provider=" + encodeURIComponent(apiYiId),
+  );
+  await page
+    .getByRole("button", { name: "路由配置", exact: true })
+    .first()
+    .click();
+  let routeDialog = page.getByRole("dialog", {
+    name: "路由配置 · APIYI",
+    exact: true,
+  });
+  assert.ok(
+    (
+      await routeDialog.getByLabel("API 地址", { exact: true }).inputValue()
+    ).startsWith("http"),
+  );
+  assert.equal(
+    await routeDialog.getByLabel("API Key", { exact: true }).inputValue(),
+    "",
+  );
+  await page.setViewportSize({ width: 390, height: 844 });
+  assert.equal(
+    await page.evaluate(
+      () => document.documentElement.scrollWidth > innerWidth,
+    ),
+    false,
+  );
+  await page.screenshot({
+    path: join(output, "supplier-route-mobile.png"),
+    fullPage: false,
+    animations: "disabled",
+  });
+  await page.setViewportSize({ width: 1440, height: 1000 });
+  await routeDialog
+    .getByLabel("API Key", { exact: true })
+    .fill("single-route-preset-test-key");
+  await routeDialog
+    .getByRole("button", { name: "保存路由", exact: true })
+    .click();
+  await routeDialog.waitFor({ state: "hidden" });
+  const keyedRoutes = await api(ctx, "/admin/provider-inventory");
+  assert.equal(keyedRoutes.filter((r) => r.hasKey).length, 1);
+  assert.ok(keyedRoutes.every((r) => !r.enabled));
+  assert.equal(requests.length, 0);
+  check(
+    "startup prepares all 34 suppliers and 249 keyless routes; every supplier is selectable and configuring one route never changes another key",
+  );
+  await page.getByRole("link", { name: "全部供应商", exact: true }).click();
+  await page.waitForURL(base + "/admin/inventory");
+  await page.getByRole("button", { name: "下一页", exact: true }).click();
+  await page.goBack();
+  await page.waitForURL(base + "/admin/inventory?provider=" + apiYiId);
+  assert.equal(
+    await page.getByRole("button", { name: "路由配置", exact: true }).count(),
+    startupRoutes.filter((r) => r.providerId === apiYiId).length,
+    "returning to a supplier must reset pagination",
+  );
+  await page
+    .getByRole("textbox", { name: "搜索供应商、模型、路由或待配置状态" })
+    .fill("no-match-fixture");
+  await page.getByRole("link", { name: "全部供应商", exact: true }).click();
+  await page.waitForURL(base + "/admin/inventory");
+  await page
+    .getByRole("link", { name: "全部供应商", exact: true })
+    .waitFor({ state: "hidden" });
+  assert.equal(
+    await page
+      .getByRole("textbox", { name: "搜索供应商、模型、路由或待配置状态" })
+      .inputValue(),
+    "",
+  );
+  assert.equal(
+    await page.getByRole("button", { name: "路由配置", exact: true }).count(),
+    24,
+  );
+  check("supplier navigation resets stale search and pagination");
   await page.goto(base + "/admin/inventory", { waitUntil: "networkidle" });
+  await page
+    .getByRole("textbox", { name: "搜索供应商、模型、路由或待配置状态" })
+    .fill("待补地址");
+  assert.equal(
+    await page.getByRole("button", { name: "路由配置", exact: true }).count(),
+    6,
+  );
+  await page
+    .getByRole("textbox", { name: "搜索供应商、模型、路由或待配置状态" })
+    .fill("");
   await page.locator('input[type="file"]').setInputFiles({
     name: "synthetic-provider-routes.csv",
     mimeType: "text/csv",
@@ -162,7 +285,12 @@ try {
   assert.match(await preview.innerText(), /249/);
   assert.match(await preview.innerText(), /34/);
   assert.match(await preview.innerText(), /92/);
-  assert.equal((await api(ctx, "/admin/provider-inventory")).length, 0);
+  assert.equal((await api(ctx, "/admin/provider-inventory")).length, 249);
+  assert.equal(
+    (await api(ctx, "/admin/provider-inventory")).filter((r) => r.hasKey)
+      .length,
+    1,
+  );
   await preview.getByRole("button", { name: "确认导入", exact: true }).click();
   await preview.waitFor({ state: "hidden" });
   const routes = await api(ctx, "/admin/provider-inventory");

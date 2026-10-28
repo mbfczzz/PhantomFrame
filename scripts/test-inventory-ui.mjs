@@ -385,9 +385,12 @@ try {
     "shared CSV import works from both pages; channel import retries safely, preserves 249 routes across 34 suppliers and excludes 3D without upstream requests",
   );
   await page.goto(base + "/admin/inventory", { waitUntil: "networkidle" });
+  const revealRoute = routes.find(
+    (row) => row.vendor === "APIYI" && row.hasKey,
+  );
   await page
     .getByRole("textbox", { name: "搜索供应商、模型、路由或待配置状态" })
-    .fill("APIYI");
+    .fill(revealRoute.id);
   await page
     .getByRole("button", { name: "路由配置", exact: true })
     .first()
@@ -397,8 +400,94 @@ try {
     await editor.getByLabel("API Key", { exact: true }).inputValue(),
     "",
   );
+  const keyPath =
+    "/admin/provider-inventory/" + encodeURIComponent(revealRoute.id) + "/key";
+  await editor.getByRole("button", { name: "显示密钥", exact: true }).click();
+  await editor.getByRole("button", { name: "隐藏密钥", exact: true }).waitFor();
+  const keyInput = editor.getByLabel("API Key", { exact: true });
+  assert.equal(await keyInput.getAttribute("type"), "text");
+  assert.equal(
+    await keyInput.inputValue(),
+    fixture.find((row) => row.route_id === revealRoute.id).api_key,
+  );
+  await page.screenshot({
+    path: join(output, "route-key-desktop.png"),
+    animations: "disabled",
+  });
+  await page.setViewportSize({ width: 390, height: 844 });
+  assert.equal(
+    await page.evaluate(
+      () => document.documentElement.scrollWidth > innerWidth,
+    ),
+    false,
+  );
+  await page.screenshot({
+    path: join(output, "route-key-mobile.png"),
+    animations: "disabled",
+  });
+  await page.setViewportSize({ width: 1440, height: 1000 });
+  await editor.getByRole("button", { name: "隐藏密钥", exact: true }).click();
+  assert.equal(await keyInput.inputValue(), "");
+  assert.equal(await keyInput.getAttribute("type"), "password");
+  await editor.getByRole("button", { name: "显示密钥", exact: true }).click();
+  await editor.getByRole("button", { name: "隐藏密钥", exact: true }).waitFor();
+  await api(
+    ctx,
+    "/admin/provider-inventory/" + encodeURIComponent(revealRoute.id),
+    "PATCH",
+    { apiKey: "concurrently-rotated-fixture-key" },
+  );
+  const savedRequest = page.waitForRequest(
+    (request) =>
+      request.method() === "PATCH" &&
+      request
+        .url()
+        .endsWith("/provider-inventory/" + encodeURIComponent(revealRoute.id)),
+  );
+  await editor.getByRole("button", { name: "保存路由", exact: true }).click();
+  assert.equal((await savedRequest).postDataJSON().apiKey, "");
+  await editor.waitFor({ state: "hidden" });
+  assert.equal(
+    (await api(ctx, keyPath, "POST", {})).apiKey,
+    "concurrently-rotated-fixture-key",
+  );
+  await page.getByRole("button", { name: "路由配置", exact: true }).click();
+  assert.equal(await keyInput.inputValue(), "");
+  // Closing a slow reveal must not populate the next editor with its response.
+  await ctx.route(
+    "**/api" + keyPath,
+    async (route) => {
+      await wait(300);
+      await route.continue();
+    },
+    { times: 1 },
+  );
+  const lateResponse = page.waitForResponse((response) =>
+    response.url().endsWith(keyPath),
+  );
+  await editor.getByRole("button", { name: "显示密钥", exact: true }).click();
   await page.keyboard.press("Escape");
-  check("route configuration never reveals imported credentials");
+  await editor.waitFor({ state: "hidden" });
+  await page.getByRole("button", { name: "路由配置", exact: true }).click();
+  await lateResponse;
+  assert.equal(await keyInput.inputValue(), "");
+  await keyInput.fill("edited-route-fixture-key");
+  await editor.getByRole("button", { name: "显示密钥", exact: true }).click();
+  assert.equal(await keyInput.inputValue(), "edited-route-fixture-key");
+  await editor.getByRole("button", { name: "隐藏密钥", exact: true }).click();
+  assert.equal(await keyInput.inputValue(), "edited-route-fixture-key");
+  await editor.getByRole("button", { name: "保存路由", exact: true }).click();
+  await editor.waitFor({ state: "hidden" });
+  assert.equal(
+    (await api(ctx, keyPath, "POST", {})).apiKey,
+    "edited-route-fixture-key",
+  );
+  await page.getByRole("button", { name: "路由配置", exact: true }).click();
+  assert.equal(await keyInput.inputValue(), "");
+  await page.keyboard.press("Escape");
+  check(
+    "route keys reveal only on demand, hide and clear on close; viewing never overwrites concurrent rotation and explicit edits save correctly",
+  );
   const repairRoute = routes.find(
     (row) => row.vendor === "APIYI" && row.model === "gpt-5.4",
   );

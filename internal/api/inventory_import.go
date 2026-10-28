@@ -252,6 +252,20 @@ func (a *App) ImportProviderInventoryFile(path string) (Row, error) {
 }
 
 func (a *App) inventoryRoutes(m *http.ServeMux) {
+	a.route(m, "POST /api/admin/provider-inventory/{id}/key", 3, func(r *Request) any {
+		row := a.Store.One("SELECT api_key FROM inventory_routes WHERE id=?", r.ID())
+		if row == nil {
+			fail(404, "路由不存在")
+		}
+		key, err := a.decrypt(str(row["api_key"]))
+		if err != nil {
+			fail(409, "密钥无法解密，请重新配置此路由的密钥")
+		}
+		// Only this explicit administrator action returns a credential. The
+		// common API middleware disables caching; audit metadata never includes it.
+		a.Store.Audit(r.UID(), "inventory.key.view", Row{"routeId": r.ID()})
+		return Row{"apiKey": key}
+	})
 	a.route(m, "POST /api/admin/provider-inventory/{id}/parameters", 3, func(r *Request) any {
 		a.Tx(func(s Store) {
 			row := s.One("SELECT * FROM inventory_routes WHERE id=? FOR UPDATE", r.ID())

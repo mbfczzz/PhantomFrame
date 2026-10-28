@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
-import { Settings2, RefreshCw } from "lucide-react";
+import { Settings2, RefreshCw, Eye, EyeOff } from "lucide-react";
 import {
   post,
   useApi,
@@ -51,7 +51,6 @@ function ProviderInventoryScope({ providerId }: { providerId: string | null }) {
   const [page, setPage] = useState(1);
   const [importResult, setImportResult] = useState<RecordData | null>(null);
   const [edit, setEdit] = useState<RecordData | null>(null);
-  const [key, setKey] = useState("");
   const { act, busy } = useAction();
   const refresh = useRefresh();
   const confirm = useConfirm();
@@ -124,7 +123,6 @@ function ProviderInventoryScope({ providerId }: { providerId: string | null }) {
                         className="button small"
                         onClick={() => {
                           setEdit({ ...row });
-                          setKey("");
                         }}
                       >
                         <Settings2 size={14} />
@@ -182,70 +180,120 @@ function ProviderInventoryScope({ providerId }: { providerId: string | null }) {
       )}
       <Pagination page={page} total={rows.length} onChange={setPage} />
       {edit && (
-        <Modal
-          title={`路由配置 · ${edit.vendor}`}
-          onClose={() => {
-            setEdit(null);
-            setKey("");
-          }}
-        >
-          <Form
-            onSubmit={() =>
-              act(async () => {
-                await post(
-                  `/admin/provider-inventory/${encodeURIComponent(edit.id)}`,
-                  {
-                    baseURL: edit.baseURL,
-                    apiKey: key,
-                    sourceEnabled: edit.sourceEnabled,
-                  },
-                  "PATCH",
-                );
-                setEdit(null);
-                setKey("");
-                refresh("/admin/provider-inventory", "/admin/models");
-              }, "路由已保存")
-            }
-          >
-            <p>{edit.model}</p>
-            <Field label="API 地址">
-              <input
-                value={edit.baseURL}
-                onChange={(e) => setEdit({ ...edit, baseURL: e.target.value })}
-                maxLength={500}
-              />
-            </Field>
-            <Field label="API Key">
-              <input
-                type="password"
-                autoComplete="new-password"
-                autoFocus
-                value={key}
-                onChange={(e) => setKey(e.target.value)}
-                placeholder={
-                  edit.hasKey ? "已配置，留空保留" : "填写此路由的独立密钥"
-                }
-              />
-            </Field>
-            <label className="checkbox">
-              <input
-                type="checkbox"
-                checked={edit.sourceEnabled}
-                onChange={(e) =>
-                  setEdit({ ...edit, sourceEnabled: e.target.checked })
-                }
-              />
-              允许此路由参与调用
-            </label>
-            <p className="muted">
-              模型还需配置价格并启用。更换地址或停用路由会停用模型，请核对后重新启用。密钥保存后不会回显。
-            </p>
-            <button className="button primary full" disabled={busy}>
-              保存路由
-            </button>
-          </Form>
-        </Modal>
+        <InventoryRouteEditor
+          key={edit.id}
+          initial={edit}
+          onClose={() => setEdit(null)}
+        />
       )}
     </section>
+  );
+}
+
+function InventoryRouteEditor({
+  initial,
+  onClose,
+}: {
+  initial: RecordData;
+  onClose: () => void;
+}) {
+  const [form, setForm] = useState(initial);
+  const [draftKey, setDraftKey] = useState("");
+  const [keyEdited, setKeyEdited] = useState(false);
+  const [revealedKey, setRevealedKey] = useState<string | null>(null);
+  const [visible, setVisible] = useState(false);
+  const { act, busy } = useAction();
+  const refresh = useRefresh();
+  return (
+    <Modal title={`路由配置 · ${initial.vendor}`} onClose={onClose}>
+      <Form
+        onSubmit={() =>
+          act(async () => {
+            await post(
+              `/admin/provider-inventory/${encodeURIComponent(initial.id)}`,
+              {
+                baseURL: form.baseURL,
+                // Viewing a saved key must not write it back over a concurrent rotation.
+                apiKey: keyEdited ? draftKey : "",
+                sourceEnabled: form.sourceEnabled,
+              },
+              "PATCH",
+            );
+            refresh("/admin/provider-inventory", "/admin/models");
+            onClose();
+          }, "路由已保存")
+        }
+      >
+        <p>{initial.model}</p>
+        <Field label="API 地址">
+          <input
+            value={form.baseURL}
+            onChange={(e) => setForm({ ...form, baseURL: e.target.value })}
+            maxLength={500}
+          />
+        </Field>
+        <Field label="API Key" hint="留空保留现有密钥；输入新值并保存后替换。">
+          <div className="input-icon">
+            <input
+              type={visible ? "text" : "password"}
+              autoComplete="new-password"
+              autoFocus
+              spellCheck={false}
+              disabled={busy}
+              value={keyEdited ? draftKey : (revealedKey ?? "")}
+              onChange={(e) => {
+                setKeyEdited(true);
+                setDraftKey(e.target.value);
+              }}
+              placeholder={
+                initial.hasKey ? "已配置，点击右侧查看" : "填写此路由的独立密钥"
+              }
+            />
+            <button
+              type="button"
+              className="icon-button"
+              aria-label={visible ? "隐藏密钥" : "显示密钥"}
+              title={visible ? "隐藏密钥" : "显示密钥"}
+              aria-pressed={visible}
+              disabled={busy}
+              onClick={() => {
+                if (visible) {
+                  setVisible(false);
+                  setRevealedKey(null);
+                } else if (keyEdited || !initial.hasKey) {
+                  setVisible(true);
+                } else {
+                  void act(async () => {
+                    const result = await post<{ apiKey: string }>(
+                      `/admin/provider-inventory/${encodeURIComponent(initial.id)}/key`,
+                    );
+                    setRevealedKey(result.apiKey);
+                    setVisible(true);
+                  });
+                }
+              }}
+            >
+              {visible ? <EyeOff size={17} /> : <Eye size={17} />}
+            </button>
+          </div>
+        </Field>
+        <label className="checkbox">
+          <input
+            type="checkbox"
+            checked={form.sourceEnabled}
+            onChange={(e) =>
+              setForm({ ...form, sourceEnabled: e.target.checked })
+            }
+          />
+          允许此路由参与调用
+        </label>
+        <p className="muted">
+          模型还需配置价格并启用。更换地址或停用路由会停用模型，请核对后重新启用。密钥默认隐藏，点击眼睛可查看。
+        </p>
+        <button className="button primary full" disabled={busy}>
+          保存路由
+        </button>
+      </Form>
+    </Modal>
   );
 }

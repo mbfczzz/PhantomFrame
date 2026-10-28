@@ -1402,6 +1402,15 @@ function ProviderAdmin() {
     useApi<RecordData[]>("/admin/providers");
   const [edit, setEdit] = useState<RecordData | null>(null);
   const [catalog, setCatalog] = useState<RecordData | null>(null);
+  const [status, setStatus] = useState("all");
+  const enabledCount = (data || []).filter(
+    (provider) => provider.enabled,
+  ).length;
+  const providers = (data || []).filter(
+    (provider) =>
+      status === "all" ||
+      (status === "enabled" ? provider.enabled : !provider.enabled),
+  );
   const { act, busy } = useAction();
   const toast = useToast();
   const refresh = useRefresh();
@@ -1434,14 +1443,44 @@ function ProviderAdmin() {
           新增渠道
         </button>
       </div>
+      {!isLoading && !error && (
+        <Tabs
+          value={status}
+          onChange={setStatus}
+          items={[
+            { value: "all", label: `全部（${data?.length || 0}）` },
+            { value: "enabled", label: `未停用（${enabledCount}）` },
+            {
+              value: "disabled",
+              label: `已停用（${(data?.length || 0) - enabledCount}）`,
+            },
+          ]}
+        />
+      )}
       {isLoading ? (
         <Loading />
       ) : error ? (
         <ErrorState error={error} retry={refetch} />
+      ) : providers.length === 0 ? (
+        <Empty
+          icon={<Cable size={25} />}
+          title={
+            status === "disabled"
+              ? "暂无已停用渠道"
+              : status === "enabled"
+                ? "暂无未停用渠道"
+                : "尚未添加供应商渠道"
+          }
+          text={
+            status === "all"
+              ? "点击“新增渠道”配置供应商。"
+              : "可切换到“全部”查看或调整渠道状态。"
+          }
+        />
       ) : (
         <div className="provider-grid">
-          {data
-            ?.slice()
+          {providers
+            .slice()
             .sort(
               (a, b) =>
                 Number(b.protocol === "opencrow" && !b.hasKey) -

@@ -1444,6 +1444,8 @@ function ProviderAdmin() {
             ?.slice()
             .sort(
               (a, b) =>
+                Number(b.protocol === "opencrow" && !b.hasKey) -
+                  Number(a.protocol === "opencrow" && !a.hasKey) ||
                 Number(!!b.config?.preferred) - Number(!!a.config?.preferred),
             )
             .map((p) => (
@@ -1498,6 +1500,15 @@ function ProviderAdmin() {
                   </strong>
                 </div>
                 <footer>
+                  {p.protocol === "opencrow" && !p.hasKey && (
+                    <button
+                      className="button primary"
+                      onClick={() => setEdit(p)}
+                    >
+                      <KeyRound size={15} />
+                      配置 API Key
+                    </button>
+                  )}
                   {p.protocol === "inventory" && (
                     <Link className="button primary" to="/admin/inventory">
                       管理独立路由
@@ -1691,6 +1702,7 @@ function ProviderForm({
           <input
             type="password"
             value={form.apiKey}
+            autoFocus={form.protocol === "opencrow" && !initial.hasKey}
             onChange={(e) => set("apiKey", e.target.value)}
             placeholder={
               initial.hasKey ? "••••••••（留空不修改）" : "输入供应商 API Key"

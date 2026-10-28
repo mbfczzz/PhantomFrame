@@ -25,6 +25,21 @@ var openCrowCatalog = func() map[string]Row {
 
 func openCrowDefinition(model string) Row { return openCrowCatalog[model] }
 
+// Prepare the channel locally at startup. No credential is invented and no
+// network call or model publication occurs. Existing accounts are left intact.
+func (a *App) ensureOpenCrowDefault() {
+	a.Tx(func(s Store) {
+		// Acquire an exclusive lock directly, including when the row exists;
+		// INSERT IGNORE followed by a lock upgrade can deadlock parallel starts.
+		s.Exec("INSERT INTO invariant_locks(name) VALUES('provider_defaults') ON DUPLICATE KEY UPDATE name='provider_defaults'")
+		s.One("SELECT name FROM invariant_locks WHERE name='provider_defaults' FOR UPDATE")
+		if s.One("SELECT id FROM providers WHERE protocol='opencrow' LIMIT 1") != nil {
+			return
+		}
+		s.Exec("INSERT INTO providers(id,name,protocol,base_url,api_key,enabled,config) VALUES(?,'OpenCrow','opencrow','https://api.router.ai/v1','',1,'{}')", id())
+	})
+}
+
 func openCrowParameters(model string) []any {
 	spec := openCrowDefinition(model)
 	if spec == nil {

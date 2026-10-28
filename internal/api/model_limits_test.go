@@ -16,7 +16,7 @@ func TestModelReferenceLimits(t *testing.T) {
 	admin.ok(t, "POST", "/auth/login", Row{"username": "test-admin", "password": "Test-admin-password-2026"}, 200)
 	owner := object(user.ok(t, "POST", "/auth/register", Row{"username": "limit-owner", "password": "Limit-pass-2026"}, 200))
 	outsider := object(other.ok(t, "POST", "/auth/register", Row{"username": "limit-other", "password": "Limit-pass-2026"}, 200))
-	provider := a.Store.One("SELECT id FROM providers LIMIT 1")
+	provider := a.Store.One("SELECT id FROM providers WHERE protocol='demo' LIMIT 1")
 	definitions := []any{
 		Row{"name": "images", "label": "参考图片", "type": "assets", "itemType": "image"},
 		Row{"name": "videos", "label": "参考视频", "type": "assets", "itemType": "video", "max": nil},

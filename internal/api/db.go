@@ -433,7 +433,7 @@ func (a *App) Seed() {
 		for k, v := range map[string]string{"siteName": "PhantomFrame", "subtitle": "让每一个想法，成为独特的一帧。", "registrationEnabled": "true", "welcomeCredits": welcome, "support": "", "announcement": "", "purchaseUrl": ""} {
 			s.Exec("INSERT IGNORE INTO settings(`key`,value) VALUES(?,?)", k, v)
 		}
-		if !a.Config.Demo || s.One("SELECT id FROM providers LIMIT 1") != nil {
+		if !a.Config.Demo || s.One("SELECT id FROM providers WHERE protocol<>'opencrow' OR api_key<>'' LIMIT 1") != nil || s.One("SELECT id FROM models LIMIT 1") != nil {
 			return
 		}
 		s.Exec("INSERT INTO providers(id,name,protocol,api_key,config,enabled) VALUES('demo',?,'demo','','{}',?)", "本地演示通道", a.Config.Demo)
@@ -494,4 +494,5 @@ func (a *App) Seed() {
 		}
 	})
 	a.backfillProviderModels()
+	a.ensureOpenCrowDefault()
 }

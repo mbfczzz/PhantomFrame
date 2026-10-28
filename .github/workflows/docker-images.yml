@@ -49,8 +49,15 @@ jobs:
       - name: Enable Redis authentication for integration checks
         run: docker exec "${{ job.services.redis.id }}" redis-cli CONFIG SET requirepass phantomframe-ci-redis-only
 
+      - name: Install media validation dependency
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends ffmpeg
+          ffprobe -version
+
       - name: Test backend against isolated MySQL and Redis
         env:
+          FFPROBE_PATH: /usr/bin/ffprobe
           PF_INTEGRATION: "1"
           MYSQL_HOST: 127.0.0.1
           MYSQL_PORT: "3306"

@@ -132,9 +132,18 @@ try {
   page.setDefaultTimeout(15000);
   page.on("pageerror", (e) => errors.push(e.message));
   await page.goto(base + "/admin/providers", { waitUntil: "networkidle" });
-  await page.getByRole("button", { name: "新增渠道", exact: true }).click();
-  let form = page.getByRole("dialog", { name: "新增供应商渠道", exact: true });
-  await form.getByLabel("接入协议", { exact: true }).selectOption("opencrow");
+  const startupProviders = (await api(ctx, "/admin/providers")).filter(
+    (p) => p.protocol === "opencrow",
+  );
+  assert.equal(startupProviders.length, 1);
+  assert.equal(startupProviders[0].hasKey, false);
+  assert.equal(requests.length, 0);
+  await page.getByRole("button", { name: "配置 API Key", exact: true }).click();
+  let form = page.getByRole("dialog", { name: "编辑供应商渠道", exact: true });
+  assert.equal(
+    await form.getByLabel("接入协议", { exact: true }).inputValue(),
+    "opencrow",
+  );
   assert.equal(
     await form.getByLabel("渠道名称", { exact: true }).inputValue(),
     "OpenCrow",
@@ -143,6 +152,7 @@ try {
     await form.getByLabel("API 基础地址", { exact: true }).inputValue(),
     "https://api.router.ai/v1",
   );
+  await page.screenshot({path:join(output,"startup-defaults-form.png"),fullPage:false,animations:"disabled"});
   await form.getByLabel("API 基础地址", { exact: true }).fill(upstream);
   await form
     .getByLabel("API Key", { exact: true })
@@ -155,7 +165,7 @@ try {
   assert.ok(provider);
   assert.ok(!JSON.stringify(provider).includes("opencrow-browser-test-key"));
   check(
-    "OpenCrow preset selects the documented API host and stores the key without exposing it",
+    "startup creates one OpenCrow preset with name, protocol and API host filled; only a key is missing and no upstream request occurs",
   );
   await page
     .getByRole("button", { name: "管理模型 OpenCrow", exact: true })

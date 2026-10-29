@@ -1,0 +1,265 @@
+/* References, prompt and creation controls form one input surface. */
+.creation-page .studio-workbench {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0;
+}
+.creation-page .surface-composer {
+  border-radius: 14px 14px 0 0;
+  border-bottom: 0;
+}
+.creation-page .composer-input {
+  flex-direction: column;
+  min-width: 0;
+}
+.composer-input .surface-writing {
+  flex: none;
+  padding: 20px 22px 12px;
+}
+.composer-input .surface-writing > textarea {
+  height: 190px;
+  min-height: 150px;
+  flex: none;
+}
+.composer-input .studio-references {
+  border: 0;
+  padding: 18px 22px 0;
+}
+.composer-input .studio-references-heading {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+  margin-bottom: 10px;
+}
+.composer-input .studio-references-heading > small {
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+.composer-input .surface-reference-list {
+  flex-wrap: wrap;
+  overflow: visible;
+  align-items: center;
+  gap: 12px;
+}
+.creation-page .composer-input .studio-reference-add {
+  flex: 0 0 64px;
+  flex-direction: column;
+  width: 64px;
+  min-width: 64px;
+  height: 64px;
+  min-height: 64px;
+  border-style: dashed;
+  background: transparent;
+  border-radius: 10px;
+  padding: 8px;
+  gap: 4px;
+}
+.composer-input .studio-reference-add:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+.composer-input .reference-empty-hint {
+  flex: 1 1 180px;
+  line-height: 1.8;
+  margin: 0;
+}
+.composer-config-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 22px;
+  border-top: 1px solid var(--border);
+}
+.composer-config-toolbar .composer-model-controls,
+.composer-config-toolbar .composer-inline-parameters {
+  display: contents;
+}
+.composer-config-toolbar .surface-field,
+.composer-mode-control,
+.composer-config-toolbar .parameter {
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+  flex: 0 1 auto;
+  gap: 6px;
+  min-width: 0;
+  max-width: 100%;
+  padding: 3px 8px;
+  margin: 0;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  background: var(--input);
+}
+.composer-config-toolbar .surface-field > span,
+.composer-mode-control > span,
+.composer-config-toolbar .parameter > span {
+  flex-shrink: 0;
+  font-size: 11px;
+  color: var(--muted);
+  white-space: nowrap;
+}
+.composer-config-toolbar .surface-field > span::after {
+  content: none;
+}
+.composer-config-toolbar .ui-select {
+  width: auto;
+  min-width: 74px;
+  max-width: 230px;
+  flex: 1 1 auto;
+}
+.composer-config-toolbar .surface-model .ui-select {
+  min-width: 130px;
+}
+.composer-config-toolbar .ui-select-trigger {
+  min-height: 30px;
+  height: auto;
+  padding: 4px 2px;
+  gap: 8px;
+  background: transparent;
+  font-size: 12px;
+}
+.composer-config-toolbar .parameter > input:not([type="checkbox"]) {
+  width: 64px;
+  height: 30px;
+  padding: 4px 6px;
+  background: transparent;
+  font-size: 12px;
+}
+.composer-inline-parameters > legend {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  clip-path: inset(50%);
+  overflow: hidden;
+}
+.composer-more-settings {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 38px;
+  padding: 6px 10px;
+  border: 0;
+  background: transparent;
+  color: var(--secondary);
+  font-size: 12px;
+}
+.composer-more-settings[aria-expanded="true"] {
+  color: var(--accent);
+}
+.composer-extra-parameters {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 240px));
+  gap: 16px;
+  min-width: 0;
+  padding: 14px 22px;
+  margin: 0;
+  border: 0;
+  border-top: 1px solid var(--border);
+}
+.composer-extra-parameters > legend {
+  font-size: 11px;
+  color: var(--muted);
+}
+.composer-output-note {
+  margin: 0;
+  padding: 0 22px 12px;
+  font-size: 11px;
+  color: var(--muted);
+}
+.creation-page .composer-settings {
+  border-radius: 0 0 14px 14px;
+  border-top: 0;
+}
+.composer-settings .pricing-quote-details {
+  margin: 0;
+  padding: 10px 22px;
+}
+.composer-settings .composer-mode-message,
+.composer-settings .inline-error {
+  margin: 0;
+  padding: 10px 22px;
+  font-size: 12px;
+  color: var(--secondary);
+}
+.creation-page .composer-settings .surface-footer {
+  position: static;
+  margin: 0;
+  padding: 14px 22px;
+  box-shadow: none;
+  background: transparent;
+}
+.composer-settings .surface-actions {
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 24px;
+}
+.creation-page .composer-settings .studio-price {
+  justify-content: flex-end;
+  gap: 6px 12px;
+}
+.creation-page .composer-settings .studio-generate {
+  flex: 0 0 auto;
+  width: 160px;
+}
+.composer-settings .settings-submit-note {
+  display: block;
+  margin: 10px 0 0;
+  text-align: right;
+}
+@media (max-width: 767px) {
+  .creation-page .composer-input .surface-writing {
+    padding: 16px 14px 12px;
+  }
+  .composer-input .surface-writing > textarea {
+    height: 150px;
+    min-height: 120px;
+    font-size: 16px;
+  }
+  .composer-input .studio-references {
+    padding: 14px 14px 0;
+  }
+  .composer-config-toolbar,
+  .composer-extra-parameters {
+    padding: 12px 14px;
+  }
+  .composer-config-toolbar .surface-field,
+  .composer-mode-control,
+  .composer-config-toolbar .parameter {
+    flex-grow: 1;
+    min-height: 44px;
+  }
+  .composer-config-toolbar .surface-model {
+    flex-basis: 100%;
+  }
+  .composer-config-toolbar .ui-select,
+  .composer-config-toolbar .surface-model .ui-select {
+    min-width: 0;
+    max-width: none;
+  }
+  .composer-config-toolbar .ui-select-trigger {
+    min-height: 36px;
+  }
+  .composer-config-toolbar .parameter > input:not([type="checkbox"]) {
+    font-size: 16px;
+  }
+  .composer-output-note,
+  .composer-settings .pricing-quote-details,
+  .composer-settings .composer-mode-message,
+  .composer-settings .inline-error {
+    padding-inline: 14px;
+  }
+  .creation-page .composer-settings .surface-footer {
+    padding: 12px 14px;
+  }
+  .composer-settings .surface-actions {
+    gap: 12px;
+    justify-content: space-between;
+  }
+  .creation-page .composer-settings .studio-price {
+    align-items: flex-start;
+  }
+  .creation-page .composer-settings .studio-generate {
+    width: 144px;
+  }
+}

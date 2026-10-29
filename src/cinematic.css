@@ -4149,72 +4149,6 @@ td code {
   width: 26px;
   height: 26px;
 }
-.prompt-examples {
-  margin: 0;
-  position: relative;
-  z-index: 15;
-}
-.prompt-examples > summary {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  list-style: none;
-  color: var(--muted);
-  font-size: 12px;
-  padding: 3px 0;
-  cursor: pointer;
-}
-.prompt-examples > summary::-webkit-details-marker {
-  display: none;
-}
-.prompt-examples > summary:hover,
-.prompt-examples[open] > summary {
-  color: var(--text);
-}
-.prompt-examples > div {
-  position: absolute;
-  right: 0;
-  top: 31px;
-  width: 300px;
-  max-width: calc(100vw - 56px);
-  padding: 5px;
-  background: var(--panel);
-  border: 1px solid var(--border-strong);
-  border-radius: 8px;
-  box-shadow: 0 12px 35px #0004;
-}
-.prompt-examples > div > button {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  width: 100%;
-  text-align: left;
-  border: 0;
-  border-bottom: 1px solid var(--border);
-  border-radius: 5px;
-  padding: 12px;
-  background: none;
-  color: var(--text);
-}
-.prompt-examples > div > button:last-child {
-  border-bottom: 0;
-}
-.prompt-examples > div > button:hover {
-  background: var(--hover);
-}
-.prompt-examples strong {
-  font-size: 13px;
-  font-weight: 500;
-}
-.prompt-examples button > span {
-  font-size: 12px;
-  line-height: 1.6;
-  color: var(--muted);
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
 .canvas-header {
   border-color: var(--border);
 }
@@ -4615,10 +4549,6 @@ td code {
 .studio-reference-add:hover {
   background: var(--accent-soft);
   border-color: var(--accent);
-  color: var(--accent);
-}
-.prompt-examples[open] > summary,
-.prompt-examples > summary:hover {
   color: var(--accent);
 }
 .badge.image {

@@ -68,6 +68,12 @@ func buildProviderProtocols() []Row {
 	} {
 		base, path := "", "/models"
 		types := []any{"image", "video"}
+		if p.id == "openvideo" {
+			base = "https://openmvideo.top/v1"
+		}
+		if p.id == "modelhub" {
+			base = "https://api.modelhub.cc/v1"
+		}
 		if p.id == "opencrow" {
 			base, path, types = "https://api.router.ai/v1", "/v1/models", []any{"image", "video", "text", "audio"}
 		}

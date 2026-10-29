@@ -108,6 +108,7 @@ export function AssetPicker({
   allowed = ["image", "video", "audio"],
   existingIds = [],
   limits,
+  remainingTotal = Infinity,
 }: {
   onClose: () => void;
   onPick: (assets: Asset[]) => void;
@@ -115,6 +116,7 @@ export function AssetPicker({
   allowed?: string[];
   existingIds?: string[];
   limits?: Record<string, number>;
+  remainingTotal?: number;
 }) {
   const [type, setType] = useState(allowed.length === 1 ? allowed[0] : "all");
   const [page, setPage] = useState(1);
@@ -128,8 +130,9 @@ export function AssetPicker({
   const items = data?.items.filter((a) => allowed.includes(a.type)) || [];
   const atLimit = (asset: Asset) =>
     !selected.some((item) => item.id === asset.id) &&
-    selected.filter((item) => item.type === asset.type).length >=
-      (limits?.[asset.type] ?? Infinity);
+    (selected.length >= remainingTotal ||
+      selected.filter((item) => item.type === asset.type).length >=
+        (limits?.[asset.type] ?? Infinity));
   return (
     <Modal
       title="从资产库选择"
@@ -172,6 +175,10 @@ export function AssetPicker({
             const files = Array.from(e.target.files || []);
             e.target.value = "";
             act(async () => {
+              if (selected.length + files.length > remainingTotal)
+                throw new Error(
+                  `参考素材合计还可添加 ${remainingTotal} 个，请减少文件后重试`,
+                );
               const counts: Record<string, number> = {};
               for (const asset of selected)
                 counts[asset.type] = (counts[asset.type] || 0) + 1;
@@ -214,7 +221,7 @@ export function AssetPicker({
                 "asset-choice " +
                 (selected.some((s) => s.id === a.id) ? "selected" : "")
               }
-              disabled={existingIds.includes(a.id) || atLimit(a)}
+              disabled={busy || existingIds.includes(a.id) || atLimit(a)}
               aria-label={
                 existingIds.includes(a.id)
                   ? `${a.name}（已添加）`
@@ -270,7 +277,7 @@ export function AssetPicker({
           </button>
           <button
             className="button primary"
-            disabled={!selected.length}
+            disabled={busy || !selected.length}
             onClick={() => {
               onPick(selected);
               onClose();

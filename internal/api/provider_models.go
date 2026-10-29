@@ -3,6 +3,7 @@ package api
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"regexp"
 	"strings"
@@ -321,6 +322,29 @@ func (a *App) syncProviderModels(r *Request) any {
 	if err != nil {
 		if ctx.Err() != nil {
 			fail(504, "模型拉取超时或已取消，请重试")
+		}
+		if response.StatusCode < 200 || response.StatusCode >= 300 {
+			hint := "请检查供应商接口状态"
+			switch response.StatusCode {
+			case http.StatusUnauthorized:
+				hint = "鉴权失败，请检查此供应商的 API 密钥是否有效"
+			case http.StatusForbidden:
+				hint = "访问被拒绝，请检查账号权限或供应商访问限制"
+			case http.StatusNotFound:
+				hint = "模型列表路径不存在，请检查 API 基础地址和模型列表接口路径"
+				if provider["protocol"] == "openvideo" {
+					hint += "；OpenVideo 通常使用带 /v1 的基础地址和 /models 列表路径"
+				}
+			case http.StatusMethodNotAllowed:
+				hint = "该路径不支持 GET 请求，请填写模型目录接口路径"
+			case http.StatusTooManyRequests:
+				hint = "上游请求频率受限，请稍后重试"
+			default:
+				if response.StatusCode >= 500 {
+					hint = "上游服务暂时异常，请稍后重试"
+				}
+			}
+			fail(502, fmt.Sprintf("上游模型接口返回 HTTP %d：%s", response.StatusCode, hint))
 		}
 		fail(502, "渠道模型接口返回异常，请检查连接或手动添加")
 	}

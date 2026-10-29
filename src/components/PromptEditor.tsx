@@ -5,7 +5,7 @@ import {
   useRef,
   useState,
 } from "react";
-import { ChevronDown, Image, Music, Video } from "lucide-react";
+import { Music, Video } from "lucide-react";
 import type { Asset } from "../lib";
 
 export type ReferenceAsset = Asset & { referenceLabel: string };
@@ -13,23 +13,6 @@ export type PromptEditorHandle = {
   focus: () => void;
   insertReference: (asset: ReferenceAsset) => void;
 };
-const suggestions = [
-  {
-    title: "产品静物",
-    prompt:
-      "一只磨砂陶瓷花瓶放在浅色石台上，窗边的午后自然光，柔和阴影，克制的暖色调，干净的产品摄影构图。",
-  },
-  {
-    title: "空间叙事",
-    prompt:
-      "海边的一间安静书店，木质书架与亚麻窗帘，日落光线穿过大幅落地窗，远处是平静海面，富有呼吸感的建筑摄影。",
-  },
-  {
-    title: "电影片刻",
-    prompt:
-      "雨后的街角，暖色路灯倒映在湿润地面，一位撑伞的人缓缓走过，镜头轻轻向前推进，胶片色彩，自然的光影变化。",
-  },
-];
 export const PromptEditor = forwardRef<
   PromptEditorHandle,
   {
@@ -55,7 +38,6 @@ export const PromptEditor = forwardRef<
     ref,
   ) => {
     const textarea = useRef<HTMLTextAreaElement>(null);
-    const examples = useRef<HTMLDetailsElement>(null);
     const latest = useRef(value);
     latest.current = value;
     const [mention, setMention] = useState<{
@@ -104,27 +86,6 @@ export const PromptEditor = forwardRef<
       );
       setActive(0);
     };
-    useEffect(() => {
-      const outside = (event: PointerEvent) => {
-        if (
-          examples.current?.open &&
-          !examples.current.contains(event.target as Node)
-        )
-          examples.current.open = false;
-      };
-      const escape = (event: KeyboardEvent) => {
-        if (event.key === "Escape" && examples.current?.open) {
-          examples.current.open = false;
-          examples.current.querySelector("summary")?.focus();
-        }
-      };
-      document.addEventListener("pointerdown", outside);
-      document.addEventListener("keydown", escape);
-      return () => {
-        document.removeEventListener("pointerdown", outside);
-        document.removeEventListener("keydown", escape);
-      };
-    }, []);
     useEffect(() => {
       if (!references.length) setMention(null);
     }, [references.length]);
@@ -264,30 +225,6 @@ export const PromptEditor = forwardRef<
           {value.length > 0 && (
             <span className="surface-count">{value.length} / 10000</span>
           )}
-          <details className="prompt-examples" ref={examples}>
-            <summary>
-              示例 <ChevronDown size={12} />
-            </summary>
-            <div>
-              {suggestions.map((suggestion) => (
-                <button
-                  key={suggestion.title}
-                  type="button"
-                  onClick={(event) => {
-                    onChange(suggestion.prompt);
-                    setMention(null);
-                    textarea.current?.focus();
-                    event.currentTarget
-                      .closest("details")
-                      ?.removeAttribute("open");
-                  }}
-                >
-                  <strong>{suggestion.title}</strong>
-                  <span>{suggestion.prompt}</span>
-                </button>
-              ))}
-            </div>
-          </details>
         </div>
       </div>
     );

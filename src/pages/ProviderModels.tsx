@@ -217,12 +217,12 @@ export default function ProviderModels({
           >
             <table>
               <colgroup>
-                <col style={{ width: "22%" }} />
-                <col style={{ width: "22%" }} />
-                <col style={{ width: "8%" }} />
-                <col style={{ width: "10%" }} />
-                <col style={{ width: "18%" }} />
-                <col style={{ width: "20%" }} />
+                <col />
+                <col />
+                <col style={{ width: 64 }} />
+                <col style={{ width: 80 }} />
+                <col style={{ width: 136 }} />
+                <col style={{ width: 180 }} />
               </colgroup>
               <thead>
                 <tr>

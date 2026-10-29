@@ -52,6 +52,16 @@ import { useSurfaceLight } from "../components/useSurfaceLight";
 import { billingOptions, billingUnit } from "../pricing";
 import { isImageCountParameter, imageOutputLabel } from "../model-config";
 import {
+  initialStudioMode,
+  studioModeOptions,
+  studioModeParams,
+  studioModeParameter,
+  studioReferenceModel,
+  studioModeError,
+  studioFrameMode,
+  type StudioMode,
+} from "../studio-modes";
+import {
   referenceCapacities as capacities,
   referenceLimit,
   referenceTotalLimit,
@@ -77,9 +87,12 @@ function allocate(
   model: Model,
   params: RecordData,
   candidates: ReferenceAsset[],
+  mode?: StudioMode,
 ) {
   const next = { ...params };
-  const fields = model.parameters.filter((field) => field.type === "assets");
+  const fields = (
+    mode ? studioReferenceModel(model, mode, params)! : model
+  ).parameters.filter((field) => field.type === "assets");
   for (const field of fields) next[field.name] = [];
   const assigned = new Set<string>();
   const totalLimit = referenceTotalLimit(model);
@@ -179,14 +192,16 @@ export default function Studio() {
   const [billing, setBilling] = useState("request");
   const [prompt, setPrompt] = useState(search.get("prompt") || "");
   const [params, setParams] = useState<RecordData>({});
+  const [creationMode, setCreationMode] = useState<StudioMode>("text");
   const [refs, setRefs] = useState<ReferenceAsset[]>([]);
   const [picker, setPicker] = useState<"source" | "library" | null>(null);
+  const [pickerType, setPickerType] = useState<string | null>(null);
+  const pickerTypeRef = useRef<string | null>(null);
   const [referencePreview, setReferencePreview] =
     useState<ReferenceAsset | null>(null);
   const [filter, setFilter] = useState("all");
   const [detail, setDetail] = useState<Job | null>(null);
   const [advanced, setAdvanced] = useState(false);
-  const [settingsOpen, setSettingsOpen] = useState(false);
   const [preview, setPreview] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [dragging, setDragging] = useState(false);
@@ -213,10 +228,29 @@ export default function Studio() {
     const unit = billingUnit(model);
     if (unit) setBilling(unit);
   }, [model]);
-  const capacity = capacities(model, params);
+  const capacity = capacities(
+    studioReferenceModel(model, creationMode, params),
+    params,
+  );
   const allowed = Object.keys(capacity).filter((type) => capacity[type] > 0);
-  const latest = useRef({ model, params, refs });
-  latest.current = { model, params, refs };
+  const canReference = Object.values(capacities(model, params)).some(
+    (limit) => limit > 0,
+  );
+  const pickerAllowed = pickerType
+    ? allowed.filter((type) => type === pickerType)
+    : allowed;
+  const openReferencePicker = (type: string | null = null) => {
+    pickerTypeRef.current = type;
+    setPickerType(type);
+    setPicker("source");
+  };
+  const closeReferencePicker = () => {
+    setPicker(null);
+    pickerTypeRef.current = null;
+    setPickerType(null);
+  };
+  const latest = useRef({ model, params, refs, mode: creationMode });
+  latest.current = { model, params, refs, mode: creationMode };
   useEffect(() => {
     alive.current = true;
     return () => {
@@ -231,7 +265,18 @@ export default function Studio() {
       schema: JSON.stringify(next.parameters),
     };
     uploadController.current?.abort();
-    const retained = allocate(next, defaults(next), latest.current.refs);
+    closeReferencePicker();
+    const mode = initialStudioMode(
+      next,
+      defaults(next),
+      latest.current.refs.map((asset) => asset.type),
+    );
+    const retained = allocate(
+      next,
+      studioModeParams(next, defaults(next), mode),
+      latest.current.refs,
+      mode,
+    );
     const removed = latest.current.refs.filter(
       (asset) => !retained.refs.some((item) => item.id === asset.id),
     );
@@ -243,9 +288,10 @@ export default function Studio() {
     setModelId(next.id);
     setKind(next.type);
     setBilling(billingUnit(next) || "request");
+    setCreationMode(mode);
     setParams(retained.params);
     setRefs(retained.refs);
-    latest.current = { model: next, ...retained };
+    latest.current = { model: next, ...retained, mode };
     requestIdentity.current = null;
     if (updateURL) setSearch({ model: next.id }, { replace: true });
   };
@@ -290,7 +336,21 @@ export default function Studio() {
               : typeof value === "string";
       if (valid) values[field.name] = value;
     }
-    const next = allocate(model, values, current.refs);
+    const mode = studioModeOptions(model, values).some(
+      (o) => o.value === current.mode && !o.disabled,
+    )
+      ? current.mode
+      : initialStudioMode(
+          model,
+          values,
+          current.refs.map((asset) => asset.type),
+        );
+    const next = allocate(
+      model,
+      studioModeParams(model, values, mode),
+      current.refs,
+      mode,
+    );
     const removed = current.refs.filter(
       (asset) => !next.refs.some((item) => item.id === asset.id),
     );
@@ -298,7 +358,8 @@ export default function Studio() {
       setPrompt((value) => removeReferenceTokens(value, removed));
     setParams(next.params);
     setRefs(next.refs);
-    latest.current = { model, ...next };
+    setCreationMode(mode);
+    latest.current = { model, ...next, mode };
     requestIdentity.current = null;
     refresh("/pricing/quote");
     toast(
@@ -331,9 +392,58 @@ export default function Studio() {
       setBilling(mode);
       setModelId("");
       setParams({});
+      setCreationMode("text");
       setRefs([]);
       setPrompt((value) => removeReferenceTokens(value, refs));
     }
+  };
+  const changeCreationMode = (mode: StudioMode) => {
+    const current = latest.current;
+    if (
+      !current.model ||
+      uploading ||
+      !studioModeOptions(current.model, current.params).some(
+        (o) => o.value === mode && !o.disabled,
+      )
+    )
+      return;
+    const next = allocate(
+      current.model,
+      studioModeParams(current.model, current.params, mode),
+      current.refs,
+      mode,
+    );
+    const removed = current.refs.filter(
+      (asset) => !next.refs.some((item) => item.id === asset.id),
+    );
+    setPrompt((value) => removeReferenceTokens(value, removed));
+    setCreationMode(mode);
+    setParams(next.params);
+    setRefs(next.refs);
+    latest.current = { model: current.model, ...next, mode };
+    closeReferencePicker();
+    requestIdentity.current = null;
+    if (removed.length)
+      toast(`已移除 ${removed.length} 个与新模式不兼容的参考素材`);
+  };
+  const changeParams = (values: RecordData) => {
+    const current = latest.current;
+    if (!current.model || uploading) return;
+    const next = allocate(
+      current.model,
+      studioModeParams(current.model, values, current.mode),
+      current.refs,
+      current.mode,
+    );
+    const removed = current.refs.filter(
+      (asset) => !next.refs.some((item) => item.id === asset.id),
+    );
+    setPrompt((value) => removeReferenceTokens(value, removed));
+    setParams(next.params);
+    setRefs(next.refs);
+    latest.current = { model: current.model, ...next, mode: current.mode };
+    if (removed.length)
+      toast(`已移除 ${removed.length} 个超出新参数限制的参考素材`);
   };
   const {
     data: quote,
@@ -359,10 +469,12 @@ export default function Studio() {
     if (jobStates) refresh("/me", "/usage", "/assets");
   }, [jobStates, refresh]);
   const insufficient = !!quote && Number(user?.balance || 0) < quote.total;
+  const modeError = studioModeError(model, creationMode, params, refs);
   const canGenerate =
     !!model &&
     !!prompt.trim() &&
     !!quote &&
+    !modeError &&
     !quoteError &&
     !insufficient &&
     !busy &&
@@ -414,16 +526,28 @@ export default function Studio() {
   const addReferences = (assets: Asset[]) => {
     const current = latest.current;
     if (!current.model) return [];
+    if (pickerTypeRef.current)
+      assets = assets.filter((asset) => asset.type === pickerTypeRef.current);
     const incoming = assets
       .filter((asset) => !current.refs.some((item) => item.id === asset.id))
       .map((asset) => ({
         ...asset,
         referenceLabel: `${referenceNames[asset.type]}${(serials.current[asset.type] = (serials.current[asset.type] || 0) + 1)}`,
       }));
-    const next = allocate(current.model, current.params, [
-      ...current.refs,
-      ...incoming,
-    ]);
+    const mode =
+      current.mode === "text" && assets.length
+        ? initialStudioMode(
+            current.model,
+            current.params,
+            assets.map((a) => a.type),
+          )
+        : current.mode;
+    const next = allocate(
+      current.model,
+      studioModeParams(current.model, current.params, mode),
+      [...current.refs, ...incoming],
+      mode,
+    );
     const added = next.refs.filter((asset) =>
       incoming.some((item) => item.id === asset.id),
     );
@@ -431,21 +555,31 @@ export default function Studio() {
       toast("部分素材超出当前模型的类型或数量限制", true);
     setParams(next.params);
     setRefs(next.refs);
-    latest.current = { model: current.model, ...next };
+    setCreationMode(mode);
+    latest.current = { model: current.model, ...next, mode };
     return added;
   };
   const removeReference = (asset: ReferenceAsset) => {
     const current = latest.current;
     if (!current.model) return;
+    const firstFrameRemoved =
+      current.mode === "image" &&
+      studioFrameMode(current.model, current.params) &&
+      current.refs.find((ref) => ref.type === "image")?.id === asset.id;
+    const removed = firstFrameRemoved
+      ? current.refs.filter((ref) => ref.type === "image")
+      : [asset];
     const next = allocate(
       current.model,
       current.params,
-      current.refs.filter((item) => item.id !== asset.id),
+      current.refs.filter((item) => !removed.some((ref) => ref.id === item.id)),
+      current.mode,
     );
     setRefs(next.refs);
     setParams(next.params);
-    latest.current = { model: current.model, ...next };
-    setPrompt((value) => removeReferenceTokens(value, [asset]));
+    latest.current = { model: current.model, ...next, mode: current.mode };
+    setPrompt((value) => removeReferenceTokens(value, removed));
+    if (removed.length > 1) toast("首帧已移除，同时清除尾帧，避免首尾顺序错位");
   };
   const uploadFiles = async (files: File[]): Promise<ReferenceAsset[]> => {
     if (!files.length) return [];
@@ -454,7 +588,21 @@ export default function Studio() {
       return [];
     }
     const current = latest.current;
-    const max = capacities(current.model, current.params);
+    const mode =
+      current.model && current.mode === "text"
+        ? initialStudioMode(
+            current.model,
+            current.params,
+            files.map((f) => f.type.split("/")[0]),
+          )
+        : current.mode;
+    const uploadParams = current.model
+      ? studioModeParams(current.model, current.params, mode)
+      : current.params;
+    const max = capacities(
+      studioReferenceModel(current.model, mode, uploadParams),
+      uploadParams,
+    );
     if (!Object.values(max).some((limit) => limit > 0)) {
       toast("当前模型不支持参考素材", true);
       return [];
@@ -475,6 +623,10 @@ export default function Studio() {
         break;
       }
       const type = file.type.split("/")[0];
+      if (pickerTypeRef.current && pickerTypeRef.current !== type) {
+        toast(`请选择${referenceNames[pickerTypeRef.current]}文件`, true);
+        continue;
+      }
       if (!(max[type] > 0) || !acceptedMimes[type]?.includes(file.type)) {
         toast(`${file.name} 的格式不受当前模型支持`, true);
         continue;
@@ -524,7 +676,7 @@ export default function Studio() {
       return [];
     const added = addReferences(uploaded);
     if (added.length) {
-      setPicker(null);
+      closeReferencePicker();
       toast(`已添加 ${added.length} 个参考素材`);
     }
     return added;
@@ -538,21 +690,34 @@ export default function Studio() {
   const options = available(kind, billing)
     .map(modelOption)
     .sort((a, b) => (a.group || "").localeCompare(b.group || "", "zh-CN"));
-  const referenceSummary = referenceSpecs(model).join(" · ");
-  const parameterSummary = model?.parameters
-    .filter((parameter) => parameter.type === "select")
-    .slice(0, 3)
-    .map((parameter) => {
-      const option = parameter.options?.find(
-        (option) =>
-          String(option.v ?? option) === String(params[parameter.name]),
-      );
-      return String(option?.l ?? option ?? params[parameter.name] ?? "");
-    })
-    .filter(Boolean)
-    .join(" · ");
+  const referenceSummary = referenceSpecs(
+    studioReferenceModel(model, creationMode, params),
+  ).join(" · ");
+  const modeOptions = studioModeOptions(model, params);
+  const frameMode = creationMode === "image" && studioFrameMode(model, params);
+  const visibleParameters =
+    model?.parameters.filter(
+      (p) =>
+        p.type !== "assets" &&
+        !isImageCountParameter(model, p) &&
+        p.name !== studioModeParameter(model)?.name,
+    ) || [];
+  const commonNames = [
+    "aspectRatio",
+    "aspect_ratio",
+    "ratio",
+    "resolution",
+    "duration",
+    "quality",
+    "channel",
+  ];
+  const commonParameters = visibleParameters.filter((p) =>
+    commonNames.includes(p.name),
+  );
+  const extraParameters = visibleParameters.filter(
+    (p) => !commonNames.includes(p.name),
+  );
   const editorLight = useSurfaceLight();
-  const settingsLight = useSurfaceLight();
   if (isLoading) return <Loading />;
   if (error) return <ErrorState error={error} retry={refetch} />;
   return (
@@ -602,7 +767,7 @@ export default function Studio() {
           onDragOver={(event) => {
             if (event.dataTransfer.types.includes("Files")) {
               event.preventDefault();
-              event.dataTransfer.dropEffect = allowed.length ? "copy" : "none";
+              event.dataTransfer.dropEffect = canReference ? "copy" : "none";
             }
           }}
           onDragLeave={(event) => {
@@ -615,6 +780,8 @@ export default function Studio() {
             event.preventDefault();
             dragDepth.current = 0;
             setDragging(false);
+            pickerTypeRef.current = null;
+            setPickerType(null);
             void uploadFiles(Array.from(event.dataTransfer.files));
           }}
         >
@@ -631,261 +798,253 @@ export default function Studio() {
               {`${generationLabels[kind]}创作`}
             </span>
           </header>
-          <div className="surface-editor">
+          <div className="surface-editor composer-input">
+            {!!allowed.length && (
+              <section className="studio-references" aria-label="参考素材">
+                <div className="studio-references-heading">
+                  <span>{frameMode ? "首尾帧参考" : "参考素材"}</span>
+                  <small>支持 {referenceSummary}</small>
+                </div>
+                <div className="surface-reference-list">
+                  {(frameMode
+                    ? ["首帧", "尾帧"]
+                    : creationMode === "reference" && kind === "video"
+                      ? allowed.map((type) => referenceNames[type])
+                      : ["添加素材"]
+                  ).map((label, index) => (
+                    <button
+                      key={label}
+                      type="button"
+                      className="studio-reference-add"
+                      onClick={() =>
+                        openReferencePicker(
+                          frameMode
+                            ? "image"
+                            : creationMode === "reference" && kind === "video"
+                              ? allowed[index]
+                              : null,
+                        )
+                      }
+                      aria-label={
+                        label === "添加素材" ? "添加参考内容" : `添加${label}`
+                      }
+                      title={referenceSummary}
+                      disabled={
+                        uploading ||
+                        (frameMode &&
+                          (refs.filter((r) => r.type === "image").length !==
+                            index ||
+                            capacity.image <= index))
+                      }
+                    >
+                      {uploading ? (
+                        <Loader2 size={19} className="spin" />
+                      ) : (
+                        <Plus size={19} />
+                      )}
+                      <span>{uploading ? "上传中" : label}</span>
+                    </button>
+                  ))}
+                  {refs.map((asset) => (
+                    <div className="reference-item" key={asset.id}>
+                      <button
+                        type="button"
+                        className="reference-thumbnail"
+                        aria-label={`预览${asset.referenceLabel}`}
+                        title={asset.name}
+                        onClick={() => setReferencePreview(asset)}
+                      >
+                        {asset.type === "image" ? (
+                          <img src={asset.url} alt={asset.referenceLabel} />
+                        ) : asset.type === "video" ? (
+                          <Video size={22} />
+                        ) : (
+                          <Music size={22} />
+                        )}
+                      </button>
+                      <button
+                        type="button"
+                        className="reference-token"
+                        title={`插入 @${asset.referenceLabel}`}
+                        onMouseDown={(event) => event.preventDefault()}
+                        onClick={() => editor.current?.insertReference(asset)}
+                      >
+                        {frameMode && asset.type === "image"
+                          ? refs.filter((r) => r.type === "image")[0]?.id ===
+                            asset.id
+                            ? "首帧"
+                            : "尾帧"
+                          : asset.referenceLabel}
+                      </button>
+                      <button
+                        type="button"
+                        className="reference-remove"
+                        aria-label={`移除${asset.referenceLabel}`}
+                        disabled={uploading}
+                        onClick={() => removeReference(asset)}
+                      >
+                        <X size={12} />
+                      </button>
+                    </div>
+                  ))}
+                  {!refs.length && (
+                    <p className="reference-empty-hint">
+                      {frameMode
+                        ? "先添加首帧，再添加尾帧（按模型要求选填）"
+                        : `添加${allowed.map((type) => referenceNames[type]).join("、")}作为参考`}
+                      <br />
+                      <span>也可直接拖入文件，或粘贴图片</span>
+                    </p>
+                  )}
+                </div>
+              </section>
+            )}
             <PromptEditor
               ref={editor}
               value={prompt}
               onChange={setPrompt}
               references={refs}
-              supportsReferences={!!allowed.length}
-              onFiles={uploadFiles}
+              supportsReferences={canReference}
+              onFiles={(files) => {
+                pickerTypeRef.current = null;
+                setPickerType(null);
+                return uploadFiles(files);
+              }}
               onSubmit={start}
               canSubmit={canGenerate}
             />
-          </div>
-          {!!allowed.length && (
-            <section className="studio-references" aria-label="参考素材">
-              <div className="studio-references-heading">
-                <span>参考素材</span>
-                <small>支持 {referenceSummary}</small>
+            <div className="composer-config-toolbar" aria-label="创作参数">
+              <div className="surface-toolbar composer-model-controls">
+                <div className="surface-field surface-mode">
+                  <span>生成类型</span>
+                  <Select
+                    label="生成类型"
+                    value={kind}
+                    disabled={uploading}
+                    onChange={(value) => {
+                      const modes = billingOptions(value).map(
+                        (option) => option.value,
+                      );
+                      const mode =
+                        [billing, ...modes].find(
+                          (mode) =>
+                            modes.includes(mode) &&
+                            available(value, mode).length,
+                        ) || "request";
+                      changeFilter(value, mode);
+                    }}
+                    options={[
+                      { value: "image", label: "图片生成" },
+                      { value: "video", label: "视频生成" },
+                      { value: "text", label: "文本生成" },
+                      { value: "audio", label: "音频生成" },
+                      { value: "upscale", label: "视频超分" },
+                    ]}
+                  />
+                </div>
+                <div className="surface-field surface-billing">
+                  <span>计费方式</span>
+                  <Select
+                    label="计费模式"
+                    value={billing}
+                    disabled={uploading || kind !== "video"}
+                    onChange={(value) => changeFilter(kind, value)}
+                    options={billingOptions(kind)}
+                  />
+                </div>
+                <div className="surface-field surface-model">
+                  <span>模型</span>
+                  <Select
+                    label="模型"
+                    value={modelId}
+                    disabled={uploading || !options.length}
+                    searchable
+                    placeholder="暂无可用模型"
+                    options={options}
+                    onChange={(value) => {
+                      const next = models?.find((item) => item.id === value);
+                      if (next) selectModel(next);
+                    }}
+                  />
+                </div>
               </div>
-              <div className="surface-reference-list">
+              {!!modeOptions.length && (
+                <div className="composer-mode-control">
+                  <span>创作模式</span>
+                  <Select
+                    label="创作模式"
+                    value={creationMode}
+                    disabled={uploading || !model}
+                    options={modeOptions}
+                    onChange={(value) =>
+                      changeCreationMode(value as StudioMode)
+                    }
+                  />
+                </div>
+              )}
+              <fieldset
+                className="composer-inline-parameters surface-parameters"
+                disabled={uploading || busy}
+              >
+                <legend className="sr-only">输出参数</legend>
+                {model && (
+                  <ParameterFields
+                    model={{ ...model, parameters: commonParameters }}
+                    params={params}
+                    onChange={changeParams}
+                  />
+                )}
+              </fieldset>
+              {!!extraParameters.length && (
                 <button
                   type="button"
-                  className="studio-reference-add"
-                  onClick={() => setPicker("source")}
-                  aria-label="添加参考内容"
-                  title={referenceSummary}
-                  disabled={uploading}
+                  className="composer-more-settings"
+                  aria-expanded={advanced}
+                  aria-controls="composer-extra-parameters"
+                  onClick={() => setAdvanced(!advanced)}
                 >
-                  {uploading ? (
-                    <Loader2 size={19} className="spin" />
-                  ) : (
-                    <Plus size={19} />
-                  )}
-                  <span>{uploading ? "上传中" : "添加素材"}</span>
+                  <SlidersHorizontal size={14} /> 更多设置{" "}
+                  <ChevronDown size={13} />
                 </button>
-                {refs.map((asset) => (
-                  <div className="reference-item" key={asset.id}>
-                    <button
-                      type="button"
-                      className="reference-thumbnail"
-                      aria-label={`预览${asset.referenceLabel}`}
-                      title={asset.name}
-                      onClick={() => setReferencePreview(asset)}
-                    >
-                      {asset.type === "image" ? (
-                        <img src={asset.url} alt={asset.referenceLabel} />
-                      ) : asset.type === "video" ? (
-                        <Video size={22} />
-                      ) : (
-                        <Music size={22} />
-                      )}
-                    </button>
-                    <button
-                      type="button"
-                      className="reference-token"
-                      title={`插入 @${asset.referenceLabel}`}
-                      onMouseDown={(event) => event.preventDefault()}
-                      onClick={() => editor.current?.insertReference(asset)}
-                    >
-                      {asset.referenceLabel}
-                    </button>
-                    <button
-                      type="button"
-                      className="reference-remove"
-                      aria-label={`移除${asset.referenceLabel}`}
-                      onClick={() => removeReference(asset)}
-                    >
-                      <X size={12} />
-                    </button>
-                  </div>
-                ))}
-                {!refs.length && (
-                  <p className="reference-empty-hint">
-                    添加图片、视频或音频作为参考
-                    <br />
-                    <span>也可直接拖入文件，或粘贴图片</span>
-                  </p>
-                )}
-              </div>
-            </section>
-          )}
-          <footer className="composer-note">
-            <span
-              className={`studio-mode-note ${model?.demo ? "is-demo" : ""}`}
-            >
-              {model?.demo
-                ? "演示模式 · 非真实模型生成"
-                : "生成结果自动保存到资产库"}
-            </span>
-            <span className="composer-shortcut">Ctrl + Enter 提交</span>
-          </footer>
+              )}
+            </div>
+            {advanced && model && (
+              <fieldset
+                id="composer-extra-parameters"
+                className="composer-extra-parameters surface-parameters"
+                disabled={uploading || busy}
+              >
+                <legend>更多设置</legend>
+                <ParameterFields
+                  model={{ ...model, parameters: extraParameters }}
+                  params={params}
+                  onChange={changeParams}
+                />
+              </fieldset>
+            )}
+            {model?.type === "image" && (
+              <p className="composer-output-note">{imageOutputLabel(model)}</p>
+            )}
+          </div>
           {dragging && (
             <div className="studio-drop-overlay">
               <Upload size={28} />
               <strong>
-                {allowed.length ? "松开以添加参考素材" : "此模型不支持参考素材"}
+                {canReference ? "松开以添加参考素材" : "此模型不支持参考素材"}
               </strong>
             </div>
           )}
         </section>
         <aside
-          ref={settingsLight}
-          className="studio-settings reactive-surface"
+          className="studio-settings composer-settings"
           aria-label="生成设置"
         >
-          <header className="settings-heading">
-            <SlidersHorizontal size={16} />
-            <h2>生成设置</h2>
-            <Link to="/models">
-              模型与价格 <ChevronRight size={12} />
-            </Link>
-          </header>
-          <div className="surface-toolbar">
-            <div className="surface-field surface-mode">
-              <span>生成类型</span>
-              <Select
-                label="生成类型"
-                value={kind}
-                disabled={uploading}
-                onChange={(value) => {
-                  const modes = billingOptions(value).map(
-                    (option) => option.value,
-                  );
-                  const mode =
-                    [billing, ...modes].find(
-                      (mode) =>
-                        modes.includes(mode) && available(value, mode).length,
-                    ) || "request";
-                  changeFilter(value, mode);
-                }}
-                options={[
-                  { value: "image", label: "图片生成" },
-                  { value: "video", label: "视频生成" },
-                  { value: "text", label: "文本生成" },
-                  { value: "audio", label: "音频生成" },
-                  { value: "upscale", label: "视频超分" },
-                ]}
-              />
+          {modeError && (
+            <div className="composer-mode-message" role="status">
+              {modeError}
             </div>
-            <div className="surface-field surface-billing">
-              <span>计费方式</span>
-              <Select
-                label="计费模式"
-                value={billing}
-                disabled={uploading || kind !== "video"}
-                onChange={(value) => changeFilter(kind, value)}
-                options={billingOptions(kind)}
-              />
-            </div>
-            <div className="surface-field surface-model">
-              <span>使用模型</span>
-              <Select
-                label="模型"
-                value={modelId}
-                disabled={uploading || !options.length}
-                searchable
-                placeholder="暂无可用模型"
-                options={options}
-                onChange={(value) => {
-                  const next = models?.find((item) => item.id === value);
-                  if (next) selectModel(next);
-                }}
-              />
-            </div>
-          </div>
-          <button
-            type="button"
-            className="settings-mobile-toggle"
-            aria-expanded={settingsOpen}
-            aria-controls="generation-parameters"
-            onClick={() => {
-              setSettingsOpen(!settingsOpen);
-              if (!settingsOpen)
-                setTimeout(
-                  () =>
-                    document
-                      .getElementById("generation-parameters")
-                      ?.scrollIntoView({
-                        block: "nearest",
-                        behavior: window.matchMedia(
-                          "(prefers-reduced-motion: reduce)",
-                        ).matches
-                          ? "auto"
-                          : "smooth",
-                      }),
-                  30,
-                );
-            }}
-          >
-            <SlidersHorizontal size={14} />
-            <span>参数</span>
-            <small>{parameterSummary || "使用默认参数"}</small>
-            <ChevronDown size={14} />
-          </button>
-          <div
-            id="generation-parameters"
-            className={`settings-parameters ${settingsOpen ? "is-open" : ""}`}
-          >
-            <h3>输出参数</h3>
-            {model?.type === "image" && (
-              <p className="image-output-note">{imageOutputLabel(model)}</p>
-            )}
-            <div className="surface-parameters">
-              {model && (
-                <ParameterFields
-                  model={{
-                    ...model,
-                    parameters: model.parameters
-                      .filter(
-                        (parameter) =>
-                          parameter.type !== "assets" &&
-                          !isImageCountParameter(model, parameter),
-                      )
-                      .slice(0, 4),
-                  }}
-                  params={params}
-                  onChange={setParams}
-                />
-              )}
-            </div>
-            {model &&
-              model.parameters.filter(
-                (parameter) =>
-                  parameter.type !== "assets" &&
-                  !isImageCountParameter(model, parameter),
-              ).length > 4 && (
-                <button
-                  type="button"
-                  className={`parameter-more ${advanced ? "active" : ""}`}
-                  aria-expanded={advanced}
-                  onClick={() => setAdvanced(!advanced)}
-                >
-                  <Plus size={13} />
-                  {advanced ? "收起更多参数" : "更多参数"}
-                </button>
-              )}
-            {advanced && model && (
-              <div className="studio-advanced">
-                <ParameterFields
-                  model={{
-                    ...model,
-                    parameters: model.parameters
-                      .filter(
-                        (parameter) =>
-                          parameter.type !== "assets" &&
-                          !isImageCountParameter(model, parameter),
-                      )
-                      .slice(4),
-                  }}
-                  params={params}
-                  onChange={setParams}
-                />
-              </div>
-            )}
-          </div>
-          {quoteError && (
+          )}
+          {quoteError && !modeError && (
             <div className="inline-error" role="alert">
               {quoteError.message}
             </div>
@@ -1044,10 +1203,12 @@ export default function Studio() {
       <input
         hidden
         type="file"
-        multiple
+        multiple={!frameMode}
         ref={fileInput}
         aria-label="上传参考素材"
-        accept={allowed.flatMap((type) => acceptedMimes[type] || []).join(",")}
+        accept={pickerAllowed
+          .flatMap((type) => acceptedMimes[type] || [])
+          .join(",")}
         onChange={(event) => {
           const files = Array.from(event.target.files || []);
           event.target.value = "";
@@ -1058,7 +1219,7 @@ export default function Studio() {
         <Modal
           title="添加参考内容"
           className="reference-source-dialog"
-          onClose={() => setPicker(null)}
+          onClose={closeReferencePicker}
         >
           <button
             type="button"
@@ -1080,7 +1241,7 @@ export default function Studio() {
               {uploading ? "正在上传素材…" : "选择文件，或拖放到这里"}
             </strong>
             <span>
-              {allowed.map((type) => referenceNames[type]).join(" / ")} ·
+              {pickerAllowed.map((type) => referenceNames[type]).join(" / ")} ·
               每个文件不超过 30MB
             </span>
           </button>
@@ -1107,9 +1268,11 @@ export default function Studio() {
       {picker === "library" && (
         <AssetPicker
           key="library"
-          onClose={() => setPicker(null)}
+          onClose={closeReferencePicker}
           onPick={addReferences}
-          allowed={allowed}
+          allowed={pickerAllowed}
+          multiple={!frameMode}
+          remainingTotal={Math.max(0, referenceTotalLimit(model) - refs.length)}
           existingIds={refs.map((asset) => asset.id)}
           limits={Object.fromEntries(
             allowed.map((type) => [

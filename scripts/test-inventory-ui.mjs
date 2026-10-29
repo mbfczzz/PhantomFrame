@@ -365,6 +365,127 @@ try {
     .getByRole("button", { name: "关闭列表", exact: true })
     .click();
   await videoCatalog.waitFor({ state: "hidden" });
+  // Reproduce the real catalog with mixed Chinese/Latin names and four rows.
+  for (const name of [
+    "MiniMax-H3",
+    "MINIMAX-H3-2.0采样-933",
+    "MINIMAX-H3-2.0采样",
+    "SD2.5-30-10-10",
+  ]) {
+    await api(ctx, "/admin/providers/" + videoAccount.id + "/models", "POST", {
+      upstreamModel: name,
+      name,
+      type: "video",
+      parameters: [],
+    });
+  }
+  await page.reload({ waitUntil: "networkidle" });
+  await card(videoAccount.name)
+    .getByRole("button", { name: "管理模型 " + videoAccount.name, exact: true })
+    .click();
+  await videoCatalog.locator("tbody tr").nth(3).waitFor();
+  const layoutFailures = [];
+  const layouts = [];
+  for (const [width, height, theme = "dark"] of [
+    [1440, 900],
+    [892, 810],
+    [768, 600],
+    [390, 844],
+    [844, 390],
+    [320, 568],
+    [892, 810, "light"],
+  ]) {
+    await page.setViewportSize({ width, height });
+    await page.evaluate((theme) => {
+      document.documentElement.dataset.theme = theme;
+    }, theme);
+    await videoCatalog.getByPlaceholder("搜索上游模型 ID 或名称").focus();
+    const result = await videoCatalog.evaluate((dialog) => {
+      const rect = (node) => {
+        const { x, y, width, height, bottom, right } =
+          node.getBoundingClientRect();
+        return { x, y, width, height, bottom, right };
+      };
+      const search = dialog.querySelector(".searchbox");
+      const input = search.querySelector("input");
+      return {
+        dialog: rect(dialog),
+        header: rect(dialog.querySelector("header")),
+        footer: rect(dialog.querySelector(".modal-footer")),
+        results: rect(dialog.querySelector(".channel-model-results")),
+        search: rect(search),
+        input: rect(input),
+        inputShadow: getComputedStyle(input).boxShadow,
+        clippedButtons: [...dialog.querySelectorAll(".row-actions > button")]
+          .filter((b) => b.scrollWidth > b.clientWidth + 1)
+          .map((b) => b.getAttribute("aria-label")),
+        documentOverflow: document.documentElement.scrollWidth > innerWidth,
+      };
+    });
+    layouts.push({ width, height, theme, ...result });
+    if (
+      result.dialog.y < 0 ||
+      result.dialog.bottom > height + 1 ||
+      result.header.y < 0 ||
+      result.footer.bottom > height + 1
+    )
+      layoutFailures.push(
+        `${width}x${height}: dialog controls outside viewport`,
+      );
+    if (result.results.height < 80)
+      layoutFailures.push(`${width}x${height}: model list collapsed`);
+    if (
+      result.input.right > result.search.right ||
+      result.inputShadow !== "none"
+    )
+      layoutFailures.push(`${width}x${height}: nested search outline/overflow`);
+    if (result.clippedButtons.length)
+      layoutFailures.push(
+        `${width}x${height}: clipped action text ${result.clippedButtons.join(",")}`,
+      );
+    if (result.documentOverflow)
+      layoutFailures.push(`${width}x${height}: page overflow`);
+    await page.screenshot({
+      path: join(output, `catalog-layout-${width}x${height}-${theme}.png`),
+      animations: "disabled",
+    });
+  }
+  await writeFile(
+    join(output, "catalog-layout.json"),
+    JSON.stringify({ layouts, layoutFailures }, null, 2),
+  );
+  assert.deepEqual(layoutFailures, []);
+  await page.setViewportSize({ width: 320, height: 568 });
+  await videoCatalog
+    .getByRole("button", { name: "发布 MiniMax-H3", exact: true })
+    .click();
+  const nestedPublish = page.getByRole("dialog", {
+    name: "发布到模型管理",
+    exact: true,
+  });
+  await nestedPublish.waitFor();
+  const publishBounds = await nestedPublish.boundingBox();
+  assert.ok(
+    publishBounds.y >= 0 && publishBounds.y + publishBounds.height <= 568,
+  );
+  assert.equal(
+    await page.locator(".channel-model-dialog").getAttribute("aria-hidden"),
+    "true",
+  );
+  await page.keyboard.press("Escape");
+  await nestedPublish.waitFor({ state: "hidden" });
+  assert.equal(await videoCatalog.getAttribute("aria-modal"), "true");
+  await videoCatalog
+    .getByRole("button", { name: "关闭列表", exact: true })
+    .click();
+  await videoCatalog.waitFor({ state: "hidden" });
+  await page.evaluate(() => {
+    document.documentElement.dataset.theme = "dark";
+  });
+  await page.setViewportSize({ width: 390, height: 844 });
+  check(
+    "catalog controls fit desktop, mobile and landscape viewports without clipped search or publish buttons; nested dialogs restore the parent",
+  );
   await api(ctx, "/admin/providers/" + videoAccount.id, "DELETE");
   await page.reload({ waitUntil: "networkidle" });
   check(

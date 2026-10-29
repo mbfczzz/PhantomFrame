@@ -122,22 +122,6 @@ try {
   await chooseOption(page, "生成类型", "video");
   await chooseOption(page, "模型", "sd2.0-933-op");
   check("login and redesigned creation interface");
-  await page.locator(".prompt-examples summary").click();
-  await page.keyboard.press("Escape");
-  assert.equal(await page.locator(".prompt-examples[open]").count(), 0);
-  await page.locator(".prompt-examples summary").click();
-  await page
-    .locator(".prompt-examples button")
-    .filter({ hasText: "产品静物" })
-    .click();
-  assert.match(
-    await page
-      .getByRole("textbox", { name: "提示词", exact: true })
-      .inputValue(),
-    /磨砂陶瓷/,
-  );
-  assert.equal(await page.locator(".prompt-examples[open]").count(), 0);
-  check("prompt examples fill the editor and close after selection");
   const req = async (path, method = "GET", data) => {
     const r = await context.request.fetch(base + "/api" + path, {
       method,
@@ -892,6 +876,7 @@ try {
     "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAusB9Y9Zl1sAAAAASUVORK5CYII=",
     "base64",
   );
+  await chooseOption(page, "创作模式", "image");
   await page.getByRole("button", { name: "添加参考内容", exact: true }).click();
   await page
     .getByRole("dialog", { name: "添加参考内容", exact: true })
@@ -971,7 +956,9 @@ try {
   const previewBounds = await page.locator("#generation-preview").boundingBox();
   const settingsBounds = await page.locator(".studio-settings").boundingBox();
   const generateBounds = await page.locator(".studio-generate").boundingBox();
-  assert.ok(editorBounds.x + editorBounds.width < settingsBounds.x);
+  assert.ok(Math.abs(editorBounds.x - settingsBounds.x) < 1);
+  assert.ok(settingsBounds.y >= editorBounds.y + editorBounds.height - 1);
+  assert.equal(await page.locator(".composer-input .composer-config-toolbar").count(), 1);
   assert.ok(
     previewBounds.y >=
       Math.max(
@@ -981,7 +968,7 @@ try {
   );
   assert.ok(generateBounds.y + generateBounds.height < 1000);
   check(
-    "independent settings panel and gallery do not cover the editor or generation controls",
+    "inline creation controls, pricing and gallery do not overlap the prompt editor",
   );
   await page.locator(".surface-composer").evaluate((element, bytes) => {
     const transfer = new DataTransfer();

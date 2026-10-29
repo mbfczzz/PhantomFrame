@@ -16,6 +16,7 @@ import "./finish.css";
 import "./workspace.css";
 import "./admin.css";
 import "./catalog.css";
+import "./studio-input.css";
 import { preferredTheme } from "./theme";
 document.documentElement.dataset.theme = preferredTheme();
 const client = new QueryClient({

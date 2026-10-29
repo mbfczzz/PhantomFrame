@@ -155,25 +155,6 @@
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
 }
-.surface-tools .prompt-examples {
-  margin: 0 0 0 auto;
-  flex-shrink: 0;
-}
-.surface-count + .prompt-examples {
-  margin-left: 0;
-}
-.surface-tools .prompt-examples > summary {
-  min-height: 20px;
-  padding: 0;
-  font-size: 11px;
-  color: var(--muted);
-}
-.surface-tools .prompt-examples > div {
-  top: 27px;
-  z-index: 35;
-  border-radius: 9px;
-  background: var(--hover);
-}
 .prompt-mentions {
   position: absolute;
   left: 20px;
@@ -1064,15 +1045,6 @@
   }
   .surface-count {
     font-size: 9px;
-  }
-  .surface-tools .prompt-examples > summary {
-    font-size: 10px;
-    min-height: 18px;
-  }
-  .surface-tools .prompt-examples > div {
-    width: 265px;
-    max-width: calc(100vw - 36px);
-    right: 0;
   }
   .prompt-mentions {
     left: 12px;

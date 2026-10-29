@@ -438,7 +438,7 @@
   margin-right: auto;
 }
 .channel-model-toolbar {
-  margin-bottom: 22px;
+  margin-bottom: 8px;
 }
 .modal.channel-model-dialog {
   height: min(880px, calc(100dvh - 48px));
@@ -488,11 +488,22 @@
   flex-wrap: wrap;
   gap: 15px;
   align-items: center;
-  margin: 20px 0;
+  margin: 12px 0;
 }
 .channel-model-filters .searchbox {
   flex: 1;
   max-width: 360px;
+}
+.channel-model-filters .searchbox input {
+  flex: 1;
+  min-width: 0;
+}
+.channel-model-filters .searchbox input:focus {
+  box-shadow: none;
+}
+.channel-model-filters .searchbox > svg,
+.channel-model-filters .searchbox > button {
+  flex-shrink: 0;
 }
 .channel-model-table {
   border: 1px solid var(--border);
@@ -534,6 +545,11 @@
 }
 .channel-model-table .row-actions {
   flex-wrap: nowrap;
+  gap: 6px;
+}
+.channel-model-table .row-actions > button,
+.channel-model-table .row-actions svg {
+  flex-shrink: 0;
 }
 .channel-model-table .row-actions > .button {
   font-size: 12px;
@@ -661,6 +677,44 @@
   }
   .channel-published-links {
     align-items: flex-end;
+  }
+}
+/* Keep the catalog usable in landscape and short browser windows. The body
+   can scroll as a fallback when controls cannot all fit above the results. */
+@media (max-height: 480px) {
+  .channel-model-dialog > header {
+    padding: 10px 16px;
+  }
+  .channel-model-dialog .modal-heading-copy > p {
+    display: none;
+  }
+  .channel-model-dialog > .modal-body {
+    padding: 12px 16px;
+    overflow: auto;
+  }
+  .channel-model-dialog .channel-model-toolbar {
+    margin-bottom: 0;
+  }
+  .channel-model-dialog .channel-model-toolbar > p {
+    display: none;
+  }
+  .channel-model-dialog .channel-model-filters {
+    gap: 8px;
+    margin: 8px 0;
+  }
+  .channel-model-dialog .channel-model-filters .searchbox {
+    flex: 1 1 180px;
+    width: auto;
+  }
+  .channel-model-dialog .channel-model-results {
+    flex: 1 0 100px;
+  }
+  .channel-model-dialog > .modal-body > .modal-footer {
+    margin: 8px -16px -12px;
+    padding: 8px 16px;
+  }
+  .channel-model-dialog .modal-footer .button {
+    min-height: 36px;
   }
 }
 .model-price-action {

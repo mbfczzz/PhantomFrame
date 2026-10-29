@@ -1,100 +1,61 @@
 import assert from "node:assert/strict";
 import { spawn, execFileSync } from "node:child_process";
 import { createServer } from "node:http";
-import { mkdir, mkdtemp, readFile, writeFile } from "node:fs/promises";
+import { mkdir, mkdtemp, writeFile } from "node:fs/promises";
 import { resolve, join } from "node:path";
 import { launchBrowser } from "./browser.mjs";
 import { chooseOption } from "./ui-controls.mjs";
 
-const output = resolve("test-results/inventory-ui");
+const output = resolve("test-results/provider-instances-ui");
 await mkdir(output, { recursive: true });
-const database = "phantomframe_test_inventory_ui_" + Date.now();
+const database = "phantomframe_test_instances_ui_" + Date.now();
 const dir = await mkdtemp(join(output, "data-"));
 const base = "http://127.0.0.1:4192",
   upstream = "http://127.0.0.1:4191";
-const fixture = JSON.parse(
-  await readFile("internal/api/inventory_fixture_test.json", "utf8"),
-);
-const columns = Object.keys(fixture[0]);
-const cell = (value) => '"' + String(value ?? "").replaceAll('"', '""') + '"';
-const csv =
-  columns.map(cell).join(",") +
-  "\n" +
-  fixture
-    .map((row) => columns.map((key) => cell(row[key])).join(","))
-    .join("\n");
-const video = await readFile("server/demo-video.webm");
-const wav = Buffer.alloc(204);
-wav.write("RIFF", 0);
-wav.writeUInt32LE(196, 4);
-wav.write("WAVEfmt ", 8);
-wav.writeUInt32LE(16, 16);
-wav.writeUInt16LE(1, 20);
-wav.writeUInt16LE(1, 22);
-wav.writeUInt32LE(8000, 24);
-wav.writeUInt32LE(16000, 28);
-wav.writeUInt16LE(2, 32);
-wav.writeUInt16LE(16, 34);
-wav.write("data", 36);
-wav.writeUInt32LE(160, 40);
 let app,
   browser,
   serverOutput = "";
 const errors = [],
   checks = [],
   requests = [];
+const check = (message) => {
+  checks.push(message);
+  console.log("PASS", message);
+};
+const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 const mock = createServer(async (req, res) => {
-  const chunks = [];
-  for await (const chunk of req) chunks.push(chunk);
-  requests.push({ method: req.method, path: req.url });
+  requests.push({
+    path: req.url,
+    method: req.method,
+    key: req.headers.authorization,
+  });
   res.setHeader("Content-Type", "application/json");
-  if (req.url === "/files")
-    return res.end(
-      JSON.stringify({ url: "https://reference.invalid/input.webm" }),
-    );
-  if (req.url === "/result") {
-    res.setHeader("Content-Type", "video/webm");
-    return res.end(video);
-  }
-  if (req.url === "/v1/responses")
+  if (req.url === "/v1/models" && req.method === "GET")
     return res.end(
       JSON.stringify({
-        output_text:
-          "本地模拟的文本结果。<script>window.unwantedExecution=true</script>",
+        data: [
+          { id: "gpt-5.4-mini", type: "text" },
+          { id: "ignored-3d", type: "3d" },
+        ],
       }),
     );
-  if (req.url === "/v1/audio/speech") {
-    res.setHeader("Content-Type", "audio/wav");
-    return res.end(wav);
-  }
-  if (req.url === "/api/v3/wavespeed-ai/video-upscaler")
-    return res.end(
-      JSON.stringify({ status: "completed", output: upstream + "/result" }),
-    );
   res.statusCode = 404;
-  res.end(JSON.stringify({ message: "unexpected mock request" }));
+  res.end(JSON.stringify({ message: "Unexpected mock request" }));
 });
-const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 async function api(ctx, path, method = "GET", body) {
-  const r = await ctx.request.fetch(base + "/api" + path, {
+  const response = await ctx.request.fetch(base + "/api" + path, {
     method,
     data: body,
     headers: { "Idempotency-Key": crypto.randomUUID() },
   });
-  const data = await r.json();
-  assert.ok(r.ok(), `${method} ${path}: ${r.status()} ${JSON.stringify(data)}`);
+  const data = await response.json();
+  assert.ok(
+    response.ok(),
+    `${method} ${path}: ${response.status()} ${JSON.stringify(data)}`,
+  );
   return data;
 }
-const check = (name) => {
-  checks.push(name);
-  console.log("PASS", name);
-};
-try {
-  execFileSync("go", ["run", "./cmd/testdb", "create", database], {
-    stdio: "pipe",
-    windowsHide: true,
-  });
-  await new Promise((resolve) => mock.listen(4191, "127.0.0.1", resolve));
+async function start() {
   app = spawn(
     resolve(`bin/phantomframe${process.platform === "win32" ? ".exe" : ""}`),
     [],
@@ -111,27 +72,38 @@ try {
         REDIS_PREFIX: database + ":",
         DATA_DIR: dir,
         STORAGE_DRIVER: "local",
-        DEMO_MODE: "true",
+        DEMO_MODE: "false",
         COOKIE_SECURE: "false",
-        ADMIN_USERNAME: "inventory-ui-admin",
-        ADMIN_PASSWORD: "Inventory-ui-password-2026",
+        ADMIN_USERNAME: "instance-ui-admin",
+        ADMIN_PASSWORD: "Instance-ui-password-2026",
         ENCRYPTION_KEY: "a".repeat(64),
       },
     },
   );
   app.stdout.on("data", (d) => (serverOutput += d));
   app.stderr.on("data", (d) => (serverOutput += d));
-  let ready = false;
-  for (let i = 0; i < 100; i++) {
+  for (let i = 0; i < 150; i++) {
     try {
-      if ((await fetch(base + "/api/health")).ok) {
-        ready = true;
-        break;
-      }
+      if ((await fetch(base + "/api/health")).ok) return;
     } catch {}
     await wait(150);
   }
-  assert.ok(ready, serverOutput);
+  throw Error(serverOutput);
+}
+async function stop() {
+  if (app && app.exitCode === null) {
+    const exited = new Promise((resolve) => app.once("exit", resolve));
+    app.kill();
+    await exited;
+  }
+}
+try {
+  execFileSync("go", ["run", "./cmd/testdb", "create", database], {
+    stdio: "pipe",
+    windowsHide: true,
+  });
+  await new Promise((resolve) => mock.listen(4191, "127.0.0.1", resolve));
+  await start();
   browser = await launchBrowser();
   const ctx = await browser.newContext({
     viewport: { width: 1440, height: 1000 },
@@ -142,526 +114,286 @@ try {
       : route.abort(),
   );
   await api(ctx, "/auth/login", "POST", {
-    username: "inventory-ui-admin",
-    password: "Inventory-ui-password-2026",
+    username: "instance-ui-admin",
+    password: "Instance-ui-password-2026",
   });
   const page = await ctx.newPage();
   page.setDefaultTimeout(15000);
-  page.on("pageerror", (e) => errors.push(e.message));
-  const startupRoutes = await api(ctx, "/admin/provider-inventory");
-  assert.equal(startupRoutes.length, 249);
-  assert.equal(new Set(startupRoutes.map((r) => r.vendor)).size, 34);
-  assert.ok(
-    startupRoutes.every((r) => !r.hasKey && !r.enabled && r.type !== "3d"),
-  );
-  assert.equal(requests.length, 0);
+  page.on("pageerror", (error) => errors.push(error.message));
+  assert.equal((await api(ctx, "/admin/providers")).length, 0);
+  assert.equal((await api(ctx, "/admin/models")).length, 0);
   await page.goto(base + "/admin/providers", { waitUntil: "networkidle" });
-  const chooser = page.waitForEvent("filechooser");
-  await page.getByRole("button", { name: "导入 CSV", exact: true }).click();
-  await (
-    await chooser
-  ).setFiles({
-    name: "synthetic-provider-routes.csv",
-    mimeType: "text/csv",
-    buffer: Buffer.from(csv),
-  });
-  const channelPreview = page.getByRole("dialog", {
-    name: "导入供应商路由",
-    exact: true,
-  });
-  await channelPreview.waitFor();
-  assert.match(await channelPreview.innerText(), /249/);
-  assert.match(await channelPreview.innerText(), /34/);
-  assert.match(await channelPreview.innerText(), /包括空值/);
-  assert.equal(
-    (await api(ctx, "/admin/provider-inventory")).filter((r) => r.hasKey)
-      .length,
-    0,
-  );
-  await page.screenshot({
-    path: join(output, "channel-import-desktop.png"),
-    fullPage: false,
-    animations: "disabled",
-  });
-  await page.setViewportSize({ width: 390, height: 844 });
-  assert.equal(
-    await page.evaluate(
-      () => document.documentElement.scrollWidth > innerWidth,
-    ),
-    false,
-  );
-  await page.screenshot({
-    path: join(output, "channel-import-mobile.png"),
-    fullPage: false,
-    animations: "disabled",
-  });
-  await channelPreview
-    .getByRole("button", { name: "取消", exact: true })
-    .click();
-  await channelPreview.waitFor({ state: "hidden" });
-  assert.equal(
-    (await api(ctx, "/admin/provider-inventory")).filter((r) => r.hasKey)
-      .length,
-    0,
-  );
-  await page.setViewportSize({ width: 1440, height: 1000 });
-  check(
-    "channel page opens the CSV picker and previews import consequences; cancelling leaves keys unchanged",
-  );
-  await page.getByRole("button", { name: "新增渠道", exact: true }).click();
-  let presetDialog = page.getByRole("dialog", {
-    name: "新增供应商渠道",
-    exact: true,
-  });
-  const supplierOptions = await presetDialog
-    .locator('optgroup[label="清单供应商 · 启动时已预置"] option')
-    .allTextContents();
-  assert.equal(supplierOptions.length, 34);
-  for (const vendor of new Set(startupRoutes.map((r) => r.vendor)))
-    assert.ok(
-      supplierOptions.some((text) => text.includes(vendor + " 专用适配")),
-    );
-  const apiYiId = startupRoutes.find((r) => r.vendor === "APIYI").providerId;
-  await presetDialog
-    .getByLabel("接入协议", { exact: true })
-    .selectOption("preset:" + apiYiId);
-  assert.equal(
-    await presetDialog.getByLabel("渠道名称", { exact: true }).inputValue(),
-    "APIYI",
-  );
-  await page.screenshot({
-    path: join(output, "supplier-preset-desktop.png"),
-    fullPage: false,
-    animations: "disabled",
-  });
-  await presetDialog
-    .getByRole("link", { name: "配置 APIYI 的 API Key", exact: true })
-    .click();
-  await page.waitForURL(
-    base + "/admin/inventory?provider=" + encodeURIComponent(apiYiId),
-  );
   await page
-    .getByRole("button", { name: "路由配置", exact: true })
-    .first()
-    .click();
-  let routeDialog = page.getByRole("dialog", {
-    name: "路由配置 · APIYI",
-    exact: true,
-  });
-  assert.ok(
-    (
-      await routeDialog.getByLabel("API 地址", { exact: true }).inputValue()
-    ).startsWith("http"),
-  );
-  assert.equal(
-    await routeDialog.getByLabel("API Key", { exact: true }).inputValue(),
-    "",
-  );
-  await page.setViewportSize({ width: 390, height: 844 });
-  assert.equal(
-    await page.evaluate(
-      () => document.documentElement.scrollWidth > innerWidth,
-    ),
-    false,
-  );
-  await page.screenshot({
-    path: join(output, "supplier-route-mobile.png"),
-    fullPage: false,
-    animations: "disabled",
-  });
-  await page.setViewportSize({ width: 1440, height: 1000 });
-  await routeDialog
-    .getByLabel("API Key", { exact: true })
-    .fill("single-route-preset-test-key");
-  await routeDialog
-    .getByRole("button", { name: "保存路由", exact: true })
-    .click();
-  await routeDialog.waitFor({ state: "hidden" });
-  const keyedRoutes = await api(ctx, "/admin/provider-inventory");
-  assert.equal(keyedRoutes.filter((r) => r.hasKey).length, 1);
-  assert.ok(keyedRoutes.every((r) => !r.enabled));
-  assert.equal(requests.length, 0);
-  check(
-    "startup prepares all 34 suppliers and 249 keyless routes; every supplier is selectable and configuring one route never changes another key",
-  );
-  await page.getByRole("link", { name: "全部供应商", exact: true }).click();
-  await page.waitForURL(base + "/admin/inventory");
-  await page.getByRole("button", { name: "下一页", exact: true }).click();
-  await page.goBack();
-  await page.waitForURL(base + "/admin/inventory?provider=" + apiYiId);
-  assert.equal(
-    await page.getByRole("button", { name: "路由配置", exact: true }).count(),
-    startupRoutes.filter((r) => r.providerId === apiYiId).length,
-    "returning to a supplier must reset pagination",
-  );
-  await page
-    .getByRole("textbox", { name: "搜索供应商、模型、路由或待配置状态" })
-    .fill("no-match-fixture");
-  await page.getByRole("link", { name: "全部供应商", exact: true }).click();
-  await page.waitForURL(base + "/admin/inventory");
-  await page
-    .getByRole("link", { name: "全部供应商", exact: true })
-    .waitFor({ state: "hidden" });
-  assert.equal(
-    await page
-      .getByRole("textbox", { name: "搜索供应商、模型、路由或待配置状态" })
-      .inputValue(),
-    "",
-  );
-  assert.equal(
-    await page.getByRole("button", { name: "路由配置", exact: true }).count(),
-    24,
-  );
-  check("supplier navigation resets stale search and pagination");
-  await page.goto(base + "/admin/inventory", { waitUntil: "networkidle" });
-  await page
-    .getByRole("textbox", { name: "搜索供应商、模型、路由或待配置状态" })
-    .fill("待补地址");
-  assert.equal(
-    await page.getByRole("button", { name: "路由配置", exact: true }).count(),
-    6,
-  );
-  await page
-    .getByRole("textbox", { name: "搜索供应商、模型、路由或待配置状态" })
-    .fill("");
-  await page.locator('input[type="file"]').setInputFiles({
-    name: "synthetic-provider-routes.csv",
-    mimeType: "text/csv",
-    buffer: Buffer.from(csv),
-  });
-  const preview = page.getByRole("dialog", {
-    name: "导入供应商路由",
-    exact: true,
-  });
-  await preview.waitFor();
-  assert.match(await preview.innerText(), /249/);
-  assert.match(await preview.innerText(), /34/);
-  assert.match(await preview.innerText(), /92/);
-  assert.equal((await api(ctx, "/admin/provider-inventory")).length, 249);
-  assert.equal(
-    (await api(ctx, "/admin/provider-inventory")).filter((r) => r.hasKey)
-      .length,
-    1,
-  );
-  await preview.getByRole("button", { name: "取消", exact: true }).click();
-  await preview.waitFor({ state: "hidden" });
-  await page.goto(base + "/admin/providers", { waitUntil: "networkidle" });
-  await page.locator('input[type="file"]').setInputFiles({
-    name: "synthetic-provider-routes.csv",
-    mimeType: "text/csv",
-    buffer: Buffer.from(csv),
-  });
-  await preview.waitFor();
-  // A failed save keeps the selected file and preview available for retry.
-  await ctx.route(
-    "**/api/admin/provider-inventory/import",
-    (route) =>
-      route.fulfill({
-        status: 503,
-        contentType: "application/json",
-        body: JSON.stringify({ message: "模拟导入暂时失败，请重试" }),
-      }),
-    { times: 1 },
-  );
-  await preview.getByRole("button", { name: "确认导入", exact: true }).click();
-  await page.getByText("模拟导入暂时失败，请重试", { exact: true }).waitFor();
-  assert.equal(
-    (await api(ctx, "/admin/provider-inventory")).filter((r) => r.hasKey)
-      .length,
-    1,
-  );
-  await preview.getByRole("button", { name: "确认导入", exact: true }).click();
-  await preview.waitFor({ state: "hidden" });
-  await page
-    .getByRole("status")
-    .filter({ hasText: "导入完成：34 家供应商、249 条路由" })
+    .getByRole("heading", { name: "尚未添加供应商渠道", exact: true })
     .waitFor();
-  const routes = await api(ctx, "/admin/provider-inventory");
-  assert.equal(routes.length, 249);
-  assert.equal(new Set(routes.map((r) => r.vendor)).size, 34);
-  assert.ok(routes.every((r) => r.type !== "3d" && !r.enabled));
-  assert.equal(requests.length, 0);
   check(
-    "shared CSV import works from both pages; channel import retries safely, preserves 249 routes across 34 suppliers and excludes 3D without upstream requests",
+    "startup has no automatic supplier accounts, imported routes or models",
   );
-  await page.goto(base + "/admin/inventory", { waitUntil: "networkidle" });
-  const revealRoute = routes.find(
-    (row) => row.vendor === "APIYI" && row.hasKey,
-  );
-  await page
-    .getByRole("textbox", { name: "搜索供应商、模型、路由或待配置状态" })
-    .fill(revealRoute.id);
-  await page
-    .getByRole("button", { name: "路由配置", exact: true })
-    .first()
-    .click();
-  const editor = page.getByRole("dialog", { name: /路由配置/ });
-  assert.equal(
-    await editor.getByLabel("API Key", { exact: true }).inputValue(),
-    "",
-  );
-  const keyPath =
-    "/admin/provider-inventory/" + encodeURIComponent(revealRoute.id) + "/key";
-  await editor.getByRole("button", { name: "显示密钥", exact: true }).click();
-  await editor.getByRole("button", { name: "隐藏密钥", exact: true }).waitFor();
-  const keyInput = editor.getByLabel("API Key", { exact: true });
-  assert.equal(await keyInput.getAttribute("type"), "text");
-  assert.equal(
-    await keyInput.inputValue(),
-    fixture.find((row) => row.route_id === revealRoute.id).api_key,
-  );
-  await page.screenshot({
-    path: join(output, "route-key-desktop.png"),
-    animations: "disabled",
-  });
-  await page.setViewportSize({ width: 390, height: 844 });
-  assert.equal(
-    await page.evaluate(
-      () => document.documentElement.scrollWidth > innerWidth,
-    ),
-    false,
-  );
-  await page.screenshot({
-    path: join(output, "route-key-mobile.png"),
-    animations: "disabled",
-  });
-  await page.setViewportSize({ width: 1440, height: 1000 });
-  await editor.getByRole("button", { name: "隐藏密钥", exact: true }).click();
-  assert.equal(await keyInput.inputValue(), "");
-  assert.equal(await keyInput.getAttribute("type"), "password");
-  await editor.getByRole("button", { name: "显示密钥", exact: true }).click();
-  await editor.getByRole("button", { name: "隐藏密钥", exact: true }).waitFor();
-  await api(
-    ctx,
-    "/admin/provider-inventory/" + encodeURIComponent(revealRoute.id),
-    "PATCH",
-    { apiKey: "concurrently-rotated-fixture-key" },
-  );
-  const savedRequest = page.waitForRequest(
-    (request) =>
-      request.method() === "PATCH" &&
-      request
-        .url()
-        .endsWith("/provider-inventory/" + encodeURIComponent(revealRoute.id)),
-  );
-  await editor.getByRole("button", { name: "保存路由", exact: true }).click();
-  assert.equal((await savedRequest).postDataJSON().apiKey, "");
-  await editor.waitFor({ state: "hidden" });
-  assert.equal(
-    (await api(ctx, keyPath, "POST", {})).apiKey,
-    "concurrently-rotated-fixture-key",
-  );
-  await page.getByRole("button", { name: "路由配置", exact: true }).click();
-  assert.equal(await keyInput.inputValue(), "");
-  // Closing a slow reveal must not populate the next editor with its response.
-  await ctx.route(
-    "**/api" + keyPath,
-    async (route) => {
-      await wait(300);
-      await route.continue();
-    },
-    { times: 1 },
-  );
-  const lateResponse = page.waitForResponse((response) =>
-    response.url().endsWith(keyPath),
-  );
-  await editor.getByRole("button", { name: "显示密钥", exact: true }).click();
-  await page.keyboard.press("Escape");
-  await editor.waitFor({ state: "hidden" });
-  await page.getByRole("button", { name: "路由配置", exact: true }).click();
-  await lateResponse;
-  assert.equal(await keyInput.inputValue(), "");
-  await keyInput.fill("edited-route-fixture-key");
-  await editor.getByRole("button", { name: "显示密钥", exact: true }).click();
-  assert.equal(await keyInput.inputValue(), "edited-route-fixture-key");
-  await editor.getByRole("button", { name: "隐藏密钥", exact: true }).click();
-  assert.equal(await keyInput.inputValue(), "edited-route-fixture-key");
-  await editor.getByRole("button", { name: "保存路由", exact: true }).click();
-  await editor.waitFor({ state: "hidden" });
-  assert.equal(
-    (await api(ctx, keyPath, "POST", {})).apiKey,
-    "edited-route-fixture-key",
-  );
-  await page.getByRole("button", { name: "路由配置", exact: true }).click();
-  assert.equal(await keyInput.inputValue(), "");
-  await page.keyboard.press("Escape");
-  check(
-    "route keys reveal only on demand, hide and clear on close; viewing never overwrites concurrent rotation and explicit edits save correctly",
-  );
-  const repairRoute = routes.find(
-    (row) => row.vendor === "APIYI" && row.model === "gpt-5.4",
-  );
-  await page
-    .getByRole("textbox", { name: "搜索供应商、模型、路由或待配置状态" })
-    .fill(repairRoute.id);
-  await page.getByRole("button", { name: "更新参数规范", exact: true }).click();
-  const confirmation = page.getByRole("dialog", {
-    name: "更新参数规范",
-    exact: true,
-  });
-  await confirmation.waitFor();
-  await confirmation
-    .getByRole("button", { name: "更新并停用模型", exact: true })
-    .click();
-  await confirmation.waitFor({ state: "hidden" });
-  await page
-    .getByText("参数已更新，请核对价格后启用模型", { exact: true })
-    .waitFor();
-  const repaired = (await api(ctx, "/admin/models")).find(
-    (model) => model.id === repairRoute.modelId,
-  );
-  assert.equal(repaired.enabled, false);
-  assert.ok(
-    repaired.parameters.some((field) => field.name === "maxOutputTokens"),
-  );
-  assert.equal(requests.length, 0);
-  check(
-    "parameter repair confirms its impact, disables the model and preserves independent route management without upstream requests",
-  );
-  const wanted = [
-    { vendor: "APIYI", model: "gpt-5.4", kind: "text" },
-    { vendor: "openrouter", model: "tts-gemini-openrouter", kind: "audio" },
-    {
-      vendor: "wavespeed",
-      model: "wavespeed-ai/video-upscaler",
-      kind: "upscale",
-    },
-  ];
-  for (const target of wanted) {
-    const route = routes.find(
-      (row) => row.vendor === target.vendor && row.model === target.model,
-    );
-    assert.ok(route);
-    target.id = route.modelId;
-    await api(ctx, "/admin/provider-inventory/" + route.id, "PATCH", {
-      baseURL: upstream,
-      apiKey: "browser-local-key-" + target.kind,
-      sourceEnabled: true,
+  async function addSupplier(name, protocol, key) {
+    await page.getByRole("button", { name: "新增渠道", exact: true }).click();
+    const dialog = page.getByRole("dialog", {
+      name: "新增供应商渠道",
+      exact: true,
     });
-    await api(ctx, "/admin/prices", "POST", {
-      model_id: target.id,
-      label: "本地测试按次",
-      unit: "request",
-      credits: 0.25,
-    });
-    const model = (await api(ctx, "/admin/models")).find(
-      (m) => m.id === target.id,
-    );
-    await api(ctx, "/admin/models/" + target.id, "PUT", {
-      ...model,
-      enabled: true,
-    });
-  }
-  await api(ctx, "/admin/providers", "POST", {
-    name: "本地素材托管模拟",
-    protocol: "media-upload",
-    base_url: upstream,
-    apiKey: "local-upload-key",
-    config: { uploadPath: "/files" },
-  });
-  for (const target of wanted) {
-    await page.goto(base + "/generate", { waitUntil: "networkidle" });
-    await chooseOption(page, "生成类型", target.kind);
-    await chooseOption(page, "模型", target.id);
-    await page
-      .getByLabel("提示词", { exact: true })
-      .fill("本地模拟验证 " + target.kind);
-    if (target.kind === "upscale") {
-      await page.locator('input[type="file"]').first().setInputFiles({
-        name: "reference.webm",
-        mimeType: "video/webm",
-        buffer: video,
-      });
-      await page.locator(".reference-item").first().waitFor();
-    }
-    await page.getByRole("button", { name: "开始生成", exact: true }).click();
-    await page.waitForFunction(
-      (id) =>
-        Array.from(document.querySelectorAll(".job-card")).some(
-          (card) =>
-            card.textContent.includes("本地模拟验证 " + id) &&
-            card.querySelector(".badge.succeeded"),
-        ),
-      target.kind,
-    );
-    const card = page
-      .locator(".job-card")
-      .filter({ hasText: "本地模拟验证 " + target.kind });
-    await card.getByTitle("任务详情", { exact: true }).click();
-    const detail = page.getByRole("dialog", { name: "任务详情", exact: true });
-    await detail.waitFor();
-    if (target.kind === "text") {
-      await detail.getByText(/本地模拟的文本结果/).waitFor();
-      assert.equal(
-        await page.evaluate(() => !!window.unwantedExecution),
-        false,
-      );
-      assert.ok(await detail.locator("pre").count());
-    }
-    const outputElement = detail
-      .locator(
-        target.kind === "text"
-          ? "pre"
-          : target.kind === "audio"
-            ? "audio"
-            : "video",
-      )
-      .first();
-    await outputElement.waitFor();
-    await outputElement.evaluate((el) =>
-      el.scrollIntoView({ behavior: "instant", block: "center" }),
-    );
-    await page.screenshot({
-      path: join(output, target.kind + "-desktop.png"),
-      fullPage: false,
-      animations: "disabled",
-    });
-    await page.setViewportSize({ width: 390, height: 844 });
-    await outputElement.evaluate((el) =>
-      el.scrollIntoView({ behavior: "instant", block: "center" }),
-    );
+    await dialog.getByLabel("接入协议", { exact: true }).selectOption(protocol);
     assert.equal(
-      await page.evaluate(
-        () => document.documentElement.scrollWidth > innerWidth,
-      ),
-      false,
+      await dialog.locator('select option[value^="native:"]').count(),
+      34,
     );
-    await page.screenshot({
-      path: join(output, target.kind + "-mobile.png"),
-      fullPage: false,
-      animations: "disabled",
-    });
-    await page.keyboard.press("Escape");
-    await page.setViewportSize({ width: 1440, height: 1000 });
-    check(
-      target.kind +
-        " generation uses the isolated upstream, stores a usable result and displays its detail safely",
-    );
+    await dialog.getByLabel("渠道名称", { exact: true }).fill(name);
+    await dialog
+      .getByLabel("API 基础地址", { exact: true })
+      .fill(upstream + "/v1");
+    await dialog.getByLabel("API Key", { exact: true }).fill(key);
+    await dialog.getByRole("button", { name: "保存渠道", exact: true }).click();
+    await dialog.waitFor({ state: "hidden" });
+    await page.getByRole("heading", { name, exact: true }).waitFor();
+    return (await api(ctx, "/admin/providers")).find((p) => p.name === name);
   }
-  assert.equal((await api(ctx, "/me")).balance, 999.25);
-  await page.goto(base + "/admin/inventory", { waitUntil: "networkidle" });
-  for (const theme of ["dark", "light"]) {
-    await page.evaluate((theme) => {
-      localStorage.setItem("pf-cinematic-theme-v3", theme);
-      document.documentElement.dataset.theme = theme;
-    }, theme);
-    await page.reload({ waitUntil: "networkidle" });
-    for (const width of [1440, 390, 320]) {
-      await page.setViewportSize({ width, height: 900 });
-      assert.equal(
-        await page.evaluate(
-          () => document.documentElement.scrollWidth > innerWidth,
-        ),
-        false,
-      );
-      await page.screenshot({
-        path: join(output, `inventory-${theme}-${width}.png`),
-        fullPage: true,
-      });
-    }
-  }
+  const first = await addSupplier(
+    "APIYI 主账号",
+    "native:apiyi",
+    "supplier-ui-fixture-a",
+  );
+  const second = await addSupplier(
+    "APIYI 备用账号",
+    "native:apiyi",
+    "supplier-ui-fixture-b",
+  );
+  assert.notEqual(first.id, second.id);
+  const card = (name) =>
+    page
+      .locator(".provider-card")
+      .filter({ has: page.getByRole("heading", { name, exact: true }) });
+  await card(first.name)
+    .getByRole("button", { name: "配置 API Key", exact: true })
+    .click();
+  let edit = page.getByRole("dialog", { name: "编辑供应商渠道", exact: true });
+  assert.equal(
+    await edit.getByLabel("API Key", { exact: true }).inputValue(),
+    "",
+  );
+  await edit.getByRole("button", { name: "显示密钥", exact: true }).click();
+  await edit.getByRole("button", { name: "隐藏密钥", exact: true }).waitFor();
+  assert.equal(
+    await edit.getByLabel("API Key", { exact: true }).inputValue(),
+    "supplier-ui-fixture-a",
+  );
+  await edit.getByRole("button", { name: "隐藏密钥", exact: true }).click();
+  await edit.getByRole("button", { name: "取消", exact: true }).click();
+  await edit.waitFor({ state: "hidden" });
   check(
-    "all generated modalities charge the displayed amount once and the inventory table fits desktop and mobile themes",
+    "same protocol creates independent accounts and the outer key editor reveals only the selected account",
+  );
+  for (const p of [first, second]) {
+    await card(p.name)
+      .getByRole("button", { name: "管理模型 " + p.name, exact: true })
+      .click();
+    const catalog = page.getByRole("dialog", { name: "渠道模型", exact: true });
+    await catalog
+      .getByRole("button", { name: "拉取模型列表", exact: true })
+      .click();
+    await catalog
+      .getByRole("button", { name: "发布 gpt-5.4-mini", exact: true })
+      .waitFor();
+    const entries = await api(ctx, "/admin/providers/" + p.id + "/models");
+    assert.equal(entries.total, 1);
+    if (p.id === first.id) {
+      await catalog
+        .getByRole("button", { name: "发布 gpt-5.4-mini", exact: true })
+        .click();
+      const publish = page.getByRole("dialog", {
+        name: "发布到模型管理",
+        exact: true,
+      });
+      await publish
+        .getByLabel("站内模型 ID", { exact: true })
+        .fill("new-instance-text");
+      await publish
+        .getByRole("button", { name: "确认发布", exact: true })
+        .click();
+      await publish.waitFor({ state: "hidden" });
+    }
+    await catalog
+      .getByRole("button", { name: "关闭列表", exact: true })
+      .click();
+    await catalog.waitFor({ state: "hidden" });
+  }
+  const published = (await api(ctx, "/admin/models")).find(
+    (m) => m.id === "new-instance-text",
+  );
+  assert.equal(published.enabled, false);
+  assert.equal(published.prices.length, 0);
+  assert.equal(
+    requests.filter(
+      (r) =>
+        r.key === "Bearer supplier-ui-fixture-a" && r.path === "/v1/models",
+    ).length,
+    1,
+  );
+  assert.equal(
+    requests.filter(
+      (r) =>
+        r.key === "Bearer supplier-ui-fixture-b" && r.path === "/v1/models",
+    ).length,
+    1,
+  );
+  check(
+    "model pulls use each account key, omit 3D and publish disabled models without invented prices",
+  );
+  await api(ctx, "/admin/prices", "POST", {
+    model_id: published.id,
+    label: "review fixture",
+    unit: "request",
+    credits: 1,
+    conditions: {},
+  });
+  await api(ctx, "/admin/models/" + published.id, "PUT", {
+    ...published,
+    enabled: true,
+  });
+  await card(first.name).getByTitle("编辑渠道", { exact: true }).click();
+  const reviewEditor = page.getByRole("dialog", {
+    name: "编辑供应商渠道",
+    exact: true,
+  });
+  await reviewEditor
+    .getByLabel("API 基础地址", { exact: true })
+    .fill(upstream + "/alternate");
+  await reviewEditor
+    .getByRole("button", { name: "保存渠道", exact: true })
+    .click();
+  await reviewEditor.waitFor({ state: "hidden" });
+  const afterAddressChange = (await api(ctx, "/admin/models")).find(
+    (m) => m.id === published.id,
+  );
+  assert.equal(afterAddressChange.enabled, false);
+  assert.equal(afterAddressChange.prices.length, 1);
+  assert.equal(afterAddressChange.prices[0].credits, 1);
+  check(
+    "changing the supplier generation address disables reviewed models while preserving retail prices",
+  );
+  const manual = await addSupplier(
+    "ALI 手动账号",
+    "native:ali",
+    "supplier-ui-manual-key",
+  );
+  await card(manual.name)
+    .getByRole("button", { name: "管理模型 " + manual.name, exact: true })
+    .click();
+  const catalog = page.getByRole("dialog", { name: "渠道模型", exact: true });
+  assert.equal(
+    await catalog
+      .getByRole("button", { name: "拉取模型列表", exact: true })
+      .isDisabled(),
+    true,
+  );
+  await catalog
+    .getByRole("button", { name: "添加支持模型", exact: true })
+    .click();
+  const manualDialog = page.getByRole("dialog", {
+    name: "添加支持模型",
+    exact: true,
+  });
+  await manualDialog
+    .getByLabel("上游模型 ID", { exact: true })
+    .fill("qwen-image-2.1-pro");
+  await manualDialog
+    .getByLabel("模型名称", { exact: true })
+    .fill("手动图片模型");
+  await page.waitForFunction(() => !document.querySelector(".toast"));
+  await page.screenshot({
+    path: join(output, "manual-model-desktop.png"),
+    animations: "disabled",
+  });
+  await page.setViewportSize({ width: 390, height: 844 });
+  assert.equal(
+    await page.evaluate(
+      () => document.documentElement.scrollWidth > innerWidth,
+    ),
+    false,
+  );
+  await page.screenshot({
+    path: join(output, "manual-model-mobile.png"),
+    animations: "disabled",
+  });
+  await manualDialog
+    .getByRole("button", { name: "保存渠道模型", exact: true })
+    .click();
+  await manualDialog.waitFor({ state: "hidden" });
+  const entries = await api(ctx, "/admin/providers/" + manual.id + "/models");
+  assert.equal(entries.total, 1);
+  assert.ok(entries.items[0].parameters.length > 0);
+  await catalog.getByRole("button", { name: "关闭列表", exact: true }).click();
+  await catalog.waitFor({ state: "hidden" });
+  check(
+    "suppliers without a directory support manual model IDs and adapter-generated parameter schemas",
+  );
+  const videoAccount = await addSupplier(
+    "兼容视频测试账号",
+    "openai-video",
+    "video-account-fixture-key",
+  );
+  await card(videoAccount.name)
+    .getByRole("button", { name: "管理模型 " + videoAccount.name, exact: true })
+    .click();
+  const videoCatalog = page.getByRole("dialog", {
+    name: "渠道模型",
+    exact: true,
+  });
+  await videoCatalog
+    .getByRole("button", { name: "添加支持模型", exact: true })
+    .click();
+  const videoForm = page.getByRole("dialog", {
+    name: "添加支持模型",
+    exact: true,
+  });
+  assert.equal(
+    await videoForm.getByLabel("生成类型", { exact: true }).inputValue(),
+    "video",
+  );
+  assert.deepEqual(
+    await videoForm
+      .getByLabel("生成类型", { exact: true })
+      .locator("option")
+      .evaluateAll((options) => options.map((o) => o.value)),
+    ["image", "video"],
+  );
+  await videoForm.getByRole("button", { name: "取消", exact: true }).click();
+  await videoForm.waitFor({ state: "hidden" });
+  await videoCatalog
+    .getByRole("button", { name: "关闭列表", exact: true })
+    .click();
+  await videoCatalog.waitFor({ state: "hidden" });
+  await api(ctx, "/admin/providers/" + videoAccount.id, "DELETE");
+  await page.reload({ waitUntil: "networkidle" });
+  check(
+    "video accounts default to video and only show generation types supported by the protocol",
+  );
+  await page.waitForFunction(() => !document.querySelector(".toast"));
+  await page.screenshot({
+    path: join(output, "supplier-instances-mobile.png"),
+    animations: "disabled",
+  });
+  await page.setViewportSize({ width: 1440, height: 1000 });
+  await page.screenshot({
+    path: join(output, "supplier-instances-desktop.png"),
+    animations: "disabled",
+  });
+  await stop();
+  await start();
+  assert.equal((await api(ctx, "/admin/providers")).length, 3);
+  assert.equal((await api(ctx, "/admin/models")).length, 1);
+  const restartedModel = (await api(ctx, "/admin/models"))[0];
+  assert.equal(restartedModel.enabled, false);
+  assert.equal(restartedModel.prices[0].credits, 1);
+  assert.equal(
+    (await api(ctx, "/admin/providers/" + manual.id + "/models")).total,
+    1,
+  );
+  assert.equal(requests.length, 2);
+  check(
+    "real process restart preserves newly configured accounts and models; no generation or payment calls occur",
   );
   assert.deepEqual(errors, []);
 } catch (error) {
@@ -675,7 +407,7 @@ try {
       {
         checks,
         pageErrors: errors,
-        mockRequests: requests,
+        catalogRequests: requests.length,
         realModelCalls: 0,
         realPaymentCalls: 0,
       },
@@ -684,11 +416,7 @@ try {
     ),
   );
   await browser?.close();
-  if (app && app.exitCode === null) {
-    const exited = new Promise((resolve) => app.once("exit", resolve));
-    app.kill();
-    await exited;
-  }
+  await stop();
   await new Promise((resolve) => mock.close(resolve));
   execFileSync("go", ["run", "./cmd/testdb", "drop", database], {
     stdio: "pipe",

@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS providers (
 ) ENGINE=InnoDB;
 CREATE TABLE IF NOT EXISTS models (
  id VARCHAR(100) PRIMARY KEY, name VARCHAR(120) NOT NULL, type VARCHAR(16) NOT NULL, provider_id VARCHAR(100) NOT NULL, upstream_model VARCHAR(160) NOT NULL, description TEXT NOT NULL,
- category VARCHAR(80) NOT NULL DEFAULT '', enabled BOOLEAN NOT NULL DEFAULT TRUE, sort_order INT NOT NULL DEFAULT 0, tags JSON NOT NULL, parameters JSON NOT NULL, created_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3), FOREIGN KEY(provider_id) REFERENCES providers(id)
+ category VARCHAR(80) NOT NULL DEFAULT '', enabled BOOLEAN NOT NULL DEFAULT TRUE, sort_order INT NOT NULL DEFAULT 0, tags JSON NOT NULL, parameters JSON NOT NULL, created_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3), KEY model_provider_upstream(provider_id,upstream_model), FOREIGN KEY(provider_id) REFERENCES providers(id)
 ) ENGINE=InnoDB;
 CREATE TABLE IF NOT EXISTS inventory_routes (
  id VARCHAR(100) PRIMARY KEY, provider_id VARCHAR(100) NOT NULL, vendor VARCHAR(80) NOT NULL,
@@ -19,13 +19,16 @@ CREATE TABLE IF NOT EXISTS inventory_routes (
  updated_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3), KEY inventory_provider(provider_id),
  FOREIGN KEY(provider_id) REFERENCES providers(id)
 ) ENGINE=InnoDB;
+CREATE TABLE IF NOT EXISTS inventory_deleted_providers (
+ provider_id VARCHAR(100) PRIMARY KEY, deleted_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3)
+) ENGINE=InnoDB;
 CREATE TABLE IF NOT EXISTS prices (
  id VARCHAR(100) PRIMARY KEY, model_id VARCHAR(100) NOT NULL, label VARCHAR(80) NOT NULL, unit VARCHAR(16) NOT NULL DEFAULT 'request', credits BIGINT NOT NULL, unit_price_micros BIGINT NULL, billing_extras JSON NULL, conditions JSON NOT NULL, enabled BOOLEAN NOT NULL DEFAULT TRUE,
  FOREIGN KEY(model_id) REFERENCES models(id), CONSTRAINT prices_positive CHECK(credits>=0)
 ) ENGINE=InnoDB;
 CREATE TABLE IF NOT EXISTS provider_models (
  id VARCHAR(100) PRIMARY KEY, provider_id VARCHAR(100) NOT NULL, upstream_model VARCHAR(160) NOT NULL,
- name VARCHAR(120) NOT NULL, type VARCHAR(16) NOT NULL DEFAULT '', description TEXT NOT NULL, parameters JSON NOT NULL, origin VARCHAR(16) NOT NULL DEFAULT 'manual', api_key TEXT NULL,
+ name VARCHAR(120) NOT NULL, type VARCHAR(16) NOT NULL DEFAULT '', description TEXT NOT NULL, parameters JSON NOT NULL, origin VARCHAR(16) NOT NULL DEFAULT 'manual', api_key TEXT NULL, config JSON NULL,
  created_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3), updated_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
  UNIQUE KEY provider_model_identity(provider_id,upstream_model), FOREIGN KEY(provider_id) REFERENCES providers(id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
@@ -33,7 +36,7 @@ CREATE TABLE IF NOT EXISTS jobs (
  id VARCHAR(100) PRIMARY KEY, seq BIGINT UNSIGNED NOT NULL AUTO_INCREMENT UNIQUE, user_id VARCHAR(100) NOT NULL, model_id VARCHAR(100) NOT NULL, prompt TEXT NOT NULL, params JSON NOT NULL,
  status VARCHAR(16) NOT NULL DEFAULT 'queued', cost BIGINT NOT NULL, outputs JSON NOT NULL, error TEXT, source VARCHAR(16) NOT NULL DEFAULT 'web', idempotency_key VARCHAR(128), upstream_id VARCHAR(255), provider_snapshot JSON NOT NULL, refunded BOOLEAN NOT NULL DEFAULT FALSE,
  hidden_at DATETIME(3), request_hash CHAR(64), refund_attempts INT NOT NULL DEFAULT 0, refund_next_at DATETIME(3),
- created_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3), finished_at DATETIME(3), FOREIGN KEY(user_id) REFERENCES users(id), FOREIGN KEY(model_id) REFERENCES models(id), UNIQUE KEY job_idempotency(user_id,idempotency_key), KEY jobs_user_created(user_id,created_at), KEY jobs_status(status,seq), KEY jobs_model_finished(model_id,finished_at,seq)
+ created_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3), finished_at DATETIME(3), FOREIGN KEY(user_id) REFERENCES users(id), UNIQUE KEY job_idempotency(user_id,idempotency_key), KEY jobs_user_created(user_id,created_at), KEY jobs_status(status,seq), KEY jobs_model_finished(model_id,finished_at,seq)
 ) ENGINE=InnoDB;
 CREATE TABLE IF NOT EXISTS transactions (
  id VARCHAR(100) PRIMARY KEY, seq BIGINT UNSIGNED NOT NULL AUTO_INCREMENT UNIQUE, user_id VARCHAR(100) NOT NULL, amount BIGINT NOT NULL, balance BIGINT NOT NULL, kind VARCHAR(32) NOT NULL, description TEXT NOT NULL, job_id VARCHAR(100), created_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3), FOREIGN KEY(user_id) REFERENCES users(id), KEY transactions_user(user_id,created_at)

@@ -24,6 +24,7 @@ type Config struct {
 	RedisDB                                                       int
 	Production, Demo, CookieSecure                                bool
 	ProviderPresets                                               bool
+	SupplierInstances                                             bool
 	Key                                                           []byte
 	OSS                                                           OSSConfig
 	TrustedProxies                                                []string
@@ -39,7 +40,7 @@ func LoadConfig() (Config, error) {
 	_ = godotenv.Load()
 	c := Config{Host: env("HOST", "127.0.0.1"), Port: env("PORT", "3001"), AppURL: env("APP_URL", "http://127.0.0.1:5173"), DataDir: env("DATA_DIR", "data"), FrontendDir: env("FRONTEND_DIR", "dist"), MySQLHost: env("MYSQL_HOST", "127.0.0.1"), MySQLPort: env("MYSQL_PORT", "3307"), MySQLUser: env("MYSQL_USER", "phantomframe"), MySQLPassword: env("MYSQL_PASSWORD", ""), MySQLDatabase: env("MYSQL_DATABASE", "phantomframe"), RedisAddr: env("REDIS_ADDR", "127.0.0.1:6380"), RedisPassword: env("REDIS_PASSWORD", ""), RedisPrefix: env("REDIS_PREFIX", "phantomframe:"), Production: env("APP_ENV", env("NODE_ENV", "development")) == "production"}
 	c.RedisDB, _ = strconv.Atoi(env("REDIS_DB", "0"))
-	c.ProviderPresets = true
+	c.SupplierInstances = true
 	// Only the local reverse proxy is trusted by default. An empty value disables forwarding.
 	c.TrustedProxies = strings.FieldsFunc(env("TRUSTED_PROXIES", "127.0.0.1/32,::1/128"), func(r rune) bool { return r == ',' || r == ' ' })
 	for _, proxy := range c.TrustedProxies {

@@ -115,6 +115,11 @@ try {
     await delay(150);
   }
   assert.ok(ready, serverOutput);
+  // Legacy demo scenarios prepare explicit fixtures; production startup stays empty.
+  execFileSync("go", ["run", "./cmd/testdb", "seed-demo", database], {
+    stdio: "pipe",
+    windowsHide: true,
+  });
   browser = await launchBrowser();
   const ctx = await browser.newContext({
     viewport: { width: 1440, height: 1000 },
@@ -152,7 +157,11 @@ try {
     await form.getByLabel("API 基础地址", { exact: true }).inputValue(),
     "https://api.router.ai/v1",
   );
-  await page.screenshot({path:join(output,"startup-defaults-form.png"),fullPage:false,animations:"disabled"});
+  await page.screenshot({
+    path: join(output, "startup-defaults-form.png"),
+    fullPage: false,
+    animations: "disabled",
+  });
   await form.getByLabel("API 基础地址", { exact: true }).fill(upstream);
   await form
     .getByLabel("API Key", { exact: true })
@@ -165,7 +174,7 @@ try {
   assert.ok(provider);
   assert.ok(!JSON.stringify(provider).includes("opencrow-browser-test-key"));
   check(
-    "startup creates one OpenCrow preset with name, protocol and API host filled; only a key is missing and no upstream request occurs",
+    "explicit test fixture configures one OpenCrow account; key editing does not request upstream generation",
   );
   await page
     .getByRole("button", { name: "管理模型 OpenCrow", exact: true })

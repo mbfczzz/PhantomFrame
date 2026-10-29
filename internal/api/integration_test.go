@@ -83,7 +83,7 @@ func (c *testClient) ok(t *testing.T, method, path string, body any, status int)
 	}
 	return v
 }
-func setupIntegration(t *testing.T) *App {
+func setupIntegration(t testing.TB) *App {
 	t.Helper()
 	if os.Getenv("PF_INTEGRATION") != "1" {
 		t.Skip("set PF_INTEGRATION=1 to run against isolated MySQL and Redis data")
@@ -103,6 +103,7 @@ func setupIntegration(t *testing.T) *App {
 	// General API fixtures isolate the built-in CSV templates. Dedicated startup
 	// tests exercise ProviderPresets=true with the full production seed path.
 	c.ProviderPresets = false
+	c.SupplierInstances = false
 	c.CookieSecure = false
 	c.DataDir = t.TempDir()
 	c.FilesDir = filepath.Join(c.DataDir, "files")

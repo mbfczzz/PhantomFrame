@@ -143,6 +143,28 @@ func (a *App) Migrate() error {
 			}
 		}
 	}
+	var catalogConfigColumns int
+	if err := a.DB.QueryRow("SELECT count(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME='provider_models' AND COLUMN_NAME='config'").Scan(&catalogConfigColumns); err != nil {
+		return err
+	}
+	if catalogConfigColumns == 0 {
+		if _, err := a.DB.Exec("ALTER TABLE provider_models ADD COLUMN config JSON NULL"); err != nil {
+			if duplicate, ok := err.(*mysql.MySQLError); !ok || duplicate.Number != 1060 {
+				return err
+			}
+		}
+	}
+	var providerModelIndexes int
+	if err := a.DB.QueryRow("SELECT count(*) FROM information_schema.STATISTICS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME='models' AND INDEX_NAME='model_provider_upstream'").Scan(&providerModelIndexes); err != nil {
+		return err
+	}
+	if providerModelIndexes == 0 {
+		if _, err := a.DB.Exec("ALTER TABLE models ADD INDEX model_provider_upstream(provider_id,upstream_model)"); err != nil {
+			if duplicate, ok := err.(*mysql.MySQLError); !ok || duplicate.Number != 1061 {
+				return err
+			}
+		}
+	}
 	var modelStatusIndexes int
 	if err := a.DB.QueryRow("SELECT count(*) FROM information_schema.STATISTICS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME='jobs' AND INDEX_NAME='jobs_model_finished'").Scan(&modelStatusIndexes); err != nil {
 		return err
@@ -200,7 +222,10 @@ func (a *App) Migrate() error {
 	if _, err := a.DB.Exec("INSERT IGNORE INTO job_cleanups(job_id) SELECT DISTINCT j.id FROM jobs j JOIN assets a ON a.job_id=j.id WHERE j.status IN ('failed','refund_pending')"); err != nil {
 		return err
 	}
-	return a.backfillUpstreamCalls()
+	if err := a.backfillUpstreamCalls(); err != nil {
+		return err
+	}
+	return a.migrateProviderInstances()
 }
 func must(e error) {
 	if e != nil {
@@ -273,6 +298,27 @@ func (a *App) Tx(f func(Store)) {
 	must(e)
 	defer tx.Rollback()
 	f(Store{tx})
+	must(tx.Commit())
+}
+
+// Used by cancellable, bounded catalog operations. Existing wallet transactions
+// keep their durable completion semantics even if an HTTP caller disconnects.
+type contextBoundQueries struct {
+	Querier
+	ctx context.Context
+}
+
+func (q contextBoundQueries) QueryContext(_ context.Context, query string, args ...any) (*sql.Rows, error) {
+	return q.Querier.QueryContext(q.ctx, query, args...)
+}
+func (q contextBoundQueries) ExecContext(_ context.Context, query string, args ...any) (sql.Result, error) {
+	return q.Querier.ExecContext(q.ctx, query, args...)
+}
+func (a *App) TxContext(ctx context.Context, f func(Store)) {
+	tx, err := a.DB.BeginTx(ctx, &sql.TxOptions{Isolation: sql.LevelReadCommitted})
+	must(err)
+	defer tx.Rollback()
+	f(Store{contextBoundQueries{Querier: tx, ctx: ctx}})
 	must(tx.Commit())
 }
 func str(v any) string {
@@ -363,25 +409,81 @@ func publicUser(u Row) Row {
 }
 func (s Store) ModelView(m Row) Row {
 	p := s.One("SELECT name,protocol FROM providers WHERE id=?", m["provider_id"])
+	var route Row
+	if m["type"] == "image" && str(m["inventory_route_id"]) != "" {
+		route = s.One("SELECT model FROM inventory_routes WHERE id=?", m["inventory_route_id"])
+	}
+	return modelViewData(m, p, s.All("SELECT * FROM prices WHERE model_id=? ORDER BY credits,id", m["id"]), route)
+}
+
+func sqlMarks(n int) string { return strings.TrimSuffix(strings.Repeat("?,", n), ",") }
+
+func (s Store) ModelViews(models []Row) []Row {
+	views := []Row{}
+	if len(models) == 0 {
+		return views
+	}
+	modelIDs, providerIDs, routeIDs := []any{}, []any{}, []any{}
+	seenModels, seenProviders, seenRoutes := map[string]bool{}, map[string]bool{}, map[string]bool{}
+	for _, m := range models {
+		if mid := str(m["id"]); !seenModels[mid] {
+			modelIDs = append(modelIDs, mid)
+			seenModels[mid] = true
+		}
+		pid, rid := str(m["provider_id"]), str(m["inventory_route_id"])
+		if !seenProviders[pid] {
+			providerIDs = append(providerIDs, pid)
+			seenProviders[pid] = true
+		}
+		if m["type"] == "image" && rid != "" && !seenRoutes[rid] {
+			routeIDs = append(routeIDs, rid)
+			seenRoutes[rid] = true
+		}
+	}
+	providers, routes, prices := map[string]Row{}, map[string]Row{}, map[string][]Row{}
+	for start := 0; start < len(providerIDs); start += 1000 {
+		batch := providerIDs[start:min(start+1000, len(providerIDs))]
+		for _, p := range s.All("SELECT id,name,protocol FROM providers WHERE id IN ("+sqlMarks(len(batch))+")", batch...) {
+			providers[str(p["id"])] = p
+		}
+	}
+	for start := 0; start < len(modelIDs); start += 1000 {
+		batch := modelIDs[start:min(start+1000, len(modelIDs))]
+		for _, p := range s.All("SELECT * FROM prices WHERE model_id IN ("+sqlMarks(len(batch))+") ORDER BY credits,id", batch...) {
+			mid := str(p["model_id"])
+			prices[mid] = append(prices[mid], p)
+		}
+	}
+	for start := 0; start < len(routeIDs); start += 1000 {
+		batch := routeIDs[start:min(start+1000, len(routeIDs))]
+		for _, r := range s.All("SELECT id,model FROM inventory_routes WHERE id IN ("+sqlMarks(len(batch))+")", batch...) {
+			routes[str(r["id"])] = r
+		}
+	}
+	for _, m := range models {
+		views = append(views, modelViewData(m, providers[str(m["provider_id"])], prices[str(m["id"])], routes[str(m["inventory_route_id"])]))
+	}
+	return views
+}
+
+func modelViewData(m, p Row, priceRows []Row, route Row) Row {
 	v := clone(m)
 	v["enabled"] = truth(m["enabled"])
 	v["tags"] = array(m["tags"])
 	v["parameters"] = imageRequestParameters(str(m["type"]), array(m["parameters"]))
 	if m["type"] == "image" {
 		v["maxOutputsPerRequest"] = imageOutputLimit(str(m["upstream_model"]))
-		if str(m["inventory_route_id"]) != "" {
-			if route := s.One("SELECT model FROM inventory_routes WHERE id=?", m["inventory_route_id"]); route != nil {
-				v["maxOutputsPerRequest"] = max(imageOutputLimit(str(m["upstream_model"])), imageOutputLimit(str(route["model"])))
-			}
+		if route != nil {
+			v["maxOutputsPerRequest"] = max(imageOutputLimit(str(m["upstream_model"])), imageOutputLimit(str(route["model"])))
 		}
 		v["description"] = imageRequestDescription("image", str(m["upstream_model"]), str(m["description"]))
 	}
 	v["providerName"] = p["name"]
 	v["demo"] = p["protocol"] == "demo"
-	prices := s.All("SELECT * FROM prices WHERE model_id=? ORDER BY credits", m["id"])
-	v["pricingVersion"] = pricingVersion(prices)
-	for _, p := range prices {
-		priceView(p)
+	v["pricingVersion"] = pricingVersion(priceRows)
+	prices := []Row{}
+	for _, p := range priceRows {
+		prices = append(prices, priceView(clone(p)))
 	}
 	v["prices"] = prices
 	return v
@@ -433,7 +535,7 @@ func (a *App) Seed() {
 		for k, v := range map[string]string{"siteName": "PhantomFrame", "subtitle": "让每一个想法，成为独特的一帧。", "registrationEnabled": "true", "welcomeCredits": welcome, "support": "", "announcement": "", "purchaseUrl": ""} {
 			s.Exec("INSERT IGNORE INTO settings(`key`,value) VALUES(?,?)", k, v)
 		}
-		if !a.Config.Demo || s.One("SELECT id FROM providers WHERE protocol<>'opencrow' OR api_key<>'' LIMIT 1") != nil || s.One("SELECT id FROM models LIMIT 1") != nil {
+		if a.Config.SupplierInstances || !a.Config.Demo || s.One("SELECT id FROM providers WHERE protocol<>'opencrow' OR api_key<>'' LIMIT 1") != nil || s.One("SELECT id FROM models LIMIT 1") != nil {
 			return
 		}
 		s.Exec("INSERT INTO providers(id,name,protocol,api_key,config,enabled) VALUES('demo',?,'demo','','{}',?)", "本地演示通道", a.Config.Demo)
@@ -494,8 +596,10 @@ func (a *App) Seed() {
 		}
 	})
 	a.backfillProviderModels()
-	a.ensureOpenCrowDefault()
-	if a.Config.ProviderPresets {
+	if !a.Config.SupplierInstances {
+		a.ensureOpenCrowDefault()
+	}
+	if a.Config.ProviderPresets && !a.Config.SupplierInstances {
 		a.ensureProviderPresets()
 	}
 }

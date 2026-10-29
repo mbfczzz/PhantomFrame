@@ -1,10 +1,6 @@
-import ProviderInventory from "./ProviderInventory";
 import { generationLabels, generationOptions } from "../lib";
 import { useMoneyMutation } from "../components/MoneyRecovery";
-import {
-  ProviderInventoryImport,
-  ProviderInventoryImportResult,
-} from "../components/ProviderInventoryImport";
+
 import { useState, useEffect, useRef, useId } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import {
@@ -39,6 +35,8 @@ import {
   ArrowUpRight,
   KeyRound,
   ChevronDown,
+  Eye,
+  EyeOff,
   LifeBuoy,
 } from "lucide-react";
 import {
@@ -93,7 +91,6 @@ const sections = [
   ["overview", "数据概览", LayoutDashboard],
   ["models", "模型管理", Boxes],
   ["providers", "渠道管理", Cable],
-  ["inventory", "供应商路由", Cable],
   ["users", "用户管理", Users],
   ["codes", "兑换码管理", Ticket],
   ["tickets", "工单管理", LifeBuoy],
@@ -111,6 +108,7 @@ export default function Admin() {
   const active = location.pathname.split("/")[2] || "overview";
   if (isLoading) return <Loading />;
   if (user?.role !== "admin") return <Navigate to="/generate" replace />;
+  if (active === "inventory") return <Navigate to="/admin/providers" replace />;
   if (active === "prices") return <Navigate to="/admin/models" replace />;
   if (!sections.some(([key]) => key === active))
     return <Navigate to="/admin/overview" replace />;
@@ -142,8 +140,6 @@ export default function Admin() {
         <Overview />
       ) : active === "models" ? (
         <ModelAdmin />
-      ) : active === "inventory" ? (
-        <ProviderInventory />
       ) : active === "providers" ? (
         <ProviderAdmin />
       ) : active === "users" ? (
@@ -1406,7 +1402,6 @@ function ProviderAdmin() {
     useApi<RecordData[]>("/admin/providers");
   const [edit, setEdit] = useState<RecordData | null>(null);
   const [catalog, setCatalog] = useState<RecordData | null>(null);
-  const [importResult, setImportResult] = useState<RecordData | null>(null);
   const [status, setStatus] = useState("all");
   const enabledCount = (data || []).filter(
     (provider) => provider.enabled,
@@ -1419,23 +1414,12 @@ function ProviderAdmin() {
   const { act, busy } = useAction();
   const toast = useToast();
   const refresh = useRefresh();
-  const protocols: RecordData = {
-    inventory: "供应商清单 · 独立路由",
-    demo: "本地演示",
-    "openai-image": "OpenAI 兼容 · 图片",
-    "openai-video": "OpenAI 兼容 · 视频",
-    "json-async": "通用 JSON · 异步",
-    openvideo: "OpenVideo · 图片/视频",
-    suda: "Suda · 图片/视频",
-    modelhub: "ModelHub · 图片/视频",
-    gway: "Gway · 图片/视频",
-    catcoder: "Catcoder · 图片/视频",
-    wxart: "WXArt · 图片/视频",
-    rolldek: "Rolldek · 图片/视频",
-    maitoken: "Mai-Token · 图片/视频",
-    opencrow: "OpenCrow · 图片/视频/文本/语音",
-    "media-upload": "公共素材上传服务",
-  };
+  const { data: protocolOptions } = useApi<RecordData[]>(
+    "/admin/provider-protocols",
+  );
+  const protocols: RecordData = Object.fromEntries(
+    (protocolOptions || []).map((p) => [p.id, p.name]),
+  );
   return (
     <section className="panel">
       <div className="section-header">
@@ -1444,14 +1428,12 @@ function ProviderAdmin() {
           <p className="muted">配置渠道支持的模型，按需发布到模型管理。</p>
         </div>
         <div className="row-actions">
-          <ProviderInventoryImport onImported={setImportResult} />
           <button className="button primary" onClick={() => setEdit({})}>
             <Plus size={16} />
             新增渠道
           </button>
         </div>
       </div>
-      <ProviderInventoryImportResult result={importResult} />
       {!isLoading && !error && (
         <Tabs
           value={status}
@@ -1509,7 +1491,7 @@ function ProviderAdmin() {
                         <small className="provider-default-label">默认</small>
                       )}
                     </h3>
-                    <small>{protocols[p.protocol]}</small>
+                    <small>{protocols[p.protocol] || p.protocol}</small>
                   </div>
                   <Badge status={p.enabled ? "active" : "disabled"} />
                 </header>
@@ -1548,7 +1530,7 @@ function ProviderAdmin() {
                   </strong>
                 </div>
                 <footer>
-                  {p.protocol === "opencrow" && !p.hasKey && (
+                  {p.protocol !== "demo" && (
                     <button
                       className="button primary"
                       onClick={() => setEdit(p)}
@@ -1557,25 +1539,16 @@ function ProviderAdmin() {
                       配置 API Key
                     </button>
                   )}
-                  {p.protocol === "inventory" && (
-                    <Link
+                  {p.protocol !== "media-upload" && (
+                    <button
                       className="button primary"
-                      to={`/admin/inventory?provider=${encodeURIComponent(p.id)}`}
+                      aria-label={"管理模型 " + p.name}
+                      onClick={() => setCatalog(p)}
                     >
-                      配置路由与 API Key
-                    </Link>
+                      <Boxes size={15} />
+                      管理模型
+                    </button>
                   )}
-                  {p.protocol !== "media-upload" &&
-                    p.protocol !== "inventory" && (
-                      <button
-                        className="button primary"
-                        aria-label={"管理模型 " + p.name}
-                        onClick={() => setCatalog(p)}
-                      >
-                        <Boxes size={15} />
-                        管理模型
-                      </button>
-                    )}
                   <button
                     className="button"
                     disabled={busy}
@@ -1605,10 +1578,13 @@ function ProviderAdmin() {
                   <button
                     className="icon-button danger"
                     title="删除渠道"
+                    disabled={busy}
                     onClick={async () => {
                       if (
                         await confirm(
-                          "确定删除此供应商渠道及其未发布的模型列表？",
+                          p.protocol.startsWith("native:")
+                            ? `确定删除「${p.name}」及其模型目录、已发布模型、密钥和价格？有生成任务记录的供应商不能删除，请使用停用功能。`
+                            : "确定删除此供应商渠道及其未发布的模型列表？",
                           {
                             title: "删除供应商",
                             confirmLabel: "删除渠道",
@@ -1616,10 +1592,20 @@ function ProviderAdmin() {
                         )
                       )
                         act(async () => {
-                          await api("/admin/providers/" + p.id, {
-                            method: "DELETE",
-                          });
-                          refresh("/admin/providers");
+                          await api(
+                            "/admin/providers/" + encodeURIComponent(p.id),
+                            {
+                              method: "DELETE",
+                            },
+                          );
+                          refresh(
+                            "/admin/providers",
+                            "/admin/provider-inventory",
+                            "/admin/models",
+                            "/admin/prices",
+                            "/models",
+                            "/pricing/quote",
+                          );
                         }, "渠道已删除");
                     }}
                   >
@@ -1647,250 +1633,219 @@ function ProviderForm({
   initial: RecordData;
   onClose: () => void;
 }) {
+  const {
+    data: protocols,
+    isLoading,
+    error,
+    refetch,
+  } = useApi<RecordData[]>("/admin/provider-protocols");
   const [form, setForm] = useState<RecordData>({
     name: "",
     protocol: "",
     base_url: "",
-    apiKey: "",
     enabled: true,
-    config: {},
     ...initial,
   });
   const [config, setConfig] = useState(
     JSON.stringify(initial.config || {}, null, 2),
   );
-  const { data: allProviders } = useApi<RecordData[]>("/admin/providers");
-  const presets = (allProviders || [])
-    .filter((p) => p.protocol === "inventory")
-    .sort((a, b) => a.name.localeCompare(b.name));
-  const [preset, setPreset] = useState<RecordData | null>(null);
+  const [modelsPath, setModelsPath] = useState(initial.modelsPath || "");
+  const [draftKey, setDraftKey] = useState("");
+  const [keyEdited, setKeyEdited] = useState(false);
+  const [savedKey, setSavedKey] = useState<string | null>(null);
+  const [visible, setVisible] = useState(false);
   const { act, busy } = useAction();
   const refresh = useRefresh();
   const set = (k: string, v: any) => setForm((f) => ({ ...f, [k]: v }));
+  const protocol = protocols?.find((p) => p.id === form.protocol);
   return (
     <Modal
       title={initial.id ? "编辑供应商渠道" : "新增供应商渠道"}
-      description="配置上游服务地址、协议与访问凭证。"
+      description="同一接入协议可创建多个供应商，各自管理地址、密钥和模型列表。"
       icon={<Cable size={20} />}
       onClose={onClose}
       wide
     >
-      <Form
-        onSubmit={() => {
-          if (preset) return;
-          return act(async () => {
-            await post(
-              "/admin/providers" + (initial.id ? "/" + initial.id : ""),
-              { ...form, config: JSON.parse(config) },
-              initial.id ? "PUT" : "POST",
-            );
-            refresh("/admin/providers", "/admin/models", "/models");
-            onClose();
-          }, "渠道已保存");
-        }}
-      >
-        <div className="two-columns">
-          <Field label="渠道名称">
-            <input
-              value={preset?.name || form.name}
-              readOnly={!!preset}
-              onChange={(e) => set("name", e.target.value)}
-              required
-            />
-          </Field>
-          <Field label="接入协议">
-            <select
-              value={preset ? `preset:${preset.id}` : form.protocol}
-              disabled={initial.protocol === "inventory"}
-              onChange={(e) => {
-                const protocol = e.target.value;
-                if (protocol.startsWith("preset:")) {
-                  setPreset(
-                    presets.find((p) => p.id === protocol.slice(7)) || null,
-                  );
-                  return;
-                }
-                setPreset(null);
-                setForm((current) => ({
-                  ...current,
-                  protocol,
-                  ...(protocol === "opencrow"
-                    ? {
-                        name: current.name || "OpenCrow",
-                        base_url:
-                          current.base_url || "https://api.router.ai/v1",
-                      }
-                    : {}),
-                }));
-              }}
+      {isLoading ? (
+        <Loading />
+      ) : error ? (
+        <ErrorState error={error} retry={refetch} />
+      ) : (
+        <Form
+          onSubmit={() =>
+            act(async () => {
+              const settings = JSON.parse(config);
+              await post(
+                "/admin/providers" +
+                  (initial.id ? "/" + encodeURIComponent(initial.id) : ""),
+                {
+                  ...form,
+                  apiKey: keyEdited ? draftKey : "",
+                  config: { ...settings, modelsPath },
+                },
+                initial.id ? "PUT" : "POST",
+              );
+              refresh("/admin/providers", "/admin/models", "/models");
+              onClose();
+            }, "供应商已保存")
+          }
+        >
+          <div className="two-columns">
+            <Field
+              label="渠道名称"
+              hint="建议注明用途或账号，例如 APIYI 主账号、APIYI 备用账号。"
             >
-              {!initial.id && (
-                <option value="" disabled>
-                  选择供应商或接入协议
-                </option>
-              )}
-              {!initial.id && presets.length > 0 && (
-                <optgroup label="清单供应商 · 启动时已预置">
-                  {presets.map((p) => (
-                    <option key={p.id} value={`preset:${p.id}`}>
-                      {p.name} 专用适配（已预置）
-                    </option>
-                  ))}
-                </optgroup>
-              )}
-              {initial.protocol === "inventory" && (
-                <option value="inventory">
-                  {initial.name} 专用适配 · 独立路由
-                </option>
-              )}
-              <option value="openai-image">OpenAI 兼容图片接口</option>
-              <option value="openai-video">OpenAI 兼容视频接口</option>
-              <option value="json-async">通用 JSON 异步任务</option>
-              <option value="openvideo">OpenVideo 专用适配</option>
-              <option value="suda">Suda 速达专用适配</option>
-              <option value="modelhub">ModelHub 专用适配</option>
-              <option value="gway">Gway 专用适配</option>
-              <option value="catcoder">Catcoder 专用适配</option>
-              <option value="wxart">WXArt 专用适配</option>
-              <option value="rolldek">Rolldek 专用适配</option>
-              <option value="maitoken">Mai-Token 专用适配</option>
-              <option value="opencrow">OpenCrow 专用适配</option>
-              <option value="media-upload">公共素材上传服务</option>
-              <option value="demo">本地演示</option>
-            </select>
-          </Field>
-        </div>
-        {preset ? (
-          <div className="dialog-info">
-            <div>
-              <p>
-                {preset.name} 已自动添加，包含 {preset.supportedCount || 0}{" "}
-                条路由。已有地址、协议和上游模型映射均已预置。
-              </p>
-              <p>
-                不同路由可能使用不同密钥，请进入此供应商的路由页填写 API
-                Key，无需重复新增渠道。
-              </p>
-              <Link
-                className="button primary"
-                to={`/admin/inventory?provider=${encodeURIComponent(preset.id)}`}
-                onClick={onClose}
-              >
-                配置 {preset.name} 的 API Key
-              </Link>
-            </div>
-          </div>
-        ) : (
-          <>
-            {form.protocol === "inventory" ? (
-              <p className="muted">
-                此供应商的地址与密钥按路由保存。
-                <Link
-                  to={`/admin/inventory?provider=${encodeURIComponent(initial.id)}`}
-                  onClick={onClose}
-                >
-                  前往配置路由与 API Key
-                </Link>
-              </p>
-            ) : (
-              <>
-                <Field
-                  label="API 基础地址"
-                  hint={
-                    form.protocol === "opencrow"
-                      ? "OpenCrow 文档地址：https://api.router.ai/v1。保存后同步模型，确认本站价格再启用。"
-                      : "填写到版本前缀，例如 https://your-provider.com/v1"
-                  }
-                >
-                  <input
-                    type={form.protocol === "demo" ? "text" : "url"}
-                    value={form.base_url}
-                    onChange={(e) => set("base_url", e.target.value)}
-                    required={form.protocol !== "demo"}
-                    placeholder="https://your-provider.com/v1"
-                  />
-                </Field>
-                <Field
-                  label="API Key"
-                  hint={
-                    initial.hasKey
-                      ? "已配置密钥；留空保留原密钥。"
-                      : "密钥只会保存到服务端，不会返回到前端。"
-                  }
-                >
-                  <input
-                    type="password"
-                    value={form.apiKey}
-                    autoFocus={form.protocol === "opencrow" && !initial.hasKey}
-                    onChange={(e) => set("apiKey", e.target.value)}
-                    placeholder={
-                      initial.hasKey
-                        ? "••••••••（留空不修改）"
-                        : "输入供应商 API Key"
-                    }
-                    autoComplete="new-password"
-                  />
-                </Field>
-              </>
-            )}
-            <Field label="状态">
+              <input
+                value={form.name}
+                onChange={(e) => set("name", e.target.value)}
+                required
+                maxLength={80}
+              />
+            </Field>
+            <Field
+              label="接入协议"
+              hint={
+                initial.id
+                  ? "协议创建后不可修改，使用其他协议请新增供应商。"
+                  : undefined
+              }
+            >
               <select
-                value={String(form.enabled)}
-                onChange={(e) => set("enabled", e.target.value === "true")}
+                value={form.protocol}
+                disabled={!!initial.id}
+                required
+                onChange={(e) => {
+                  const next = protocols?.find((p) => p.id === e.target.value);
+                  setForm((f) => ({
+                    ...f,
+                    protocol: e.target.value,
+                    base_url: next?.baseURL || "",
+                    name: f.name || next?.name.replace(" 专用协议", "") || "",
+                  }));
+                  setModelsPath(next?.modelsPath || "");
+                  setConfig("{}");
+                  setSavedKey(null);
+                  setVisible(false);
+                  setDraftKey("");
+                  setKeyEdited(false);
+                }}
               >
-                <option value="true">启用</option>
-                <option value="false">停用</option>
+                <option value="" disabled>
+                  选择接入协议
+                </option>
+                {protocols?.map((p) => (
+                  <option key={p.id} value={p.id}>
+                    {p.name}
+                  </option>
+                ))}
               </select>
             </Field>
-            {form.protocol !== "inventory" && (
-              <details>
-                <summary>高级接口配置</summary>
-                <p className="muted small">
-                  通用协议可配置 submitPath、statusPath（包含 {`{id}`}
-                  ）、idPath、statusField、outputPath、pollInterval。输出路径使用点分隔。
-                </p>
-                <JsonEditor value={config} onChange={setConfig} />
+          </div>
+          <Field
+            label="API 基础地址"
+            hint="填写此账号实际使用的服务地址；更换地址会停用关联模型，核对后请重新启用。"
+          >
+            <input
+              type={form.protocol === "demo" ? "text" : "url"}
+              value={form.base_url}
+              onChange={(e) => set("base_url", e.target.value)}
+              required={form.protocol !== "demo"}
+              maxLength={500}
+            />
+          </Field>
+          {form.protocol !== "demo" && (
+            <Field
+              label="API Key"
+              hint="该供应商下的模型默认使用此 Key。留空保存保留现有密钥。"
+            >
+              <div className="input-icon">
+                <input
+                  type={visible ? "text" : "password"}
+                  autoComplete="new-password"
+                  spellCheck={false}
+                  value={keyEdited ? draftKey : (savedKey ?? "")}
+                  disabled={busy}
+                  onChange={(e) => {
+                    setKeyEdited(true);
+                    setDraftKey(e.target.value);
+                  }}
+                  placeholder={
+                    initial.hasKey
+                      ? "已配置，点击眼睛查看"
+                      : "填写此供应商账号的密钥"
+                  }
+                />
                 <button
                   type="button"
-                  className="button"
-                  onClick={() =>
-                    setConfig(
-                      JSON.stringify(
-                        {
-                          submitPath: "/generate/video",
-                          statusPath: "/tasks/{id}",
-                          idPath: "data.task_id",
-                          statusField: "data.status",
-                          outputPath: "data.result_urls",
-                          pollInterval: 3000,
-                        },
-                        null,
-                        2,
-                      ),
-                    )
-                  }
+                  className="icon-button"
+                  disabled={busy}
+                  aria-label={visible ? "隐藏密钥" : "显示密钥"}
+                  onClick={() => {
+                    if (visible) {
+                      setVisible(false);
+                      setSavedKey(null);
+                    } else if (keyEdited || !initial.hasKey) {
+                      setVisible(true);
+                    } else
+                      void act(async () => {
+                        const value = await post<{ apiKey: string }>(
+                          `/admin/providers/${encodeURIComponent(initial.id)}/key`,
+                        );
+                        setSavedKey(value.apiKey);
+                        setVisible(true);
+                      });
+                  }}
                 >
-                  填入通用协议示例
-                </button>
-              </details>
-            )}
-            <div className="modal-footer">
-              <span />
-              <div>
-                <button className="button" type="button" onClick={onClose}>
-                  取消
-                </button>
-                <button
-                  className="button primary"
-                  disabled={busy || !form.protocol}
-                >
-                  保存渠道
+                  {visible ? <EyeOff size={17} /> : <Eye size={17} />}
                 </button>
               </div>
+            </Field>
+          )}
+          {form.protocol !== "demo" && form.protocol !== "media-upload" && (
+            <Field
+              label="模型列表接口路径"
+              hint="用于 GET 拉取模型目录，例如 /v1/models。不提供目录时留空，保存后手动添加模型。"
+            >
+              <input
+                value={modelsPath}
+                onChange={(e) => setModelsPath(e.target.value)}
+                maxLength={500}
+                placeholder={protocol?.modelsPath || "留空表示手动添加模型"}
+              />
+            </Field>
+          )}
+          <Field label="状态">
+            <select
+              value={String(form.enabled)}
+              onChange={(e) => set("enabled", e.target.value === "true")}
+            >
+              <option value="true">启用</option>
+              <option value="false">停用</option>
+            </select>
+          </Field>
+          <details>
+            <summary>高级接口配置</summary>
+            <p className="muted small">
+              仅在上游需要自定义接口路径或协议选项时填写。修改调用配置会停用关联模型，已有价格保留。
+            </p>
+            <JsonEditor value={config} onChange={setConfig} />
+          </details>
+          <div className="modal-footer">
+            <span />
+            <div>
+              <button type="button" className="button" onClick={onClose}>
+                取消
+              </button>
+              <button
+                className="button primary"
+                disabled={busy || !form.protocol}
+              >
+                保存渠道
+              </button>
             </div>
-          </>
-        )}
-      </Form>
+          </div>
+        </Form>
+      )}
     </Modal>
   );
 }

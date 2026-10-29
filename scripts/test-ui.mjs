@@ -71,6 +71,11 @@ try {
     windowsHide: true,
   });
   await start();
+  // Legacy demo scenarios prepare explicit fixtures; production startup stays empty.
+  execFileSync("go", ["run", "./cmd/testdb", "seed-demo", database], {
+    stdio: "pipe",
+    windowsHide: true,
+  });
   browser = await launchBrowser();
   const context = await browser.newContext({
     viewport: { width: 1440, height: 1000 },

@@ -222,6 +222,24 @@ func (a *App) vendorUpload(ctx context.Context, provider Row, key string, asset 
 	}
 	return address, nil
 }
+
+// Capture the selected uploader with the generation account. An explicit null
+// records that no uploader was configured; later accounts must not be borrowed.
+func snapshotUploadProvider(s Store, provider Row) Row {
+	result := clone(provider)
+	if _, captured := result["upload_provider_snapshot"]; captured || provider["protocol"] == "suda" || provider["protocol"] == "gway" || provider["protocol"] == "demo" {
+		return result
+	}
+	var uploader Row
+	if uploadID := str(object(provider["config"])["uploadProviderId"]); uploadID != "" {
+		uploader = s.One("SELECT * FROM providers WHERE id=? AND protocol='media-upload' AND enabled=1", uploadID)
+	} else {
+		uploader = s.One("SELECT * FROM providers WHERE protocol='media-upload' AND enabled=1 ORDER BY created_at,id LIMIT 1")
+	}
+	result["upload_provider_snapshot"] = uploader
+	return result
+}
+
 func (a *App) hostedReferences(ctx context.Context, provider Row, key string, refs []Row) (map[string][]string, error) {
 	result := map[string][]string{"image": {}, "video": {}, "audio": {}}
 	if len(refs) == 0 {
@@ -251,12 +269,14 @@ func (a *App) hostedReferences(ctx context.Context, provider Row, key string, re
 	uploadKey := key
 	if provider["protocol"] != "suda" && provider["protocol"] != "gway" {
 		uploadID := str(object(provider["config"])["uploadProviderId"])
-		if uploadID != "" {
+		if captured, ok := provider["upload_provider_snapshot"]; ok {
+			uploader = object(captured)
+		} else if uploadID != "" {
 			uploader = a.Store.One("SELECT * FROM providers WHERE id=? AND protocol='media-upload' AND enabled=1", uploadID)
 		} else {
-			uploader = a.Store.One("SELECT * FROM providers WHERE protocol='media-upload' AND enabled=1 ORDER BY created_at LIMIT 1")
+			uploader = a.Store.One("SELECT * FROM providers WHERE protocol='media-upload' AND enabled=1 ORDER BY created_at,id LIMIT 1")
 		}
-		if uploader == nil {
+		if len(uploader) == 0 {
 			return nil, fmt.Errorf("供应商此接口需要公网素材，请先配置公共素材上传服务")
 		}
 		var e error

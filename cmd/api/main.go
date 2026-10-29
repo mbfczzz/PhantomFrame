@@ -26,7 +26,7 @@ func main() {
 		log.Fatal(err)
 	}
 	app.Seed()
-	if path := os.Getenv("PROVIDER_INVENTORY_FILE"); path != "" {
+	if path := os.Getenv("PROVIDER_INVENTORY_FILE"); path != "" && !config.SupplierInstances {
 		result, err := app.ImportProviderInventoryFile(path)
 		if err != nil {
 			log.Fatal(err)

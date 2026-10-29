@@ -16,20 +16,43 @@ import (
 )
 
 func providerView(p Row) Row {
-	return Row{"id": p["id"], "name": p["name"], "protocol": p["protocol"], "base_url": p["base_url"], "hasKey": str(p["api_key"]) != "", "enabled": truth(p["enabled"]), "config": object(p["config"]), "createdAt": p["created_at"], "supportedCount": num(p["supported_count"]), "publishedCount": num(p["published_count"])}
+	return Row{"id": p["id"], "name": p["name"], "protocol": p["protocol"], "base_url": p["base_url"], "hasKey": str(p["api_key"]) != "", "enabled": truth(p["enabled"]), "config": object(p["config"]), "createdAt": p["created_at"], "supportedCount": num(p["supported_count"]), "publishedCount": num(p["published_count"]), "modelsPath": providerModelsPath(p), "types": providerProtocol(str(p["protocol"]))["types"]}
 }
 func validBaseURL(s string) bool {
 	u, e := url.Parse(s)
 	return e == nil && (u.Scheme == "https" || u.Scheme == "http") && u.Host != "" && u.User == nil && u.RawQuery == "" && u.Fragment == ""
 }
+
+func generationProviderConfig(config any) Row {
+	result := clone(object(config))
+	// Catalog location, display preference and poll cadence do not change the
+	// generation endpoint/model mapping reviewed with the retail price.
+	for _, name := range []string{"modelsPath", "preferred", "pollInterval"} {
+		delete(result, name)
+	}
+	return result
+}
+
 func (a *App) saveProvider(r *Request) any {
 	p := r.Body()
 	name := trimField(p, "name", 1, 80)
-	protocol := enumField(p, "protocol", "demo", "openai-image", "openai-video", "json-async", "openvideo", "suda", "modelhub", "gway", "catcoder", "wxart", "rolldek", "maitoken", "opencrow", "media-upload", "inventory")
+	protocol := textField(p, "protocol", 1, 32)
+	if providerProtocol(protocol) == nil && !(protocol == "inventory" && !a.Config.SupplierInstances) {
+		fail(400, "请选择支持的接入协议")
+	}
 	base := textField(p, "base_url", 0, 500, "")
-	key := textField(p, "apiKey", 0, 4096, "")
+	key := strings.TrimSpace(textField(p, "apiKey", 0, 4096, ""))
+	validateProviderKey(protocol, key)
 	enabled := boolField(p, "enabled", true)
 	config := mapField(p, "config")
+	if path, ok := config["modelsPath"]; ok && str(path) != "" && !inventoryPathValid(str(path)) {
+		fail(400, "模型列表接口路径不正确")
+	}
+	if nativeVendor(protocol) != "" {
+		for name, value := range validateNativeModelConfig(config) {
+			config[name] = value
+		}
+	}
 	if protocol != "demo" && !(protocol == "inventory" && base == "") && !validBaseURL(base) {
 		fail(400, "请输入有效的 API 基础地址")
 	}
@@ -43,11 +66,17 @@ func (a *App) saveProvider(r *Request) any {
 	}
 	a.Tx(func(s Store) {
 		old := s.One("SELECT * FROM providers WHERE id=? FOR UPDATE", pid)
+		if a.Config.SupplierInstances && old != nil && old["protocol"] != protocol {
+			fail(409, "供应商实例的协议创建后不能修改，请新增供应商")
+		}
 		if old != nil && old["protocol"] == "inventory" && (protocol != "inventory" || key != "") {
 			fail(400, "清单渠道的协议与密钥由独立路由管理，请前往供应商路由页")
 		}
 		if update && old == nil {
 			fail(404, "供应商不存在")
+		}
+		if old != nil && old["protocol"] != protocol && s.One("SELECT id FROM models WHERE provider_id=? LIMIT 1", pid) != nil {
+			fail(409, "已有发布模型的供应商不能更换协议，请新建供应商实例")
 		}
 		encrypted := ""
 		if old != nil {
@@ -58,6 +87,10 @@ func (a *App) saveProvider(r *Request) any {
 		}
 		if update {
 			s.Exec("UPDATE providers SET name=?,protocol=?,base_url=?,api_key=?,enabled=?,config=? WHERE id=?", name, protocol, base, encrypted, enabled, jsonText(config), pid)
+			if (a.Config.SupplierInstances || nativeVendor(protocol) != "") &&
+				(strings.TrimRight(base, "/") != strings.TrimRight(str(old["base_url"]), "/") || jsonText(generationProviderConfig(config)) != jsonText(generationProviderConfig(old["config"]))) {
+				s.Exec("UPDATE models SET enabled=0 WHERE provider_id=?", pid)
+			}
 		} else {
 			s.Exec("INSERT INTO providers(id,name,protocol,base_url,api_key,enabled,config) VALUES(?,?,?,?,?,?,?)", pid, name, protocol, base, encrypted, enabled, jsonText(config))
 		}
@@ -193,9 +226,7 @@ func (a *App) saveModel(r *Request) any {
 		if provider["protocol"] == "media-upload" {
 			fail(400, "素材上传服务不能绑定生成模型")
 		}
-		if kind != "image" && kind != "video" && provider["protocol"] != "inventory" && provider["protocol"] != "opencrow" && provider["protocol"] != "demo" {
-			fail(400, "此类型需要清单路由或本地演示通道")
-		}
+		validateProviderModelKind(provider, kind)
 		old := s.One("SELECT * FROM models WHERE id=? FOR UPDATE", mid)
 		if old != nil && str(old["inventory_route_id"]) != "" && (pid != str(old["provider_id"]) || upstream != str(old["upstream_model"]) || kind != str(old["type"])) {
 			fail(409, "清单模型的路由绑定不能直接修改，请更新供应商清单后重新导入")
@@ -314,7 +345,30 @@ func (a *App) adminRoutes(m *http.ServeMux) {
 	a.route(m, "PUT /api/admin/providers/{id}", 3, a.saveProvider)
 	a.route(m, "DELETE /api/admin/providers/{id}", 3, func(r *Request) any {
 		a.Tx(func(s Store) {
-			s.One("SELECT id FROM providers WHERE id=? FOR UPDATE", r.ID())
+			// Use the same lock and order as inventory startup/import so deletion
+			// cannot race with template creation or leave a partially removed supplier.
+			s.Exec("INSERT INTO invariant_locks(name) VALUES('provider_inventory') ON DUPLICATE KEY UPDATE name='provider_inventory'")
+			provider := s.One("SELECT id,protocol FROM providers WHERE id=? FOR UPDATE", r.ID())
+			if provider == nil {
+				return
+			}
+			if provider["protocol"] == "inventory" || nativeVendor(provider["protocol"]) != "" {
+				// Route editors take route locks before model locks too.
+				routes := s.All("SELECT id FROM inventory_routes WHERE provider_id=? ORDER BY id FOR UPDATE", r.ID())
+				models := s.All("SELECT id FROM models WHERE provider_id=? ORDER BY id FOR UPDATE", r.ID())
+				if s.One("SELECT j.id FROM jobs j JOIN models m ON m.id=j.model_id WHERE m.provider_id=? LIMIT 1", r.ID()) != nil {
+					fail(409, "此供应商有关联生成任务，不能删除；请停用渠道以保留历史和计费记录")
+				}
+				s.Exec("DELETE pr FROM prices pr JOIN models m ON m.id=pr.model_id WHERE m.provider_id=?", r.ID())
+				s.Exec("DELETE FROM models WHERE provider_id=?", r.ID())
+				s.Exec("DELETE FROM inventory_routes WHERE provider_id=?", r.ID())
+				if provider["protocol"] == "inventory" {
+					s.Exec("INSERT INTO inventory_deleted_providers(provider_id) VALUES(?) ON DUPLICATE KEY UPDATE deleted_at=CURRENT_TIMESTAMP(3)", r.ID())
+				}
+				s.Exec("DELETE FROM providers WHERE id=?", r.ID())
+				s.Audit(r.UID(), "provider.delete", Row{"id": r.ID(), "routes": len(routes), "models": len(models)})
+				return
+			}
 			if s.One("SELECT id FROM models WHERE provider_id=? LIMIT 1", r.ID()) != nil {
 				fail(400, "渠道下仍有已发布模型，不能删除；可先停用渠道")
 			}
@@ -340,18 +394,27 @@ func (a *App) adminRoutes(m *http.ServeMux) {
 		if e != nil {
 			return Row{"ok": false, "message": "通道密钥无法解密"}
 		}
-		address := strings.TrimRight(str(p["base_url"]), "/") + "/models"
-		if p["protocol"] == "opencrow" {
-			address, e = inventoryEndpoint(str(p["base_url"]), "/v1/models")
-			if e != nil {
-				return Row{"ok": false, "message": "OpenCrow API 地址不正确"}
-			}
+		path := providerModelsPath(p)
+		if path == "" {
+			return Row{"ok": false, "message": "此供应商未配置模型列表接口，可手动添加模型"}
+		}
+		address, e := inventoryEndpoint(str(p["base_url"]), path)
+		if e != nil {
+			return Row{"ok": false, "message": "API 地址或模型列表路径不正确"}
 		}
 		req, e := http.NewRequestWithContext(ctx, "GET", address, nil)
 		if e != nil {
 			return Row{"ok": false, "message": "API 地址格式不正确"}
 		}
-		req.Header.Set("Authorization", "Bearer "+key)
+		header := "Authorization"
+		if vendor := nativeVendor(p["protocol"]); vendor != "" {
+			header = inventoryAuth(vendor)
+		}
+		if header == "Authorization" {
+			req.Header.Set(header, "Bearer "+key)
+		} else {
+			req.Header.Set(header, key)
+		}
 		res, e := upstreamClient().Do(req)
 		if e != nil {
 			return Row{"ok": false, "message": "连接失败，请核对基础地址和密钥"}
@@ -365,11 +428,7 @@ func (a *App) adminRoutes(m *http.ServeMux) {
 		return Row{"ok": res.StatusCode < 400, "message": message}
 	})
 	a.route(m, "GET /api/admin/models", 3, func(r *Request) any {
-		v := []Row{}
-		for _, p := range a.Store.All("SELECT * FROM models ORDER BY sort_order,name") {
-			v = append(v, a.Store.ModelView(p))
-		}
-		return v
+		return a.Store.ModelViews(a.Store.All("SELECT * FROM models ORDER BY sort_order,name"))
 	})
 	a.route(m, "POST /api/admin/models", 3, a.saveModel)
 	a.route(m, "PUT /api/admin/models/{id}", 3, a.saveModel)

@@ -45,6 +45,7 @@ type ChannelModel = {
   type: string;
   description: string;
   parameters: Parameter[];
+  config?: RecordData;
   origin: string;
   hasKey: boolean;
   publishedModels: Pick<Model, "id" | "name" | "enabled" | "type">[];
@@ -132,11 +133,11 @@ export default function ProviderModels({
         <div className="channel-model-actions">
           <button
             className="button"
-            disabled={busy || provider.protocol === "demo"}
+            disabled={busy || !provider.modelsPath}
             title={
-              provider.protocol === "demo"
-                ? "演示渠道请手动添加模型"
-                : "从此渠道的 /models 接口读取模型列表"
+              !provider.modelsPath
+                ? "请手动添加，或在供应商设置中填写模型列表接口路径"
+                : `从 ${provider.modelsPath} 读取模型目录，不调用生成接口`
             }
             onClick={() =>
               act(async () => {
@@ -540,7 +541,15 @@ function ChannelModelForm({
   const [upstreamModel, setUpstream] = useState(initial?.upstreamModel || ""),
     [name, setName] = useState(initial?.name || "");
   const [kind, setKind] = useState(
-    initial?.type || (provider.protocol === "openai-video" ? "video" : "image"),
+    initial?.type ||
+      (provider.protocol === "openai-video"
+        ? "video"
+        : provider.types?.[0] || "image"),
+  );
+  const native = provider.protocol.startsWith("native:");
+  const [useDefaults, setUseDefaults] = useState(native && !initial);
+  const [protocolConfig, setProtocolConfig] = useState(
+    JSON.stringify(initial?.config || {}, null, 2),
   );
   const [description, setDescription] = useState(initial?.description || "");
   const [parameters, setParameters] = useState(
@@ -590,7 +599,9 @@ function ChannelModelForm({
                 name: name.trim() || upstreamModel.trim().slice(0, 120),
                 type: kind,
                 description,
-                parameters: JSON.parse(parameters),
+                parameters: useDefaults ? [] : JSON.parse(parameters),
+                useProtocolDefaults: useDefaults,
+                config: JSON.parse(protocolConfig),
               },
               initial ? "PUT" : "POST",
             );
@@ -640,11 +651,15 @@ function ChannelModelForm({
             value={kind}
             onChange={(event) => setKind(event.target.value)}
           >
-            <option value="image">图片生成</option>
-            <option value="video">视频生成</option>
-                <option value="text">文本生成</option>
-                <option value="audio">音频生成</option>
-                <option value="upscale">视频超分</option>
+            {generationOptions
+              .filter(
+                (o) => !provider.types || provider.types.includes(o.value),
+              )
+              .map((o) => (
+                <option key={o.value} value={o.value}>
+                  {o.label}
+                </option>
+              ))}
           </select>
         </Field>
         <Field label="模型说明">
@@ -655,17 +670,39 @@ function ChannelModelForm({
             maxLength={2000}
           />
         </Field>
-        <ReferenceSettings value={parameters} onChange={setParameters} />
+        {native && (
+          <label className="checkbox">
+            <input
+              type="checkbox"
+              checked={useDefaults}
+              onChange={(e) => setUseDefaults(e.target.checked)}
+            />
+            使用协议默认参数
+          </label>
+        )}
+        {!useDefaults && (
+          <ReferenceSettings value={parameters} onChange={setParameters} />
+        )}
         <details className="advanced-model-parameters">
           <summary>高级参数配置</summary>
           <p className="muted small">
             作为发布时的初始配置，之后可在模型管理中调整。
           </p>
-          <JsonEditor
-            label="生成参数定义（JSON）"
-            value={parameters}
-            onChange={setParameters}
-          />
+          {native && (
+            <Field
+              label="模型协议选项（JSON）"
+              hint="可配置 sourceModel、chatAPI（responses 或 chat-completions）、submit_path_override、poll_path_override。留空对象使用协议默认值。"
+            >
+              <JsonEditor value={protocolConfig} onChange={setProtocolConfig} />
+            </Field>
+          )}
+          {!useDefaults && (
+            <JsonEditor
+              label="生成参数定义（JSON）"
+              value={parameters}
+              onChange={setParameters}
+            />
+          )}
         </details>
         <div className="modal-footer">
           <span className="muted">保存只加入渠道列表，尚未发布。</span>
@@ -771,11 +808,15 @@ function PublishModel({
             <option value="" disabled>
               请选择生成类型
             </option>
-            <option value="image">图片生成</option>
-            <option value="video">视频生成</option>
-                <option value="text">文本生成</option>
-                <option value="audio">音频生成</option>
-                <option value="upscale">视频超分</option>
+            {generationOptions
+              .filter(
+                (o) => !provider.types || provider.types.includes(o.value),
+              )
+              .map((o) => (
+                <option key={o.value} value={o.value}>
+                  {o.label}
+                </option>
+              ))}
           </select>
         </Field>
         <Field label="模型分组">

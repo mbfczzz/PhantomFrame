@@ -106,6 +106,11 @@ try {
     await delay(150);
   }
   assert.ok(ready, serverOutput);
+  // Legacy demo scenarios prepare explicit fixtures; production startup stays empty.
+  execFileSync("go", ["run", "./cmd/testdb", "seed-demo", database], {
+    stdio: "pipe",
+    windowsHide: true,
+  });
   const owner = await api("/auth/login", "POST", {
     username: "upstream-ui-admin",
     password: "Upstream-UI-test-2026",

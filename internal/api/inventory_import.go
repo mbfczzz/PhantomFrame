@@ -161,6 +161,9 @@ func (a *App) ImportProviderInventory(input io.Reader, apply bool) (Row, error) 
 }
 
 func (a *App) importProviderInventory(input io.Reader, apply, startup bool) (Row, error) {
+	if a.Config.SupplierInstances {
+		return nil, fmt.Errorf("旧供应商路由导入已停用，请在渠道管理中新建供应商并拉取或手动添加模型")
+	}
 	routes, report, err := ReadProviderInventory(input)
 	if err != nil {
 		return nil, err
@@ -183,9 +186,21 @@ func (a *App) importProviderInventory(input io.Reader, apply, startup bool) (Row
 			}
 			sources := inventoryPriceSources(s)
 			inherited, preserved := 0, 0
+			skippedDeleted := 0
+			deleted := inventoryDeletedProviders(s)
 			pending := []Row{}
 			for _, r := range routes {
 				pid := inventoryProviderID(r.Vendor)
+				if startup && deleted[pid] {
+					skippedDeleted++
+					continue
+				}
+				if !startup && deleted[pid] {
+					// An explicit confirmed import can restore a deleted supplier;
+					// unattended startup imports must respect the administrator's deletion.
+					s.Exec("DELETE FROM inventory_deleted_providers WHERE provider_id=?", pid)
+					delete(deleted, pid)
+				}
 				s.Exec("INSERT IGNORE INTO providers(id,name,protocol,base_url,api_key,enabled,config) VALUES(?,?,'inventory',?,'',1,'{}')", pid, r.Vendor, r.Base)
 				if provider := s.One("SELECT protocol FROM providers WHERE id=? FOR UPDATE", pid); provider == nil || provider["protocol"] != "inventory" {
 					fail(409, "清单供应商标识与已有渠道冲突，未修改配置")
@@ -231,6 +246,7 @@ func (a *App) importProviderInventory(input io.Reader, apply, startup bool) (Row
 				}
 			}
 			report["pricesInherited"], report["pricesPreserved"], report["pricesPending"] = inherited, preserved, pending
+			report["skippedDeletedRoutes"] = skippedDeleted
 			if startup {
 				s.Exec("INSERT INTO settings(`key`,value) VALUES('_inventoryStartupFingerprint',?) ON DUPLICATE KEY UPDATE value=VALUES(value)", fingerprint)
 			}

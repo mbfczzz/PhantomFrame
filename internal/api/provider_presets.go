@@ -27,11 +27,20 @@ var providerPresetRoutes = func() []InventoryRoute {
 	return rows
 }()
 
+func inventoryDeletedProviders(s Store) map[string]bool {
+	deleted := map[string]bool{}
+	for _, row := range s.All("SELECT provider_id FROM inventory_deleted_providers") {
+		deleted[str(row["provider_id"])] = true
+	}
+	return deleted
+}
+
 // Add missing templates only. Repeated starts never overwrite reviewed routes,
 // credentials, parameter schemas, prices or enablement state.
 func (a *App) ensureProviderPresets() {
 	a.Tx(func(s Store) {
 		s.Exec("INSERT INTO invariant_locks(name) VALUES('provider_inventory') ON DUPLICATE KEY UPDATE name='provider_inventory'")
+		deleted := inventoryDeletedProviders(s)
 		existing := map[string]Row{}
 		for _, row := range s.All("SELECT * FROM inventory_routes") {
 			existing[str(row["id"])] = row
@@ -42,6 +51,9 @@ func (a *App) ensureProviderPresets() {
 		}
 		missing := []InventoryRoute{}
 		for _, r := range providerPresetRoutes {
+			if deleted[inventoryProviderID(r.Vendor)] {
+				continue
+			}
 			if row := existing[r.ID]; row == nil {
 				missing = append(missing, r)
 			} else if !bound[r.ID] {

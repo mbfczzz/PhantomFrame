@@ -101,6 +101,11 @@ try {
     await delay(150);
   }
   assert.ok(ready, serverOutput);
+  // Legacy demo scenarios prepare explicit fixtures; production startup stays empty.
+  execFileSync("go", ["run", "./cmd/testdb", "seed-demo", database], {
+    stdio: "pipe",
+    windowsHide: true,
+  });
   browser = await launchBrowser();
   const ctx = await context();
   const user = await request(ctx, "/me");

@@ -30,10 +30,10 @@ func (a *App) quote(s Store, mid, uid string, raw Row) Quote {
 	if provider == nil || (provider["protocol"] == "demo" && !a.Config.Demo) {
 		fail(400, "模型通道未启用")
 	}
-	if m["type"] != "image" && m["type"] != "video" && provider["protocol"] != "inventory" && provider["protocol"] != "opencrow" && provider["protocol"] != "demo" {
-		fail(400, "此类型需要使用供应商独立路由")
-	}
-	if provider["protocol"] == "inventory" {
+	validateProviderModelKind(provider, str(m["type"]))
+	if nativeVendor(provider["protocol"]) != "" {
+		provider = a.nativeProvider(s, m, provider)
+	} else if provider["protocol"] == "inventory" {
 		provider = a.inventoryProvider(s, m, provider)
 	}
 	if provider["protocol"] == "opencrow" {
@@ -218,7 +218,7 @@ func (s Store) JobView(j Row) Row {
 	name, kind := snapshot["modelName"], snapshot["type"]
 	if name == nil || kind == nil {
 		m := s.One("SELECT name,type FROM models WHERE id=?", j["model_id"])
-		name, kind = m["name"], m["type"]
+		name, kind = first(m["name"], j["model_id"]), first(m["type"], "image")
 	}
 	return Row{"id": j["id"], "userId": j["user_id"], "modelId": j["model_id"], "modelName": name, "type": kind, "prompt": j["prompt"], "params": object(j["params"]), "status": j["status"], "cost": credits(j["cost"]), "currency": currencyCode, "outputs": array(j["outputs"]), "error": j["error"], "source": j["source"], "demo": snapshot["protocol"] == "demo", "refunded": truth(j["refunded"]), "createdAt": j["created_at"], "finishedAt": j["finished_at"]}
 }
@@ -287,7 +287,7 @@ func (a *App) submit(r *Request) any {
 			source = "api"
 		}
 		s.Wallet(r.UID(), -q.Cost, "generation", str(q.Model["name"])+" · 生成预扣", jid)
-		snapshot := clone(q.Provider)
+		snapshot := snapshotUploadProvider(s, q.Provider)
 		// Capture the effective encrypted credential once. Submissions, polling and
 		// downloads keep using this snapshot even if an administrator rotates a key.
 		if entry := s.One("SELECT api_key FROM provider_models WHERE provider_id=? AND upstream_model=?", q.Model["provider_id"], q.Model["upstream_model"]); q.Provider["protocol"] != "inventory" && entry != nil && str(entry["api_key"]) != "" {
@@ -370,15 +370,11 @@ func jobSource(r *Request) string {
 func (a *App) creationRoutes(m *http.ServeMux) {
 	a.route(m, "GET /api/models/status", 1, a.modelStatus)
 	a.route(m, "GET /api/models", 1, func(r *Request) any {
-		v := []Row{}
 		q := "SELECT m.* FROM models m JOIN providers p ON p.id=m.provider_id WHERE m.enabled=1 AND p.enabled=1"
 		if !a.Config.Demo {
 			q += " AND p.protocol!='demo'"
 		}
-		for _, model := range a.Store.All(q + " ORDER BY m.sort_order,m.name") {
-			v = append(v, a.Store.ModelView(model))
-		}
-		return v
+		return a.Store.ModelViews(a.Store.All(q + " ORDER BY m.sort_order,m.name"))
 	})
 	a.route(m, "POST /api/pricing/quote", 1, func(r *Request) any {
 		p := r.Body()
@@ -392,14 +388,14 @@ func (a *App) creationRoutes(m *http.ServeMux) {
 			where = append(where, "j.source=?")
 			args = append(args, source)
 		}
-		for key, col := range map[string]string{"type": "m.type", "status": "j.status"} {
+		for key, col := range map[string]string{"type": "COALESCE(JSON_UNQUOTE(JSON_EXTRACT(j.provider_snapshot,'$.type')),m.type)", "status": "j.status"} {
 			if v := q.Get(key); v != "" && v != "all" {
 				where = append(where, col+"=?")
 				args = append(args, v)
 			}
 		}
 		if v := q.Get("search"); v != "" {
-			where = append(where, "(j.prompt LIKE ? OR m.name LIKE ? OR j.id LIKE ?)")
+			where = append(where, "(j.prompt LIKE ? OR COALESCE(JSON_UNQUOTE(JSON_EXTRACT(j.provider_snapshot,'$.modelName')),m.name) LIKE ? OR j.id LIKE ?)")
 			for i := 0; i < 3; i++ {
 				args = append(args, "%"+v+"%")
 			}
@@ -421,9 +417,9 @@ func (a *App) creationRoutes(m *http.ServeMux) {
 		}
 		page, limit := r.Page()
 		clause := strings.Join(where, " AND ")
-		total := a.Store.One("SELECT count(*) n FROM jobs j JOIN models m ON m.id=j.model_id WHERE "+clause, args...)["n"]
+		total := a.Store.One("SELECT count(*) n FROM jobs j LEFT JOIN models m ON m.id=j.model_id WHERE "+clause, args...)["n"]
 		v := []Row{}
-		for _, j := range a.Store.All("SELECT j.* FROM jobs j JOIN models m ON m.id=j.model_id WHERE "+clause+" ORDER BY j.created_at DESC,j.seq DESC LIMIT ? OFFSET ?", append(args, limit, (page-1)*limit)...) {
+		for _, j := range a.Store.All("SELECT j.* FROM jobs j LEFT JOIN models m ON m.id=j.model_id WHERE "+clause+" ORDER BY j.created_at DESC,j.seq DESC LIMIT ? OFFSET ?", append(args, limit, (page-1)*limit)...) {
 			v = append(v, a.jobView(a.Store, j))
 		}
 		return Row{"items": v, "total": total, "page": page, "limit": limit}

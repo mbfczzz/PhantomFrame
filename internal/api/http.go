@@ -270,7 +270,10 @@ func (a *App) limitIdentity(r *http.Request, group, identity string, limit int, 
 func (a *App) Handler() http.Handler {
 	mux := http.NewServeMux()
 	a.upstreamLogRoutes(mux)
-	a.inventoryRoutes(mux)
+	if !a.Config.SupplierInstances {
+		a.inventoryRoutes(mux)
+	}
+	a.protocolRoutes(mux)
 	a.authRoutes(mux)
 	a.creationRoutes(mux)
 	a.accountRoutes(mux)

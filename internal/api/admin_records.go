@@ -97,7 +97,7 @@ func (a *App) listAdminJobs(r *Request) any {
 	adminQueryID(r, "modelId", "j.model_id", &where, &args)
 	adminQueryDates(r, "j.created_at", &where, &args)
 	adminQuerySearch(r, []string{"j.id", "u.username", "u.display_name", "m.name", "j.model_id", "j.prompt", "JSON_UNQUOTE(JSON_EXTRACT(j.provider_snapshot,'$.modelName'))"}, &where, &args)
-	from := " FROM jobs j JOIN users u ON u.id=j.user_id JOIN models m ON m.id=j.model_id WHERE " + strings.Join(where, " AND ")
+	from := " FROM jobs j JOIN users u ON u.id=j.user_id LEFT JOIN models m ON m.id=j.model_id WHERE " + strings.Join(where, " AND ")
 	summary := a.Store.One("SELECT count(*) total,coalesce(sum(j.status='succeeded'),0) succeeded,coalesce(sum(j.status='failed'),0) failed,coalesce(sum(j.status IN ('queued','running','refund_pending')),0) active,coalesce(sum(CASE WHEN j.refunded=0 THEN j.cost ELSE 0 END),0) spent"+from, args...)
 	items := []Row{}
 	for _, job := range a.Store.All("SELECT j.*,u.username,u.display_name"+from+" ORDER BY j.created_at DESC,j.seq DESC LIMIT ? OFFSET ?", append(args, limit, (page-1)*limit)...) {

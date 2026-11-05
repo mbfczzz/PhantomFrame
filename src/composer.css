@@ -610,9 +610,9 @@
 }
 .creation-page .studio-generate:disabled,
 :root[data-theme="light"] .creation-page .studio-generate:disabled {
-  color: var(--muted);
-  background: var(--input);
-  border-color: var(--border-strong);
+  color: color-mix(in srgb, var(--accent) 70%, var(--muted));
+  background: var(--accent-soft);
+  border-color: var(--accent-border);
   box-shadow: none;
   opacity: 1;
 }
@@ -1407,4 +1407,8 @@
   .reference-upload-zone {
     transition: none;
   }
+}
+
+.settings-submit-note.blocked {
+  color: var(--secondary);
 }

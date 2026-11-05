@@ -525,16 +525,17 @@ func (a *App) Seed() {
 			if generated {
 				pass = token()[:24]
 			}
-			balance := 0
-			if a.Config.Demo {
-				balance = 100000
-			}
 			if existing := s.One("SELECT id FROM users WHERE username=? FOR UPDATE", username); existing != nil {
 				// Recovery resets credentials from the trusted bootstrap environment, never reuses a user's password.
 				s.Exec("UPDATE users SET role='admin',status='active',password=?,auth_version=auth_version+1 WHERE id=?", passwordHash(pass), existing["id"])
 				s.Audit(str(existing["id"]), "admin.recover", Row{"username": username})
 			} else {
-				s.Exec("INSERT INTO users(id,username,display_name,password,role,balance) VALUES(?,?,?,?,?,?)", id(), username, "管理员", passwordHash(pass), "admin", balance)
+				adminID := id()
+				s.Exec("INSERT INTO users(id,username,display_name,password,role) VALUES(?,?,?,?,?)", adminID, username, "管理员", passwordHash(pass), "admin")
+				// Credit through the ledger so the account's history adds up to its balance.
+				if a.Config.Demo {
+					s.Wallet(adminID, 100000, "welcome", "演示额度", nil)
+				}
 			}
 			if generated {
 				must(os.WriteFile(".local-credentials.json", []byte(jsonText(Row{"username": username, "password": pass, "note": "本地管理员凭据，请妥善保管"})), 0600))

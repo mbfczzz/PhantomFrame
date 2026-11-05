@@ -88,7 +88,9 @@ export function TransactionTable({
   const toast = useToast();
   return (
     <div className="table-wrap">
-      <table>
+      {/* Users' own ledgers become cards on phones (amount first); the admin
+          ledger with a user column stays a scrollable table. */}
+      <table className={showUser ? undefined : "ledger-table"}>
         <thead>
           <tr>
             <th>交易时间</th>
@@ -103,9 +105,9 @@ export function TransactionTable({
         <tbody>
           {items.map((t) => (
             <tr key={t.id}>
-              <td className="muted nowrap">{date(t.created_at)}</td>
+              <td className="muted nowrap ledger-time">{date(t.created_at)}</td>
               {showUser && <td>{t.username}</td>}
-              <td>
+              <td className="ledger-kind">
                 <Badge>
                   {(
                     {
@@ -119,13 +121,17 @@ export function TransactionTable({
                   )[t.kind] || t.kind}
                 </Badge>
               </td>
-              <td>{transactionDescription(t.description)}</td>
-              <td className={t.amount >= 0 ? "green" : "muted"}>
+              <td className="ledger-description">
+                {transactionDescription(t.description)}
+              </td>
+              <td
+                className={`ledger-amount ${t.amount >= 0 ? "green" : "muted"}`}
+              >
                 {moneyChange(t.amount)}
               </td>
-              <td>{money(t.balance)}</td>
+              <td className="ledger-balance">{money(t.balance)}</td>
               {details && (
-                <td>
+                <td className="ledger-reference">
                   <button
                     type="button"
                     className="ledger-id"
@@ -640,9 +646,13 @@ export function UsageChart({ data }: { data: RecordData[] }) {
         <div className="chart-column" key={d.date}>
           <span>{money(d.credits)}</span>
           <div className="bar-track">
-            <div
-              style={{ height: Math.max(2, (d.credits / max) * 100) + "%" }}
-            />
+            {d.credits > 0 && (
+              <div
+                style={{
+                  height: Math.max(2, (d.credits / max) * 100) + "%",
+                }}
+              />
+            )}
           </div>
           <small>{d.date.slice(5)}</small>
         </div>

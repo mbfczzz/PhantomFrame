@@ -249,8 +249,9 @@
 .ticket-filters > .ui-select {
   width: 150px;
 }
-.ticket-list-panel {
-  padding: 8px 22px 18px;
+.horizontal-shell .page .panel.ticket-list-panel,
+.panel.ticket-list-panel {
+  padding: 2px 24px;
 }
 .ticket-list-item {
   display: flex;
@@ -581,8 +582,9 @@
   .ticket-filters .ui-select-trigger {
     font-size: 12px;
   }
+  .horizontal-shell .page .panel.ticket-list-panel,
   .ticket-list-panel {
-    padding: 4px 15px 12px;
+    padding: 2px 15px;
   }
   .ticket-list-item {
     gap: 10px;
@@ -661,5 +663,111 @@
   }
   .support-admin-heading .header-actions {
     flex-wrap: wrap;
+  }
+}
+
+/* Form grids: each field carries its own bottom margin, so the grid adds only
+   column spacing; rows match single-column fields. */
+.two-columns:has(> .field) {
+  row-gap: 0;
+}
+
+/* Admin ticket tab: same single-panel layout as the other admin tabs. */
+.admin-ticket-panel .ticket-filters {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+.horizontal-shell .page .admin-ticket-panel > .panel.ticket-list-panel,
+.admin-ticket-panel > .panel.ticket-list-panel {
+  padding: 0;
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+.admin-ticket-panel > .support-admin-heading {
+  margin-top: 0;
+}
+
+/* Phone ledger: one card per entry — description and amount first, then type,
+   time and resulting balance, then the reference. */
+@media (max-width: 767px) {
+  .table-wrap:has(> .ledger-table) {
+    overflow: visible;
+    border: 0;
+    background: transparent;
+  }
+  .ledger-table,
+  .ledger-table tbody {
+    display: block;
+    min-width: 0;
+  }
+  .ledger-table thead {
+    display: none;
+  }
+  .ledger-table tr {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    grid-template-areas:
+      "description description amount"
+      "kind time balance"
+      "reference reference reference";
+    align-items: center;
+    gap: 8px 10px;
+    padding: 14px;
+    margin-bottom: 10px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--panel);
+  }
+  .ledger-table tr:last-child {
+    margin-bottom: 0;
+  }
+  .table-wrap .ledger-table > tbody > tr > td {
+    display: block;
+    padding: 0;
+    border: 0;
+    background: none;
+  }
+  .table-wrap .ledger-table > tbody > tr > td.ledger-description {
+    grid-area: description;
+    font-size: 13px;
+    color: var(--text);
+    overflow-wrap: anywhere;
+  }
+  .table-wrap .ledger-table > tbody > tr > td.ledger-amount {
+    grid-area: amount;
+    font-size: 15px;
+    font-weight: 600;
+    text-align: right;
+    white-space: nowrap;
+  }
+  .table-wrap .ledger-table > tbody > tr > td.ledger-kind {
+    grid-area: kind;
+  }
+  .table-wrap .ledger-table > tbody > tr > td.ledger-time {
+    grid-area: time;
+    font-size: 12px;
+  }
+  .table-wrap .ledger-table > tbody > tr > td.ledger-balance {
+    grid-area: balance;
+    font-size: 12px;
+    color: var(--muted);
+    text-align: right;
+    white-space: nowrap;
+  }
+  .table-wrap .ledger-table > tbody > tr > td.ledger-balance::before {
+    content: "余额 ";
+  }
+  .table-wrap .ledger-table > tbody > tr > td.ledger-reference {
+    grid-area: reference;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding-top: 8px;
+    border-top: 1px solid var(--border);
   }
 }

@@ -670,8 +670,10 @@ try {
     39,
   );
   await page.getByRole("button", { name: "重置筛选", exact: true }).click();
+  // Redemption, two generation charges and the demo starting credit, which is
+  // recorded in the ledger so the history adds up to the balance.
   await page.waitForFunction(
-    () => document.querySelectorAll(".ledger-panel tbody tr").length === 3,
+    () => document.querySelectorAll(".ledger-panel tbody tr").length === 4,
   );
   check("redemption receipt, duplicate-code errors and filtered ledger totals");
 

@@ -3281,9 +3281,12 @@ td code {
   .admin-page .table-wrap::before {
     content: "左右滑动查看完整表格";
     display: block;
+    position: sticky;
+    left: 0;
+    width: max-content;
     font-size: 11px;
     color: var(--muted);
-    padding: 3px 0 12px;
+    padding: 10px 14px 8px;
   }
   .canvas-workspace {
     height: calc(100dvh - 122px);

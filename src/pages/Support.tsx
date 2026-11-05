@@ -126,6 +126,21 @@ function TicketHeading({
   );
 }
 
+// Admin tabs present their content inside one panel; the user page keeps the
+// page header with separate filter and list cards.
+function TicketListFrame({
+  admin,
+  children,
+}: {
+  admin: boolean;
+  children: React.ReactNode;
+}) {
+  return admin ? (
+    <section className="panel admin-ticket-panel">{children}</section>
+  ) : (
+    <>{children}</>
+  );
+}
 function TicketList({ admin }: { admin: boolean }) {
   const [status, setStatus] = useState("all");
   const [category, setCategory] = useState("all");
@@ -144,7 +159,7 @@ function TicketList({ admin }: { admin: boolean }) {
     { refetchInterval: 10000 },
   );
   return (
-    <>
+    <TicketListFrame admin={admin}>
       <TicketHeading
         admin={admin}
         title={admin ? "工单管理" : "提交工单"}
@@ -272,7 +287,7 @@ function TicketList({ admin }: { admin: boolean }) {
           onChange={setPage}
         />
       </section>
-    </>
+    </TicketListFrame>
   );
 }
 function CreateTicket() {

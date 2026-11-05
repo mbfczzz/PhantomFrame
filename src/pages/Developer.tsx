@@ -393,7 +393,7 @@ export default function Developer() {
               <ErrorState error={keyError} retry={refetchKeys} />
             ) : keys?.length ? (
               <div className="table-wrap">
-                <table>
+                <table className="api-key-table">
                   <thead>
                     <tr>
                       <th>名称</th>

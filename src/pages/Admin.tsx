@@ -198,7 +198,11 @@ function Overview() {
         <section className="panel">
           <div className="section-header">
             <h2>近 7 天消费金额</h2>
-            <Badge>实时统计</Badge>
+            <Badge>
+              {data?.totalsAt
+                ? `统计于 ${new Date(data.totalsAt).toLocaleTimeString("zh-CN", { hour12: false })}`
+                : "统计中"}
+            </Badge>
           </div>
           <UsageChart data={data?.daily || []} />
         </section>

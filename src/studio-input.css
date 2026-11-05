@@ -251,6 +251,10 @@
   }
   .creation-page .composer-settings .surface-footer {
     padding: 12px 14px;
+    background: transparent;
+    backdrop-filter: none;
+    box-shadow: none;
+    border-radius: 0 0 14px 14px;
   }
   .composer-settings .surface-actions {
     gap: 12px;

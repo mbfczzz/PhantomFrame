@@ -205,6 +205,12 @@ export function useRefresh() {
 }
 export const number = (v: number | undefined) =>
   Number(v || 0).toLocaleString("zh-CN", { maximumFractionDigits: 2 });
+export const fileSize = (bytes: number | undefined) => {
+  const value = Number(bytes || 0);
+  if (value < 1024) return `${value} B`;
+  if (value < 1024 * 1024) return `${(value / 1024).toFixed(1)} KB`;
+  return `${(value / 1024 / 1024).toFixed(2)} MB`;
+};
 export const money = (v: number | undefined) => {
   const value = Number(v || 0);
   return `${value < 0 ? "−" : ""}¥${Math.abs(value).toLocaleString("zh-CN", { maximumFractionDigits: 6 })}`;

@@ -48,6 +48,17 @@ function parameterSummary(params: RecordData = {}) {
       : "默认参数";
 }
 
+// The badge already shows the final status; the phase line only adds
+// information while a call is in progress, refunded or waiting for a refund.
+const redundantPhase = (call: {
+  status: string;
+  phase: string;
+  refunded?: boolean;
+}) =>
+  !call.refunded &&
+  ((call.status === "succeeded" && call.phase === "completed") ||
+    (call.status === "cancelled" && call.phase === "cancelled") ||
+    (call.status === "failed" && call.phase === "failed"));
 export default function UpstreamLogs() {
   const { filters, page, setPage, update, reset, query } = useRecordFilters({
     search: "",
@@ -253,13 +264,15 @@ export default function UpstreamLogs() {
                         ? "退款处理中"
                         : undefined}
                     </Badge>
-                    <small>
-                      {call.phase === "refund_pending"
-                        ? upstreamPhaseLabel[call.phase]
-                        : call.refunded
-                          ? "费用已退回"
-                          : upstreamPhaseLabel[call.phase] || call.phase}
-                    </small>
+                    {!redundantPhase(call) && (
+                      <small>
+                        {call.phase === "refund_pending"
+                          ? upstreamPhaseLabel[call.phase]
+                          : call.refunded
+                            ? "费用已退回"
+                            : upstreamPhaseLabel[call.phase] || call.phase}
+                      </small>
+                    )}
                     {call.failurePhase && (
                       <small>
                         失败环节：

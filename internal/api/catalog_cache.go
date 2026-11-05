@@ -74,6 +74,7 @@ func (a *App) cachedAdminTotals() Row {
 	}
 	v["consumed"] = credits(a.Store.One("SELECT coalesce(sum(-amount),0) n FROM transactions WHERE kind IN ('generation','refund')")["n"])
 	v["daily"] = a.Store.All("SELECT date(created_at) date,count(*) count,sum(status='succeeded') succeeded,sum(CASE WHEN refunded=0 THEN cost ELSE 0 END)/100.0 credits FROM jobs WHERE created_at>=DATE_SUB(UTC_TIMESTAMP(),INTERVAL 14 DAY) GROUP BY date(created_at)")
+	v["totalsAt"] = time.Now().UTC().Format(time.RFC3339)
 	_ = a.Redis.Set(ctx, key, jsonText(v), adminTotalsMaxAge).Err()
 	return v
 }

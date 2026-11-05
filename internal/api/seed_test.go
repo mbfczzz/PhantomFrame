@@ -5,7 +5,9 @@ import "testing"
 func TestSeedWithoutDemoDoesNotRecreateFixtures(t *testing.T) {
 	a := setupIntegration(t)
 	a.Tx(func(s Store) {
-		for _, table := range []string{"prices", "models", "provider_models", "providers", "users", "settings"} {
+		// The demo administrator's starting credit is a ledger entry, so clear
+		// transactions before the users they reference.
+		for _, table := range []string{"prices", "models", "provider_models", "providers", "transactions", "users", "settings"} {
 			s.Exec("DELETE FROM `" + table + "`")
 		}
 	})

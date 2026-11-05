@@ -397,3 +397,20 @@
     display: none;
   }
 }
+
+/* Disabled primary actions keep their colour family so they still read as
+   the main action, but clearly inactive and with legible text (the shared
+   gradient plus 45% opacity looked like a failed render). */
+.button.primary:disabled,
+.button.pink:disabled {
+  background: var(--accent-soft);
+  border-color: var(--accent-border);
+  color: color-mix(in srgb, var(--accent) 70%, var(--muted));
+  box-shadow: none;
+  opacity: 1;
+  filter: none;
+}
+.button.primary:disabled::after,
+.button.pink:disabled::after {
+  display: none;
+}

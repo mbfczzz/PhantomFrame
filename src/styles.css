@@ -1182,7 +1182,8 @@ td code {
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  min-height: 41px;
+  /* Two lines at the inherited line-height, so card footers align. */
+  min-height: 3.4em;
 }
 .job-card > footer {
   display: flex;

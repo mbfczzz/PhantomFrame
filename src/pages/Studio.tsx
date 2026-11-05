@@ -178,13 +178,16 @@ function modelOption(model: Model): SelectOption {
   };
 }
 
+// Results are shown under the composer by default; collapsing them is
+// remembered, so returning users see their recent work without an extra click.
+const resultsPreferenceKey = "phantomframe-studio-results";
 export default function Studio() {
   const {
     data: models,
     isLoading,
     error,
     refetch,
-  } = useApi<Model[]>("/models", { refetchOnWindowFocus: true });
+  } = useApi<Model[]>("/models", { refetchOnWindowFocus: "always" });
   const { data: user } = useApi<User>("/me");
   const { data: config } = useApi<RecordData>("/config");
   const [search, setSearch] = useSearchParams();
@@ -203,7 +206,15 @@ export default function Studio() {
   const [filter, setFilter] = useState("all");
   const [detail, setDetail] = useState<Job | null>(null);
   const [advanced, setAdvanced] = useState(false);
-  const [preview, setPreview] = useState(false);
+  const [preview, setPreviewState] = useState(
+    () => localStorage.getItem(resultsPreferenceKey) !== "collapsed",
+  );
+  const setPreview = (open: boolean) => {
+    setPreviewState(open);
+    try {
+      localStorage.setItem(resultsPreferenceKey, open ? "open" : "collapsed");
+    } catch {}
+  };
   const [uploading, setUploading] = useState(false);
   const [dragging, setDragging] = useState(false);
   const editor = useRef<PromptEditorHandle>(null);
@@ -483,6 +494,19 @@ export default function Studio() {
     !busy &&
     !uploading &&
     !quoting;
+  // Explains a disabled generate button in plain words. Errors shown elsewhere
+  // (mode, quote, balance) are not repeated here.
+  const submitBlocker = busy
+    ? ""
+    : !model
+      ? "请先选择模型"
+      : !prompt.trim()
+        ? "输入描述后即可生成"
+        : uploading
+          ? "参考素材上传中，完成后即可生成"
+          : quoting || (!quote && !quoteError && !modeError)
+            ? "正在计算价格…"
+            : "";
   const revealResults = () => {
     if (window.innerWidth < 1280)
       setTimeout(() => {
@@ -1111,7 +1135,11 @@ export default function Studio() {
                 </span>
               </button>
             </div>
-            <p className="settings-submit-note">提交后可在下方查看进度与结果</p>
+            <p
+              className={`settings-submit-note ${submitBlocker ? "blocked" : ""}`}
+            >
+              {submitBlocker || "提交后可在下方查看进度与结果"}
+            </p>
           </footer>
         </aside>
       </div>

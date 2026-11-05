@@ -70,6 +70,7 @@ import {
   type PageData,
   type Parameter,
   jobListInterval,
+  fileSize,
 } from "../lib";
 
 const types = [
@@ -575,12 +576,12 @@ export function Models() {
     isLoading: statusLoading,
     error: statusError,
   } = useApi<ModelStatusResponse>("/models/status", {
-    refetchOnWindowFocus: true,
+    refetchOnWindowFocus: "always",
     refetchOnMount: "always",
     refetchInterval: 30000,
   });
   const { data, isLoading, error, refetch } = useApi<Model[]>("/models", {
-    refetchOnWindowFocus: true,
+    refetchOnWindowFocus: "always",
     refetchOnMount: "always",
     refetchInterval: 30000,
   });
@@ -1128,7 +1129,7 @@ export function Assets() {
               <div className="asset-info">
                 <strong title={a.name}>{a.name}</strong>
                 <small>
-                  {(a.size / 1024 / 1024).toFixed(2)} MB · {date(a.createdAt)}
+                  {fileSize(a.size)} · {date(a.createdAt)}
                 </small>
                 <div>
                   <a
@@ -1200,7 +1201,7 @@ export function Assets() {
       {preview && (
         <Modal
           title={preview.name}
-          description={`${(preview.size / 1024 / 1024).toFixed(2)} MB · ${date(preview.createdAt)}`}
+          description={`${fileSize(preview.size)} · ${date(preview.createdAt)}`}
           icon={<FolderOpen size={20} />}
           onClose={() => setPreview(null)}
           wide

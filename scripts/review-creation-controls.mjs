@@ -71,9 +71,12 @@ try {
       .getByRole("dialog", { name: "从资产库选择", exact: true })
       .waitFor();
     await page.getByRole("button", { name: "关闭", exact: true }).click();
-    await page
-      .getByRole("button", { name: "展开生成预览", exact: true })
-      .click();
+    // Results are open by default now; expand only if collapsed.
+    const expand = page.getByRole("button", {
+      name: "展开生成预览",
+      exact: true,
+    });
+    if (await expand.count()) await expand.click();
     await page.waitForTimeout(600);
     await page.screenshot({ path: `${directory}/preview-open-${width}.png` });
     const editor = await page.locator(".surface-composer").boundingBox();

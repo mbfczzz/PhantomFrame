@@ -33,7 +33,9 @@ func (a *App) authenticate(r *Request) {
 		}
 		// Password and role changes bump auth_version; keys minted before that
 		// are revoked together with web sessions.
-		if k["auth_version"] != nil && integer(k["auth_version"]) != integer(r.User["auth_version"]) {
+		if k["auth_version"] == nil {
+			a.Store.Exec("UPDATE api_keys SET auth_version=? WHERE id=? AND auth_version IS NULL", r.User["auth_version"], k["id"])
+		} else if integer(k["auth_version"]) != integer(r.User["auth_version"]) {
 			fail(401, "API Key 无效或已撤销")
 		}
 		r.APIKey = true

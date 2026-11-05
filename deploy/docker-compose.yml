@@ -44,7 +44,8 @@ services:
       OSS_ACCESS_KEY_SECRET: ${OSS_ACCESS_KEY_SECRET:-}
     volumes:
       - phantomframe-data:/app/data
-    stop_grace_period: 30s
+    # Longer than WORKER_SHUTDOWN_GRACE (20s) plus the 8s the API waits after it.
+    stop_grace_period: 35s
 
 volumes:
   phantomframe-data:

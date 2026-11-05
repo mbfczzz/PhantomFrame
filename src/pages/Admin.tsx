@@ -1853,13 +1853,25 @@ function ProviderForm({
     </Modal>
   );
 }
+// A non-zero amount in whole fen (the backend rejects sub-cent values).
+const validAdjustment = (value: string) => {
+  const n = Number(value);
+  return (
+    value.trim() !== "" &&
+    Number.isFinite(n) &&
+    n !== 0 &&
+    Math.abs(Math.round(n * 100) - n * 100) < 1e-6
+  );
+};
 function UserAdmin() {
   const moneyPost = useMoneyMutation();
   const confirm = useConfirm();
   const { data, isLoading, error, refetch } = useApi<User[]>("/admin/users");
   const [search, setSearch] = useState("");
   const [adjust, setAdjust] = useState<User | null>(null);
-  const [amount, setAmount] = useState(100);
+  // Starts empty for every user: a value left from the previous adjustment
+  // must never be applied to the next account by accident.
+  const [amount, setAmount] = useState("");
   const [reason, setReason] = useState("");
   const { act, busy } = useAction();
   const refresh = useRefresh();
@@ -1944,6 +1956,7 @@ function UserAdmin() {
                           className="text-link"
                           onClick={() => {
                             setAdjust(u);
+                            setAmount("");
                             setReason("");
                           }}
                         >
@@ -1995,7 +2008,7 @@ function UserAdmin() {
             onSubmit={() =>
               act(async () => {
                 await moneyPost("/admin/users/" + adjust.id + "/credits", {
-                  amount,
+                  amount: Number(amount),
                   reason,
                 });
                 refresh("/admin/users", "/me", "/admin/transactions");
@@ -2012,10 +2025,28 @@ function UserAdmin() {
                 type="number"
                 step="0.01"
                 value={amount}
-                onChange={(e) => setAmount(Number(e.target.value))}
+                onChange={(e) => setAmount(e.target.value)}
+                placeholder="例如：100 或 -20"
                 required
               />
             </Field>
+            {amount !== "" && !validAdjustment(amount) && (
+              <p className="danger">请输入不为 0、最多两位小数的金额</p>
+            )}
+            {validAdjustment(amount) && (
+              <p
+                className={
+                  adjust.balance + Number(amount) < 0 ? "danger" : "muted"
+                }
+              >
+                调整后余额：
+                {money(
+                  Math.round((adjust.balance + Number(amount)) * 100) / 100,
+                )}
+                {adjust.balance + Number(amount) < 0 &&
+                  "（余额不足，无法扣减）"}
+              </p>
+            )}
             <Field label="调整原因">
               <textarea
                 value={reason}
@@ -2025,7 +2056,14 @@ function UserAdmin() {
                 placeholder="例如：活动奖励、补偿退款"
               />
             </Field>
-            <button className="button primary full" disabled={busy}>
+            <button
+              className="button primary full"
+              disabled={
+                busy ||
+                !validAdjustment(amount) ||
+                adjust.balance + Number(amount) < 0
+              }
+            >
               确认调整
             </button>
           </Form>

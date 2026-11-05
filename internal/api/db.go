@@ -11,6 +11,7 @@ import (
 	"net"
 	"net/http"
 	"os"
+	"runtime"
 	"strconv"
 	"strings"
 	"sync"
@@ -41,6 +42,7 @@ type App struct {
 
 	linkCache      sync.Map // signed OSS read links, see cachedOSSURL
 	linkCacheSweep atomic.Uint64
+	linkCacheSize  atomic.Int64
 	catalog        catalogCache
 }
 
@@ -82,7 +84,10 @@ func Open(c Config) (*App, error) {
 		db.Close()
 		return nil, fmt.Errorf("connect MySQL: %w", err)
 	}
-	rc := redis.NewClient(&redis.Options{Addr: c.RedisAddr, Password: c.RedisPassword, DB: c.RedisDB, DialTimeout: 5 * time.Second, ReadTimeout: 3 * time.Second, WriteTimeout: 3 * time.Second})
+	// Every idle job consumer holds a connection in BLPOP, so size the pool
+	// above the worker count to keep sessions and rate limits responsive.
+	pool := 10*runtime.GOMAXPROCS(0) + max(c.WorkerConcurrency, 8)
+	rc := redis.NewClient(&redis.Options{Addr: c.RedisAddr, Password: c.RedisPassword, DB: c.RedisDB, DialTimeout: 5 * time.Second, ReadTimeout: 3 * time.Second, WriteTimeout: 3 * time.Second, PoolSize: pool})
 	if err = rc.Ping(ctx).Err(); err != nil {
 		db.Close()
 		rc.Close()

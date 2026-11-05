@@ -48,8 +48,17 @@ func LoadConfig() (Config, error) {
 	c.RedisDB, _ = strconv.Atoi(env("REDIS_DB", "0"))
 	c.WorkerConcurrency, _ = strconv.Atoi(env("WORKER_CONCURRENCY", "8"))
 	c.WorkerProviderConcurrency, _ = strconv.Atoi(env("WORKER_PROVIDER_CONCURRENCY", "0"))
-	if grace, err := time.ParseDuration(env("WORKER_SHUTDOWN_GRACE", "20s")); err == nil {
+	graceValue := strings.TrimSpace(env("WORKER_SHUTDOWN_GRACE", "20s"))
+	if graceValue == "" {
+		graceValue = "20s" // an empty line in .env keeps the default
+	}
+	if _, err := strconv.ParseFloat(graceValue, 64); err == nil {
+		graceValue += "s" // a bare number means seconds
+	}
+	if grace, err := time.ParseDuration(graceValue); err == nil && grace >= 0 {
 		c.WorkerShutdownGrace = grace
+	} else {
+		return c, fmt.Errorf("invalid WORKER_SHUTDOWN_GRACE: %q (use e.g. 20s)", graceValue)
 	}
 	c.SupplierInstances = true
 	// Only the local reverse proxy is trusted by default. An empty value disables forwarding.

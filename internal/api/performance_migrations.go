@@ -29,6 +29,9 @@ var lifecycleColumns = []struct{ table, name, definition string }{
 	// API keys are bound to the account's credential version so password and
 	// role changes revoke them together with web sessions.
 	{"api_keys", "auth_version", "BIGINT NULL"},
+	// Who created a sub-account. Unlike parent_id it survives "detach", so
+	// detaching cannot be used to get around the per-user cap.
+	{"users", "created_by", "VARCHAR(100) NULL"},
 }
 
 func (a *App) ensureColumn(table, name, definition string) error {
@@ -76,6 +79,12 @@ func (a *App) migratePerformanceAndLifecycle() error {
 	}
 	// Existing keys inherit the account's current version, so they keep working
 	// until the next password or role change.
-	_, err := a.DB.Exec("UPDATE api_keys k JOIN users u ON u.id=k.user_id SET k.auth_version=u.auth_version WHERE k.auth_version IS NULL")
+	if _, err := a.DB.Exec("UPDATE api_keys k JOIN users u ON u.id=k.user_id SET k.auth_version=u.auth_version WHERE k.auth_version IS NULL"); err != nil {
+		return err
+	}
+	if err := a.ensureIndex("users", "users_created_by", "created_by"); err != nil {
+		return err
+	}
+	_, err := a.DB.Exec("UPDATE users SET created_by=parent_id WHERE created_by IS NULL AND parent_id IS NOT NULL")
 	return err
 }

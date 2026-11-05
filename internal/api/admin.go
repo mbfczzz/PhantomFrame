@@ -505,6 +505,9 @@ func (a *App) adminRoutes(m *http.ServeMux) {
 	a.route(m, "POST /api/admin/users/{id}/credits", 3, func(r *Request) any {
 		p := r.Body()
 		amount := units(moneyField(p, "amount", -1000000, 1000000))
+		if amount == 0 {
+			fail(400, "调整金额不能为 0")
+		}
 		reason := trimField(p, "reason", 2, 200)
 		return a.moneyOperation(r, Row{"amount": amount, "reason": reason}, func(s Store) Row {
 			if s.One("SELECT id FROM users WHERE id=? FOR UPDATE", r.ID()) == nil {

@@ -117,7 +117,7 @@ func TestLeaseRecoveryOnlyReclaimsOrphanedJobs(t *testing.T) {
 	alive := object(user.ok(t, "POST", "/jobs", Row{"modelId": "nanobanana", "prompt": "still running elsewhere"}, 202))
 	orphan := object(user.ok(t, "POST", "/jobs", Row{"modelId": "nanobanana", "prompt": "worker died"}, 202))
 	a.Store.Exec("UPDATE jobs SET status='running',worker_id='other-instance',lease_until=DATE_ADD(CURRENT_TIMESTAMP(3),INTERVAL 60 SECOND) WHERE id=?", alive["id"])
-	a.Store.Exec("UPDATE jobs SET status='running',worker_id='dead-instance',lease_until=DATE_SUB(CURRENT_TIMESTAMP(3),INTERVAL 1 SECOND) WHERE id=?", orphan["id"])
+	a.Store.Exec("UPDATE jobs SET status='running',worker_id='dead-instance',lease_until=DATE_SUB(CURRENT_TIMESTAMP(3),INTERVAL 60 SECOND) WHERE id=?", orphan["id"])
 	a.reclaimExpiredJobs(context.Background())
 	want(t, a.Store.One("SELECT status FROM jobs WHERE id=?", alive["id"])["status"], "running")
 	reclaimed := a.Store.One("SELECT status,refunded FROM jobs WHERE id=?", orphan["id"])
@@ -162,4 +162,72 @@ func TestJobListBatchesOutputs(t *testing.T) {
 	if object(outputs[1])["storage"] != nil {
 		t.Fatal("foreign asset must not be linked")
 	}
+}
+
+func TestAdminBalanceAdjustmentRejectsZero(t *testing.T) {
+	a := setupIntegration(t)
+	server := httptest.NewServer(a.Handler())
+	defer server.Close()
+	admin := &testClient{server: server.URL}
+	user := &testClient{server: server.URL}
+	admin.ok(t, "POST", "/auth/login", Row{"username": "test-admin", "password": "Test-admin-password-2026"}, 200)
+	target := object(user.ok(t, "POST", "/auth/register", Row{"username": "zero-adjust", "password": "Zero-adjust-pass-2026"}, 200))
+	path := "/admin/users/" + str(target["id"]) + "/credits"
+	status, _ := admin.request(t, "POST", path, Row{"amount": 0, "reason": "no-op adjustment"}, map[string]string{"Idempotency-Key": "zero-adjust-1"})
+	want(t, status, 400)
+	want(t, a.Store.One("SELECT count(*) n FROM transactions WHERE user_id=? AND kind='adjustment'", target["id"])["n"], 0)
+	status, _ = admin.request(t, "POST", path, Row{"amount": 5, "reason": "real adjustment"}, map[string]string{"Idempotency-Key": "zero-adjust-2"})
+	want(t, status, 200)
+}
+
+// Only jobs this process is executing get their lease extended; a job left
+// "running" under the same worker id (e.g. after an ambiguous claim commit)
+// must expire so the leader recovers it.
+func TestLeaseRenewalOnlyCoversExecutingJobs(t *testing.T) {
+	a := setupIntegration(t)
+	server := httptest.NewServer(a.Handler())
+	defer server.Close()
+	user := &testClient{server: server.URL}
+	user.ok(t, "POST", "/auth/register", Row{"username": "lease-scope", "password": "Lease-scope-pass-2026"}, 200)
+	executing := str(object(user.ok(t, "POST", "/jobs", Row{"modelId": "nanobanana", "prompt": "executing"}, 202))["id"])
+	orphan := str(object(user.ok(t, "POST", "/jobs", Row{"modelId": "nanobanana", "prompt": "orphaned claim"}, 202))["id"])
+	for _, jid := range []string{executing, orphan} {
+		a.Store.Exec("UPDATE jobs SET status='running',worker_id='w1',lease_until=DATE_ADD(CURRENT_TIMESTAMP(3),INTERVAL 5 SECOND) WHERE id=?", jid)
+	}
+	a.renewJobLeases([]any{executing, "w1"})
+	long := a.Store.One("SELECT lease_until>DATE_ADD(CURRENT_TIMESTAMP(3),INTERVAL 60 SECOND) renewed FROM jobs WHERE id=?", executing)
+	short := a.Store.One("SELECT lease_until>DATE_ADD(CURRENT_TIMESTAMP(3),INTERVAL 60 SECOND) renewed FROM jobs WHERE id=?", orphan)
+	want(t, integer(long["renewed"]), 1)
+	want(t, integer(short["renewed"]), 0)
+}
+
+// Detaching sub-accounts must not free room under the per-user cap.
+func TestSubAccountCapCountsDetachedAccounts(t *testing.T) {
+	a := setupIntegration(t)
+	server := httptest.NewServer(a.Handler())
+	defer server.Close()
+	parent := &testClient{server: server.URL}
+	row := object(parent.ok(t, "POST", "/auth/register", Row{"username": "detach-parent", "password": "Detach-parent-pass-2026"}, 200))
+	for i := 0; i < maxSubAccounts-1; i++ {
+		a.Store.Exec("INSERT INTO users(id,username,display_name,password,created_by) VALUES(?,?,?,?,?)", id(), "detached-"+randomHex(6), "detached", "x", row["id"])
+	}
+	child := object(parent.ok(t, "POST", "/sub-users", Row{"username": "last-child", "password": "Child-pass-2026"}, 201))
+	parent.ok(t, "DELETE", "/sub-users/"+str(child["id"]), nil, 200)
+	parent.ok(t, "POST", "/sub-users", Row{"username": "after-detach", "password": "Child-pass-2026"}, 400)
+}
+
+// Keys written without a version (by an older instance during a rolling
+// deploy) adopt the account's version on first use and are then revocable.
+func TestUnversionedAPIKeyBecomesRevocable(t *testing.T) {
+	a := setupIntegration(t)
+	server := httptest.NewServer(a.Handler())
+	defer server.Close()
+	user := &testClient{server: server.URL}
+	user.ok(t, "POST", "/auth/register", Row{"username": "unversioned-key", "password": "Unversioned-pass-2026"}, 200)
+	key := object(user.ok(t, "POST", "/keys", Row{"name": "legacy"}, 201))
+	a.Store.Exec("UPDATE api_keys SET auth_version=NULL WHERE id=?", key["id"])
+	keyClient := &testClient{server: server.URL, key: str(key["token"])}
+	keyClient.ok(t, "GET", "/me", nil, 200)
+	user.ok(t, "POST", "/me/password", Row{"currentPassword": "Unversioned-pass-2026", "password": "Unversioned-pass-2027"}, 200)
+	keyClient.ok(t, "GET", "/me", nil, 401)
 }

@@ -184,7 +184,9 @@ export function Profile() {
   const [childUsername, setChildUsername] = useState("");
   const [childPassword, setChildPassword] = useState("");
   const [transfer, setTransfer] = useState<User | null>(null);
-  const [amount, setAmount] = useState(100);
+  // Empty for every transfer, so a previous amount is never sent to another
+  // sub-account by accident.
+  const [amount, setAmount] = useState("");
   const { act, busy } = useAction();
   const refresh = useRefresh();
   if (!user) return <Loading />;
@@ -411,7 +413,10 @@ export function Profile() {
                           <div className="row-actions">
                             <button
                               className="text-link"
-                              onClick={() => setTransfer(c)}
+                              onClick={() => {
+                                setAmount("");
+                                setTransfer(c);
+                              }}
                             >
                               转账
                             </button>
@@ -518,7 +523,7 @@ export function Profile() {
             onSubmit={() =>
               act(async () => {
                 await moneyPost(`/sub-users/${transfer.id}/transfer`, {
-                  credits: amount,
+                  credits: Number(amount),
                 });
                 setTransfer(null);
                 refresh("/sub-users", "/me", "/transactions");
@@ -530,7 +535,8 @@ export function Profile() {
               <input
                 type="number"
                 value={amount}
-                onChange={(e) => setAmount(Number(e.target.value))}
+                onChange={(e) => setAmount(e.target.value)}
+                placeholder="例如：50"
                 min="0.01"
                 step="0.01"
                 max={user.balance}
@@ -545,7 +551,12 @@ export function Profile() {
               >
                 取消
               </button>
-              <button className="button primary" disabled={busy}>
+              <button
+                className="button primary"
+                disabled={
+                  busy || !(Number(amount) > 0) || Number(amount) > user.balance
+                }
+              >
                 确认分配
               </button>
             </div>

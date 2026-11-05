@@ -352,21 +352,47 @@ func (s Store) refundLocked(j Row, message, status string) {
 	}
 	s.Exec("UPDATE jobs SET status=?,error=?,refunded=1,finished_at=CURRENT_TIMESTAMP(3) WHERE id=?", status, string(msg), j["id"])
 }
-func (a *App) refund(jid, message string) {
+
+// refundGuard is re-checked under the job's row lock before a running job is
+// moved to refund_pending. It lets callers refund only what they still own.
+type refundGuard func(job Row) bool
+
+// ownedBy limits a refund to the claim that is executing the job, so a worker
+// never refunds a job that was re-claimed by someone else.
+func ownedBy(claim string) refundGuard {
+	return func(job Row) bool { return job["status"] != "running" || claim == "" || str(job["worker_id"]) == claim }
+}
+
+// leaseExpired limits a refund to running jobs whose lease has really lapsed,
+// re-checked at refund time so a lease renewed after the scan is respected.
+func leaseExpired(job Row) bool { return job["status"] != "running" || truth(job["lease_lapsed"]) }
+
+func (a *App) refund(jid, message string, guards ...refundGuard) bool {
 	// Persist the obligation separately: a failed wallet transaction must not erase it.
 	pendingMessage := strings.NewReplacer("费用已退还", "退款处理中", "费用已退回", "退款处理中").Replace(message)
+	allowed := true
 	a.Tx(func(s Store) {
-		j := s.One("SELECT status FROM jobs WHERE id=? FOR UPDATE", jid)
+		j := s.One("SELECT status,worker_id,(lease_until IS NULL OR lease_until<DATE_SUB(CURRENT_TIMESTAMP(3),INTERVAL ? SECOND)) lease_lapsed FROM jobs WHERE id=? FOR UPDATE", int(leaseReclaimDelay/time.Second), jid)
 		if j == nil || (j["status"] != "running" && j["status"] != "queued" && j["status"] != "refund_pending" && j["status"] != "failed") {
 			return
+		}
+		for _, guard := range guards {
+			if !guard(j) {
+				allowed = false
+				return
+			}
 		}
 		s.Exec("UPDATE jobs SET status='refund_pending',error=?,refund_next_at=CURRENT_TIMESTAMP(3) WHERE id=? AND status IN ('running','queued')", string([]rune(pendingMessage)[:min(len([]rune(pendingMessage)), 1000)]), jid)
 		s.Exec("INSERT IGNORE INTO job_cleanups(job_id) VALUES(?)", jid)
 	})
+	if !allowed {
+		return false
+	}
 	a.Tx(func(s Store) {
 		s.refundLocked(s.One("SELECT * FROM jobs WHERE id=? FOR UPDATE", jid), message, "failed")
 	})
 	a.syncUpstreamCall(jid)
+	return true
 }
 func jobSource(r *Request) string {
 	source := r.R.URL.Query().Get("source")

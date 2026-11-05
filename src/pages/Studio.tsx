@@ -206,9 +206,13 @@ export default function Studio() {
   const [filter, setFilter] = useState("all");
   const [detail, setDetail] = useState<Job | null>(null);
   const [advanced, setAdvanced] = useState(false);
-  const [preview, setPreviewState] = useState(
-    () => localStorage.getItem(resultsPreferenceKey) !== "collapsed",
-  );
+  const [preview, setPreviewState] = useState(() => {
+    try {
+      return localStorage.getItem(resultsPreferenceKey) !== "collapsed";
+    } catch {
+      return true;
+    }
+  });
   const setPreview = (open: boolean) => {
     setPreviewState(open);
     try {
@@ -543,7 +547,7 @@ export default function Studio() {
           refresh("/pricing/quote", "/models");
         }
         refresh("/jobs", "/me", "/usage");
-        setPreview(true);
+        setPreviewState(true);
         revealResults();
       }, "任务已加入生成队列");
     } finally {

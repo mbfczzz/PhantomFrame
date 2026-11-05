@@ -3583,3 +3583,23 @@ td code {
 .inventory-upstream-id { max-width:280px; overflow-wrap:anywhere; }
 
 .tabs { max-width:100%; overflow-x:auto; }
+
+.app-error-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  min-height: 100vh;
+  padding: 24px;
+  text-align: center;
+  color: var(--text);
+}
+.app-error-screen h1 {
+  font-size: 20px;
+  margin: 0;
+}
+.app-error-screen p {
+  margin: 0;
+  color: var(--muted);
+}

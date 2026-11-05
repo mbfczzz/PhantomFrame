@@ -4,6 +4,7 @@ import (
 	"context"
 	"log"
 	"os"
+	"path/filepath"
 	"strings"
 	"sync"
 	"time"
@@ -21,14 +22,56 @@ import (
 const (
 	jobLeaseDuration = 90 * time.Second
 	jobLeaseRenewal  = 15 * time.Second
-	leaderTTL        = 30 * time.Second
-	leaderRenewal    = 8 * time.Second
+	// leaseReclaimDelay is extra time past expiry before the leader reclaims a
+	// job, so workers recovering from a database outage renew first.
+	leaseReclaimDelay = 30 * time.Second
+	leaderTTL         = 30 * time.Second
+	leaderRenewal     = 8 * time.Second
 )
 
 type workerSlots struct {
 	mu          sync.Mutex
 	perProvider int
 	running     map[string]int
+	// executing maps each job this process is actually running to its claim
+	// token; only these leases are renewed.
+	executing map[string]string
+}
+
+func (w *workerSlots) saturated() []string {
+	w.mu.Lock()
+	defer w.mu.Unlock()
+	out := []string{}
+	for provider, n := range w.running {
+		if n >= w.perProvider {
+			out = append(out, provider)
+		}
+	}
+	return out
+}
+func (w *workerSlots) start(job, claim string) {
+	w.mu.Lock()
+	defer w.mu.Unlock()
+	if w.executing == nil {
+		w.executing = map[string]string{}
+	}
+	w.executing[job] = claim
+}
+func (w *workerSlots) finish(job string) {
+	w.mu.Lock()
+	defer w.mu.Unlock()
+	delete(w.executing, job)
+}
+
+// inFlight returns (job id, claim token) pairs of the jobs being executed.
+func (w *workerSlots) inFlight() []any {
+	w.mu.Lock()
+	defer w.mu.Unlock()
+	out := []any{}
+	for job, claim := range w.executing {
+		out = append(out, job, claim)
+	}
+	return out
 }
 
 func (w *workerSlots) acquire(provider string) bool {
@@ -62,11 +105,29 @@ func (a *App) workerSettings() (int, int, time.Duration) {
 	return concurrency, min(perProvider, concurrency), a.Config.WorkerShutdownGrace
 }
 
+// sweepTempDownloads removes provider downloads left behind by a crash or a
+// forced kill. Anything older than an hour cannot belong to a live job.
+func (a *App) sweepTempDownloads() {
+	entries, err := os.ReadDir(a.Config.FilesDir)
+	if err != nil {
+		return
+	}
+	for _, entry := range entries {
+		if !strings.HasPrefix(entry.Name(), ".download-") {
+			continue
+		}
+		if info, err := entry.Info(); err == nil && time.Since(info.ModTime()) > time.Hour {
+			_ = os.Remove(filepath.Join(a.Config.FilesDir, entry.Name()))
+		}
+	}
+}
+
 func (a *App) StartWorker(ctx context.Context) <-chan struct{} {
+	a.sweepTempDownloads()
 	done := make(chan struct{})
 	worker := id()
 	concurrency, perProvider, grace := a.workerSettings()
-	slots := &workerSlots{perProvider: perProvider, running: map[string]int{}}
+	slots := &workerSlots{perProvider: perProvider, running: map[string]int{}, executing: map[string]string{}}
 	// Jobs outlive the shutdown signal for the grace period, then are cancelled.
 	jobs, cancelJobs := context.WithCancel(context.WithoutCancel(ctx))
 	go func() {
@@ -81,7 +142,7 @@ func (a *App) StartWorker(ctx context.Context) <-chan struct{} {
 		go func() {
 			defer close(leaseDone)
 			for wait(jobs, jobLeaseRenewal) == nil {
-				a.renewJobLeases(worker)
+				a.renewJobLeases(slots.inFlight())
 			}
 		}()
 		maintenanceDone := make(chan struct{})
@@ -105,9 +166,18 @@ func (a *App) StartWorker(ctx context.Context) <-chan struct{} {
 	return done
 }
 
-func (a *App) renewJobLeases(worker string) {
+// renewJobLeases extends only the claims this process is executing, matched by
+// job id and claim token. A job left "running" without being executed (for
+// example after an ambiguous claim commit) lets its lease expire so the leader
+// recovers it.
+func (a *App) renewJobLeases(pairs []any) {
+	if len(pairs) == 0 {
+		return
+	}
 	if err := try(func() {
-		a.Store.Exec("UPDATE jobs SET lease_until=DATE_ADD(CURRENT_TIMESTAMP(3),INTERVAL ? SECOND) WHERE worker_id=? AND status='running'", int(jobLeaseDuration/time.Second), worker)
+		marks := strings.TrimSuffix(strings.Repeat("(?,?),", len(pairs)/2), ",")
+		args := append([]any{int(jobLeaseDuration / time.Second)}, pairs...)
+		a.Store.Exec("UPDATE jobs SET lease_until=DATE_ADD(CURRENT_TIMESTAMP(3),INTERVAL ? SECOND) WHERE status='running' AND (id,worker_id) IN ("+marks+")", args...)
 	}); err != nil {
 		log.Printf("job lease renewal deferred type=%T", err)
 	}
@@ -179,18 +249,22 @@ func (a *App) leaderMaintenance(ctx context.Context) {
 // no lease_until and are reclaimed the same way.
 func (a *App) reclaimExpiredJobs(ctx context.Context) {
 	if err := try(func() {
-		for _, j := range a.Store.All("SELECT id FROM jobs WHERE status='running' AND (lease_until IS NULL OR lease_until<CURRENT_TIMESTAMP(3)) ORDER BY seq LIMIT 100") {
+		for _, j := range a.Store.All("SELECT id FROM jobs WHERE status='running' AND (lease_until IS NULL OR lease_until<DATE_SUB(CURRENT_TIMESTAMP(3),INTERVAL ? SECOND)) ORDER BY seq LIMIT 100", int(leaseReclaimDelay/time.Second)) {
 			if ctx.Err() != nil {
 				return
 			}
 			jid := str(j["id"])
+			var refunded bool
 			if err := try(func() {
-				a.refund(jid, "服务重启或调度连接中断，费用已退回，请联系管理员核对上游任务")
+				// Re-checked under the row lock: a renewal after the scan wins.
+				refunded = a.refund(jid, "服务重启或调度连接中断，费用已退回，请联系管理员核对上游任务", leaseExpired)
 			}); err != nil {
 				log.Printf("expired job recovery deferred id=%s type=%T", jid, err)
 				continue
 			}
-			a.cleanupFailedJob(jid)
+			if refunded {
+				a.cleanupFailedJob(jid)
+			}
 		}
 	}); err != nil {
 		log.Printf("expired job scan deferred type=%T", err)
@@ -201,9 +275,21 @@ func (a *App) consume(claims, jobs context.Context, worker string, slots *worker
 	for claims.Err() == nil {
 		var j Row
 		var provider string
+		// Every claim gets its own token in worker_id, so requeueing or
+		// refunding by token can never touch another consumer's claim.
+		claim := id()
 		err := try(func() {
 			a.Tx(func(s Store) {
-				for _, candidate := range s.All("SELECT * FROM jobs WHERE status='queued' ORDER BY seq LIMIT 100 FOR UPDATE SKIP LOCKED") {
+				// Skip providers already at their cap in SQL, so a long backlog
+				// for one provider cannot hide other providers' jobs.
+				query, args := "SELECT * FROM jobs WHERE status='queued'", []any{}
+				if full := slots.saturated(); len(full) > 0 {
+					query += " AND COALESCE(JSON_UNQUOTE(JSON_EXTRACT(provider_snapshot,'$.id')),JSON_UNQUOTE(JSON_EXTRACT(provider_snapshot,'$.protocol')),'') NOT IN (" + sqlMarks(len(full)) + ")"
+					for _, key := range full {
+						args = append(args, key)
+					}
+				}
+				for _, candidate := range s.All(query+" ORDER BY seq LIMIT 100 FOR UPDATE SKIP LOCKED", args...) {
 					if claims.Err() != nil {
 						return
 					}
@@ -211,20 +297,34 @@ func (a *App) consume(claims, jobs context.Context, worker string, slots *worker
 					if !slots.acquire(key) {
 						continue
 					}
-					if s.Exec("UPDATE jobs SET status='running',worker_id=?,lease_until=DATE_ADD(CURRENT_TIMESTAMP(3),INTERVAL ? SECOND) WHERE id=? AND status='queued'", worker, int(jobLeaseDuration/time.Second), candidate["id"]) == 0 {
-						slots.release(key)
+					claimed := false
+					func() {
+						// Give the slot back if the UPDATE fails or matches nothing.
+						defer func() {
+							if !claimed {
+								slots.release(key)
+							}
+						}()
+						claimed = s.Exec("UPDATE jobs SET status='running',worker_id=?,lease_until=DATE_ADD(CURRENT_TIMESTAMP(3),INTERVAL ? SECOND) WHERE id=? AND status='queued'", claim, int(jobLeaseDuration/time.Second), candidate["id"]) > 0
+					}()
+					if !claimed {
 						continue
 					}
 					j, provider = candidate, key
-					j["status"], j["worker_id"] = "running", worker
+					j["status"], j["worker_id"] = "running", claim
 					return
 				}
 			})
 		})
 		if err != nil {
 			if provider != "" {
-				// The claim transaction rolled back; the job is still queued.
+				// The UPDATE succeeded but the commit reported an error, so the
+				// claim may or may not be durable. Nothing was sent upstream:
+				// undo it if it committed. Matching on this claim's own token
+				// makes this a no-op if it rolled back, even if another
+				// consumer has claimed the job since.
 				slots.release(provider)
+				a.requeueJob(str(j["id"]), claim)
 				j = nil
 			}
 			log.Printf("job claim interrupted type=%T", err)
@@ -239,21 +339,23 @@ func (a *App) consume(claims, jobs context.Context, worker string, slots *worker
 		}
 		if claims.Err() != nil {
 			// Shutdown began right after the claim: nothing was sent upstream.
-			a.requeueJob(str(j["id"]), worker)
+			a.requeueJob(str(j["id"]), claim)
 			slots.release(provider)
 			return
 		}
+		slots.start(str(j["id"]), claim)
 		a.processJob(jobs, j)
+		slots.finish(str(j["id"]))
 		slots.release(provider)
 	}
 }
 
 // requeueJob returns a claimed job to the queue. Only valid when no provider
-// request was started for it.
-func (a *App) requeueJob(jid, worker string) bool {
+// request was started for it; claim is the token written when it was claimed.
+func (a *App) requeueJob(jid, claim string) bool {
 	var changed int64
 	err := try(func() {
-		changed = a.Store.Exec("UPDATE jobs SET status='queued',worker_id=NULL,lease_until=NULL WHERE id=? AND status='running' AND worker_id=?", jid, worker)
+		changed = a.Store.Exec("UPDATE jobs SET status='queued',worker_id=NULL,lease_until=NULL WHERE id=? AND status='running' AND worker_id=?", jid, claim)
 		if changed > 0 {
 			a.updateUpstreamCall("UPDATE upstream_calls SET status='queued',phase='queued',updated_at=UTC_TIMESTAMP(3) WHERE id=? AND status='running'", jid)
 		}
@@ -342,9 +444,16 @@ func (a *App) processJob(parent context.Context, j Row) {
 	// the obligation. If this worker stops, its lease expires and the leader
 	// recovers the job.
 	for {
-		e := try(func() { a.refund(str(j["id"]), message) })
+		var refunded bool
+		// Only the claim that still owns the job may fail it; if it was
+		// re-claimed (lease lost), the new owner decides the outcome.
+		e := try(func() { refunded = a.refund(str(j["id"]), message, ownedBy(worker)) })
 		if e == nil {
-			a.cleanupFailedJob(str(j["id"]))
+			if refunded {
+				a.cleanupFailedJob(str(j["id"]))
+			} else {
+				log.Printf("job no longer owned by this claim, outcome left to its owner id=%s", str(j["id"]))
+			}
 			break
 		}
 		var persisted bool

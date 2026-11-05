@@ -88,10 +88,10 @@ func (a *App) accountRoutes(m *http.ServeMux) {
 		name, pass, uid := validUsername(p), passwordHash(validPassword(p)), id()
 		a.Tx(func(s Store) {
 			s.One("SELECT id FROM users WHERE id=? FOR UPDATE", r.UID())
-			if integer(s.One("SELECT count(*) n FROM users WHERE parent_id=?", r.UID())["n"]) >= maxSubAccounts {
-				fail(400, fmt.Sprintf("最多创建 %d 个子账户", maxSubAccounts))
+			if integer(s.One("SELECT count(*) n FROM users WHERE created_by=? OR parent_id=?", r.UID(), r.UID())["n"]) >= maxSubAccounts {
+				fail(400, fmt.Sprintf("最多创建 %d 个子账户（含已解除的子账户）", maxSubAccounts))
 			}
-			s.Exec("INSERT INTO users(id,username,display_name,password,parent_id) VALUES(?,?,?,?,?)", uid, name, name, pass, r.UID())
+			s.Exec("INSERT INTO users(id,username,display_name,password,parent_id,created_by) VALUES(?,?,?,?,?,?)", uid, name, name, pass, r.UID(), r.UID())
 		})
 		r.Status = 201
 		return publicUser(a.Store.One("SELECT * FROM users WHERE id=?", uid))

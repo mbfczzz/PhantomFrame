@@ -695,10 +695,13 @@
 /* Phone ledger: one card per entry — description and amount first, then type,
    time and resulting balance, then the reference. */
 @media (max-width: 767px) {
+  .page .table-wrap:has(> .ledger-table),
   .table-wrap:has(> .ledger-table) {
     overflow: visible;
     border: 0;
+    border-radius: 0;
     background: transparent;
+    box-shadow: none;
   }
   .ledger-table,
   .ledger-table tbody {
@@ -725,6 +728,11 @@
   }
   .ledger-table tr:last-child {
     margin-bottom: 0;
+  }
+  .ledger-table tr:not(:has(> td.ledger-reference)) {
+    grid-template-areas:
+      "description description amount"
+      "kind time balance";
   }
   .table-wrap .ledger-table > tbody > tr > td {
     display: block;

@@ -31,6 +31,9 @@ services:
   phantomframe:
     build: .
     restart: unless-stopped
+    # Longer than WORKER_SHUTDOWN_GRACE (20s) plus the 8s the API waits after
+    # it, so in-flight jobs can finish or be re-queued before a forced kill.
+    stop_grace_period: 35s
     ports:
       - "127.0.0.1:3001:3001"
     depends_on:

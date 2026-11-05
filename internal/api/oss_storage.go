@@ -286,6 +286,8 @@ func (a *App) assetLinksWith(s Store, asset Row, lc *linkContext) Row {
 	return links
 }
 
+const maxSignedLinks = 20000
+
 type signedLink struct {
 	url     string
 	expires time.Time
@@ -313,11 +315,21 @@ func (a *App) cachedOSSURL(c OSSConfig, key string) (string, time.Time, error) {
 		return "", time.Time{}, err
 	}
 	link := signedLink{address, now.Add(ttl)}
-	a.linkCache.Store(cacheKey, link)
+	// Bounded: past the cap the cache is cleared rather than grown, which only
+	// costs re-signing (a local computation).
+	if a.linkCacheSize.Load() >= maxSignedLinks {
+		a.linkCache.Clear()
+		a.linkCacheSize.Store(0)
+	}
+	if _, existed := a.linkCache.Swap(cacheKey, link); !existed {
+		a.linkCacheSize.Add(1)
+	}
 	if a.linkCacheSweep.Add(1)%1024 == 0 {
 		a.linkCache.Range(func(k, v any) bool {
 			if v.(signedLink).expires.Sub(now) <= ttl/2 {
-				a.linkCache.Delete(k)
+				if _, loaded := a.linkCache.LoadAndDelete(k); loaded {
+					a.linkCacheSize.Add(-1)
+				}
 			}
 			return true
 		})

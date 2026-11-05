@@ -423,7 +423,7 @@ func (a *App) syncProviderModels(r *Request) any {
 	if len(values) > 0 && len(entries) == 0 {
 		fail(502, "渠道未返回可识别的模型 ID")
 	}
-	added := 0
+	added, refreshed := 0, 0
 	err = try(func() {
 		a.TxContext(ctx, func(s Store) {
 			current := s.One("SELECT * FROM providers WHERE id=? FOR UPDATE", r.ID())
@@ -434,14 +434,20 @@ func (a *App) syncProviderModels(r *Request) any {
 				fail(409, "渠道配置已变更，请重新拉取")
 			}
 			existing := map[string]bool{}
+			// Entries that came from an earlier sync and were never edited by an
+			// administrator (or published) follow the upstream catalog.
+			refreshable := map[string]Row{}
 			for start := 0; start < len(entries); start += 200 {
 				batch := entries[start:min(start+200, len(entries))]
 				args := []any{r.ID()}
 				for _, entry := range batch {
 					args = append(args, entry["upstream"])
 				}
-				for _, entry := range s.All("SELECT upstream_model FROM provider_models WHERE provider_id=? AND upstream_model IN ("+sqlMarks(len(batch))+")", args...) {
+				for _, entry := range s.All("SELECT c.id,c.upstream_model,c.name,c.type,c.description,c.parameters,c.origin,c.created_at=c.updated_at untouched,EXISTS(SELECT 1 FROM models m WHERE m.provider_id=c.provider_id AND m.upstream_model=c.upstream_model) published FROM provider_models c WHERE c.provider_id=? AND c.upstream_model IN ("+sqlMarks(len(batch))+")", args...) {
 					existing[str(entry["upstream_model"])] = true
+					if entry["origin"] == "upstream" && truth(entry["untouched"]) && !truth(entry["published"]) {
+						refreshable[str(entry["upstream_model"])] = entry
+					}
 				}
 			}
 			values, args := []string{}, []any{}
@@ -453,13 +459,18 @@ func (a *App) syncProviderModels(r *Request) any {
 				values, args = []string{}, []any{}
 			}
 			for _, entry := range entries {
-				if existing[str(entry["upstream"])] {
-					continue
-				}
 				parameters := validateParameters(array(jsonText(entry["parameters"])))
 				description := []rune(str(entry["description"]))
 				if len(description) > 2000 {
 					description = description[:2000]
+				}
+				if existing[str(entry["upstream"])] {
+					if current := refreshable[str(entry["upstream"])]; current != nil && (current["name"] != entry["name"] || current["type"] != entry["type"] || current["description"] != string(description) || jsonText(array(current["parameters"])) != jsonText(parameters)) {
+						// updated_at is left alone so the entry stays refreshable.
+						s.Exec("UPDATE provider_models SET name=?,type=?,description=?,parameters=? WHERE id=?", entry["name"], entry["type"], string(description), jsonText(parameters), current["id"])
+						refreshed++
+					}
+					continue
 				}
 				values = append(values, "(?,?,?,?,?,?,?,'upstream')")
 				args = append(args, id(), r.ID(), entry["upstream"], entry["name"], entry["type"], string(description), jsonText(parameters))
@@ -469,7 +480,7 @@ func (a *App) syncProviderModels(r *Request) any {
 				}
 			}
 			flush()
-			s.Audit(r.UID(), "provider_models.sync", Row{"providerId": r.ID(), "received": len(entries), "added": added})
+			s.Audit(r.UID(), "provider_models.sync", Row{"providerId": r.ID(), "received": len(entries), "added": added, "refreshed": refreshed})
 		})
 	})
 	if err != nil {
@@ -478,7 +489,7 @@ func (a *App) syncProviderModels(r *Request) any {
 		}
 		panic(err)
 	}
-	return Row{"received": len(entries), "added": added}
+	return Row{"received": len(entries), "added": added, "refreshed": refreshed}
 }
 func (a *App) providerModelRoutes(m *http.ServeMux) {
 	a.route(m, "GET /api/admin/providers/{id}/models", 3, a.listProviderModels)

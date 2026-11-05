@@ -39,6 +39,7 @@ import {
   type User,
   type RecordData,
   type PageData,
+  jobListInterval,
 } from "../lib";
 import {
   AssetPicker,
@@ -183,7 +184,7 @@ export default function Studio() {
     isLoading,
     error,
     refetch,
-  } = useApi<Model[]>("/models", { refetchOnWindowFocus: "always" });
+  } = useApi<Model[]>("/models", { refetchOnWindowFocus: true });
   const { data: user } = useApi<User>("/me");
   const { data: config } = useApi<RecordData>("/config");
   const [search, setSearch] = useSearchParams();
@@ -461,7 +462,9 @@ export default function Studio() {
     data: jobs,
     error: jobsError,
     refetch: refetchJobs,
-  } = useApi<PageData<Job>>("/jobs?limit=24", { refetchInterval: 2000 });
+  } = useApi<PageData<Job>>("/jobs?limit=24", {
+    refetchInterval: jobListInterval(2000),
+  });
   const jobStates = jobs?.items
     .map((job) => `${job.id}:${job.status}`)
     .join("|");

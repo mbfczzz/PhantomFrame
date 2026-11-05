@@ -24,12 +24,15 @@ func (s Store) ticket(id, uid string, staff, lock bool) Row {
 	return ticket
 }
 func (s Store) ticketView(ticket Row) Row {
-	owner := s.One("SELECT username,display_name FROM users WHERE id=?", ticket["user_id"])
+	owner := ticket
+	if _, joined := ticket["owner_username"]; !joined {
+		owner = s.One("SELECT username owner_username,display_name owner_display_name FROM users WHERE id=?", ticket["user_id"])
+	}
 	number := str(ticket["id"])
 	if len(number) > 8 {
 		number = number[:8]
 	}
-	return Row{"id": ticket["id"], "number": "TK-" + strings.ToUpper(number), "userId": ticket["user_id"], "username": owner["username"], "displayName": owner["display_name"], "subject": ticket["subject"], "category": ticket["category"], "status": ticket["status"], "relatedJobId": ticket["related_job_id"], "createdAt": ticket["created_at"], "updatedAt": ticket["updated_at"]}
+	return Row{"id": ticket["id"], "number": "TK-" + strings.ToUpper(number), "userId": ticket["user_id"], "username": owner["owner_username"], "displayName": owner["owner_display_name"], "subject": ticket["subject"], "category": ticket["category"], "status": ticket["status"], "relatedJobId": ticket["related_job_id"], "createdAt": ticket["created_at"], "updatedAt": ticket["updated_at"]}
 }
 func (s Store) ticketDetail(ticket Row) Row {
 	view := s.ticketView(ticket)
@@ -76,7 +79,7 @@ func (a *App) listTickets(r *Request, staff bool) any {
 	clause := strings.Join(where, " AND ")
 	total := a.Store.One("SELECT count(*) n FROM support_tickets t WHERE "+clause, args...)["n"]
 	items := []Row{}
-	for _, ticket := range a.Store.All("SELECT t.* FROM support_tickets t WHERE "+clause+" ORDER BY t.updated_at DESC,t.seq DESC LIMIT ? OFFSET ?", append(args, limit, (page-1)*limit)...) {
+	for _, ticket := range a.Store.All("SELECT t.*,u.username owner_username,u.display_name owner_display_name FROM support_tickets t JOIN users u ON u.id=t.user_id WHERE "+clause+" ORDER BY t.updated_at DESC,t.seq DESC LIMIT ? OFFSET ?", append(args, limit, (page-1)*limit)...) {
 		items = append(items, a.Store.ticketView(ticket))
 	}
 	return Row{"items": items, "total": total, "page": page, "limit": limit}

@@ -3,12 +3,31 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import { Loading } from "./lib";
 import Shell from "./components/Shell";
 import Auth from "./pages/Auth";
-import { Models, HistoryPage, Assets } from "./pages/Creation";
 import Generate from "./pages/Studio";
-import { Profile, Docs } from "./pages/Account";
-import Developer from "./pages/Developer";
-import { Ledger, RedeemPage } from "./pages/Billing";
-import Support from "./pages/Support";
+// The creation page is the landing route; other pages load on first visit.
+const Models = lazy(() =>
+  import("./pages/Creation").then((m) => ({ default: m.Models })),
+);
+const HistoryPage = lazy(() =>
+  import("./pages/Creation").then((m) => ({ default: m.HistoryPage })),
+);
+const Assets = lazy(() =>
+  import("./pages/Creation").then((m) => ({ default: m.Assets })),
+);
+const Profile = lazy(() =>
+  import("./pages/Account").then((m) => ({ default: m.Profile })),
+);
+const Docs = lazy(() =>
+  import("./pages/Account").then((m) => ({ default: m.Docs })),
+);
+const Developer = lazy(() => import("./pages/Developer"));
+const Ledger = lazy(() =>
+  import("./pages/Billing").then((m) => ({ default: m.Ledger })),
+);
+const RedeemPage = lazy(() =>
+  import("./pages/Billing").then((m) => ({ default: m.RedeemPage })),
+);
+const Support = lazy(() => import("./pages/Support"));
 const Admin = lazy(() => import("./pages/Admin"));
 export default function App() {
   return (

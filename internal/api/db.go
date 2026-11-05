@@ -13,6 +13,8 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"sync"
+	"sync/atomic"
 	"time"
 
 	"github.com/go-sql-driver/mysql"
@@ -36,6 +38,10 @@ type App struct {
 	Store   Store
 	Redis   *redis.Client
 	OSSHTTP *http.Client // Optional transport override for isolated storage tests.
+
+	linkCache      sync.Map // signed OSS read links, see cachedOSSURL
+	linkCacheSweep atomic.Uint64
+	catalog        catalogCache
 }
 
 func Open(c Config) (*App, error) {
@@ -57,9 +63,12 @@ func Open(c Config) (*App, error) {
 	if err != nil {
 		return nil, err
 	}
-	db.SetMaxOpenConns(20)
-	db.SetMaxIdleConns(10)
+	// Keep as many idle connections as open ones so polling bursts reuse
+	// connections instead of reconnecting; idle ones are recycled after a minute.
+	db.SetMaxOpenConns(40)
+	db.SetMaxIdleConns(40)
 	db.SetConnMaxLifetime(3 * time.Minute)
+	db.SetConnMaxIdleTime(time.Minute)
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 	err = db.PingContext(ctx)
@@ -220,6 +229,9 @@ func (a *App) Migrate() error {
 		}
 	}
 	if _, err := a.DB.Exec("INSERT IGNORE INTO job_cleanups(job_id) SELECT DISTINCT j.id FROM jobs j JOIN assets a ON a.job_id=j.id WHERE j.status IN ('failed','refund_pending')"); err != nil {
+		return err
+	}
+	if err := a.migratePerformanceAndLifecycle(); err != nil {
 		return err
 	}
 	if err := a.backfillUpstreamCalls(); err != nil {

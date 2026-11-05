@@ -69,6 +69,7 @@ import {
   type RecordData,
   type PageData,
   type Parameter,
+  jobListInterval,
 } from "../lib";
 
 const types = [
@@ -574,12 +575,12 @@ export function Models() {
     isLoading: statusLoading,
     error: statusError,
   } = useApi<ModelStatusResponse>("/models/status", {
-    refetchOnWindowFocus: "always",
+    refetchOnWindowFocus: true,
     refetchOnMount: "always",
     refetchInterval: 30000,
   });
   const { data, isLoading, error, refetch } = useApi<Model[]>("/models", {
-    refetchOnWindowFocus: "always",
+    refetchOnWindowFocus: true,
     refetchOnMount: "always",
     refetchInterval: 30000,
   });
@@ -958,7 +959,7 @@ export function HistoryPage() {
   });
   const { data, isLoading, error, refetch } = useApi<PageData<Job>>(
     "/jobs?" + query,
-    { refetchInterval: 3000 },
+    { refetchInterval: jobListInterval(3000) },
   );
   useEffect(() => setPage(1), [type, status, search, from, to]);
   return (

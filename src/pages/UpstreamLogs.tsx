@@ -62,7 +62,7 @@ export default function UpstreamLogs() {
   });
   const { data, isLoading, error, refetch } = useApi<
     PageData<UpstreamCall> & { summary: RecordData }
-  >("/admin/upstream-calls?" + query, { refetchInterval: 5000 });
+  >("/admin/upstream-calls?" + query, { refetchInterval: 15000 });
   const { data: options } = useApi<{
     providers: { id: string; name: string }[];
     models: { id: string; name: string }[];

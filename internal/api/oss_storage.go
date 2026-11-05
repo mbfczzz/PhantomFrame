@@ -69,11 +69,16 @@ func storageView(c OSSConfig) Row {
 	return v
 }
 
+var (
+	ossBucketPattern = regexp.MustCompile(`^[a-z0-9][a-z0-9-]{1,61}[a-z0-9]$`)
+	ossRegionPattern = regexp.MustCompile(`^[a-z0-9][a-z0-9-]{1,60}$`)
+)
+
 func validateOSS(c OSSConfig, requireCredentials bool) error {
-	if !regexp.MustCompile(`^[a-z0-9][a-z0-9-]{1,61}[a-z0-9]$`).MatchString(c.Bucket) {
+	if !ossBucketPattern.MatchString(c.Bucket) {
 		return fmt.Errorf("OSS Bucket 格式不正确")
 	}
-	if !regexp.MustCompile(`^[a-z0-9][a-z0-9-]{1,60}$`).MatchString(c.Region) {
+	if !ossRegionPattern.MatchString(c.Region) {
 		return fmt.Errorf("OSS Region 格式不正确")
 	}
 	for _, value := range []string{c.Endpoint, c.AccelerateEndpoint, c.CDNDomain} {
@@ -245,44 +250,124 @@ func (a *App) ensureOSSAsset(ctx context.Context, c OSSConfig, asset Row) (Row, 
 	return result, nil
 }
 
+// linkContext loads the read-side storage configuration at most once per
+// response, so list endpoints do not repeat the config query and decryption
+// for every output.
+type linkContext struct {
+	loaded bool
+	config OSSConfig
+	err    error
+}
+
 func (a *App) assetLinks(s Store, asset Row) Row {
+	return a.assetLinksWith(s, asset, &linkContext{})
+}
+
+func (a *App) assetLinksWith(s Store, asset Row, lc *linkContext) Row {
 	local := "/api/assets/" + str(asset["id"]) + "/file"
 	links := Row{"url": local, "downloadUrl": local + "?download=1"}
 	remote := object(asset["remote_storage"])
 	if remote["provider"] != "oss" {
 		return links
 	}
-	c, err := a.storageConfig(s)
-	if err == nil {
-		c = remoteOSSConfig(c, remote)
-		if address, e := a.ossURL(c, str(remote["objectKey"]), true); e == nil {
+	if !lc.loaded {
+		lc.config, lc.err = a.storageConfig(s)
+		lc.loaded = true
+	}
+	if lc.err == nil {
+		c := remoteOSSConfig(lc.config, remote)
+		if address, expires, e := a.cachedOSSURL(c, str(remote["objectKey"])); e == nil {
 			links["url"], links["storage"] = address, "oss"
 			if !c.PublicRead {
-				links["urlExpiresAt"] = time.Now().UTC().Add(time.Duration(c.URLTTL) * time.Second).Format(time.RFC3339)
+				links["urlExpiresAt"] = expires.UTC().Format(time.RFC3339)
 			}
 		}
 	}
 	return links
 }
 
-func (a *App) jobView(s Store, j Row) Row {
-	v := s.JobView(j)
-	outputs := []any{}
-	for _, raw := range array(v["outputs"]) {
-		out := clone(object(raw))
-		asset := s.One("SELECT * FROM assets WHERE id=? AND user_id=?", out["assetId"], j["user_id"])
-		if asset != nil {
-			for k, value := range a.assetLinks(s, asset) {
-				out[k] = value
-			}
-		} else {
-			out["url"] = "/api/assets/" + str(out["assetId"]) + "/file"
-			out["downloadUrl"] = str(out["url"]) + "?download=1"
-		}
-		outputs = append(outputs, out)
+type signedLink struct {
+	url     string
+	expires time.Time
+}
+
+// Signed URLs embed the signing time, so a fresh signature on every poll gives
+// the browser a new address and forces it to download every image again.
+// Reuse a signature until less than half of its lifetime remains.
+func (a *App) cachedOSSURL(c OSSConfig, key string) (string, time.Time, error) {
+	if c.PublicRead {
+		address, err := a.ossURL(c, key, true)
+		return address, time.Time{}, err
 	}
-	v["outputs"] = outputs
-	return v
+	cacheKey := hash(strings.Join([]string{c.Bucket, c.Region, c.Endpoint, c.AccelerateEndpoint, strconv.FormatBool(c.ReadAccelerate), c.CDNDomain, c.AccessKey, c.SecretKey, strconv.Itoa(c.URLTTL), key}, "\x00"))
+	now := time.Now()
+	ttl := time.Duration(c.URLTTL) * time.Second
+	if v, ok := a.linkCache.Load(cacheKey); ok {
+		link := v.(signedLink)
+		if link.expires.Sub(now) > ttl/2 {
+			return link.url, link.expires, nil
+		}
+	}
+	address, err := a.ossURL(c, key, true)
+	if err != nil {
+		return "", time.Time{}, err
+	}
+	link := signedLink{address, now.Add(ttl)}
+	a.linkCache.Store(cacheKey, link)
+	if a.linkCacheSweep.Add(1)%1024 == 0 {
+		a.linkCache.Range(func(k, v any) bool {
+			if v.(signedLink).expires.Sub(now) <= ttl/2 {
+				a.linkCache.Delete(k)
+			}
+			return true
+		})
+	}
+	return link.url, link.expires, nil
+}
+
+func (a *App) jobView(s Store, j Row) Row {
+	return a.jobViews(s, []Row{j})[0]
+}
+
+// jobViews renders several jobs with one asset query and one storage lookup.
+func (a *App) jobViews(s Store, jobs []Row) []Row {
+	ids, args := []string{}, []any{}
+	views := make([]Row, len(jobs))
+	for i, j := range jobs {
+		views[i] = s.JobView(j)
+		for _, raw := range array(views[i]["outputs"]) {
+			if id := str(object(raw)["assetId"]); id != "" {
+				ids = append(ids, id)
+				args = append(args, id)
+			}
+		}
+	}
+	found := map[string]Row{}
+	for start := 0; start < len(ids); start += 200 {
+		end := min(start+200, len(ids))
+		for _, asset := range s.All("SELECT * FROM assets WHERE id IN ("+sqlMarks(end-start)+")", args[start:end]...) {
+			found[str(asset["id"])] = asset
+		}
+	}
+	lc := &linkContext{}
+	for i, v := range views {
+		outputs := []any{}
+		for _, raw := range array(v["outputs"]) {
+			out := clone(object(raw))
+			asset := found[str(out["assetId"])]
+			if asset != nil && str(asset["user_id"]) == str(jobs[i]["user_id"]) {
+				for k, value := range a.assetLinksWith(s, asset, lc) {
+					out[k] = value
+				}
+			} else {
+				out["url"] = "/api/assets/" + str(out["assetId"]) + "/file"
+				out["downloadUrl"] = str(out["url"]) + "?download=1"
+			}
+			outputs = append(outputs, out)
+		}
+		v["outputs"] = outputs
+	}
+	return views
 }
 
 func (a *App) storeGeneratedOutputs(ctx context.Context, j Row, outputs []Row) ([]Row, error) {

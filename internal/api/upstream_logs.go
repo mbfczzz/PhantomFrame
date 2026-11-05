@@ -8,6 +8,7 @@ import (
 	"regexp"
 	"sort"
 	"strings"
+	"sync/atomic"
 	"time"
 )
 
@@ -16,10 +17,24 @@ type upstreamScope struct {
 	app     *App
 	jobID   string
 	secrets []string
+	// attempts counts provider HTTP requests started for this job, before they
+	// are sent. Zero means nothing could have reached (or billed at) the provider.
+	attempts *atomic.Int64
 }
 
 func upstreamContext(ctx context.Context, a *App, jobID string, secrets ...string) context.Context {
-	return context.WithValue(ctx, upstreamScopeKey{}, &upstreamScope{a, jobID, secrets})
+	attempts := &atomic.Int64{}
+	if parent, ok := ctx.Value(upstreamScopeKey{}).(*upstreamScope); ok && parent.jobID == jobID {
+		attempts = parent.attempts
+	}
+	return context.WithValue(ctx, upstreamScopeKey{}, &upstreamScope{a, jobID, secrets, attempts})
+}
+
+func upstreamAttempts(ctx context.Context) int64 {
+	if scope, ok := ctx.Value(upstreamScopeKey{}).(*upstreamScope); ok {
+		return scope.attempts.Load()
+	}
+	return 0
 }
 
 var logURLPattern = regexp.MustCompile(`https?://[^\s<>"']+`)
@@ -196,7 +211,18 @@ func upstreamPhase(ctx context.Context, phase string) {
 }
 
 func (a *App) setUpstreamTaskID(jobID, upstreamID any) {
-	a.Store.Exec("UPDATE jobs SET upstream_id=? WHERE id=?", upstreamID, jobID)
+	// The provider has accepted (and may bill) this task: keep trying to record
+	// its ID so it can be reconciled, instead of failing the job on one DB error.
+	var err error
+	for attempt := 0; attempt < 5; attempt++ {
+		if err = try(func() { a.Store.Exec("UPDATE jobs SET upstream_id=? WHERE id=?", upstreamID, jobID) }); err == nil {
+			break
+		}
+		time.Sleep(time.Duration(attempt+1) * 200 * time.Millisecond)
+	}
+	if err != nil {
+		log.Printf("upstream task id not persisted job=%s upstream=%s", str(jobID), logText(str(upstreamID), 255))
+	}
 	_ = try(func() {
 		j := a.Store.One("SELECT provider_snapshot FROM jobs WHERE id=?", jobID)
 		secret, _ := a.decrypt(str(object(j["provider_snapshot"])["api_key"]))
@@ -226,6 +252,9 @@ func (a *App) noteUpstreamFailure(j Row, message string) {
 type upstreamTransport struct{ base http.RoundTripper }
 
 func (t upstreamTransport) RoundTrip(r *http.Request) (*http.Response, error) {
+	if scope, ok := r.Context().Value(upstreamScopeKey{}).(*upstreamScope); ok {
+		scope.attempts.Add(1)
+	}
 	start := time.Now()
 	response, err := t.base.RoundTrip(r)
 	if scope, ok := r.Context().Value(upstreamScopeKey{}).(*upstreamScope); ok {
@@ -334,7 +363,18 @@ func (a *App) listUpstreamCalls(r *Request) any {
 	adminQueryDates(r, "c.created_at", &where, &args)
 	adminQuerySearch(r, []string{"c.id", "c.upstream_id", "j.upstream_id", "c.provider_name", "c.model_name", "c.upstream_model", "c.username", "c.display_name"}, &where, &args)
 	from := " FROM upstream_calls c LEFT JOIN jobs j ON j.id=c.id WHERE " + strings.Join(where, " AND ")
-	summary := a.Store.One("SELECT count(*) total,coalesce(sum(COALESCE(j.status,c.status)='succeeded'),0) succeeded,coalesce(sum(COALESCE(j.status,c.status)='failed'),0) failed,coalesce(sum(COALESCE(j.status,c.status) IN ('queued','running','refund_pending')),0) active"+from, args...)
+	// The summary aggregates every matching row; the log page polls, so reuse
+	// it for identical filters for a few seconds.
+	summaryQuery := "SELECT count(*) total,coalesce(sum(COALESCE(j.status,c.status)='succeeded'),0) succeeded,coalesce(sum(COALESCE(j.status,c.status)='failed'),0) failed,coalesce(sum(COALESCE(j.status,c.status) IN ('queued','running','refund_pending')),0) active" + from
+	summaryKey := a.Config.RedisPrefix + "upstream-summary:" + hash(summaryQuery+jsonText(args))
+	var summary Row
+	if raw, err := a.Redis.Get(r.R.Context(), summaryKey).Result(); err == nil {
+		summary = object(raw)
+	}
+	if len(summary) == 0 {
+		summary = a.Store.One(summaryQuery, args...)
+		_ = a.Redis.Set(r.R.Context(), summaryKey, jsonText(summary), 10*time.Second).Err()
+	}
 	items := []Row{}
 	for _, row := range a.Store.All(upstreamCallColumns+from+" ORDER BY c.created_at DESC,c.seq DESC LIMIT ? OFFSET ?", append(args, limit, (page-1)*limit)...) {
 		items = append(items, upstreamCallView(row, true))

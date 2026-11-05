@@ -8,6 +8,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"time"
 )
 
 func detectMime(b []byte) (string, string) {
@@ -42,12 +43,25 @@ func detectMime(b []byte) (string, string) {
 func assetView(v Row) Row {
 	return Row{"id": v["id"], "name": v["name"], "type": v["type"], "mime": v["mime"], "size": v["size"], "jobId": v["job_id"], "url": "/api/assets/" + str(v["id"]) + "/file", "createdAt": v["created_at"]}
 }
-func (a *App) storedAssetView(v Row) Row {
+func (a *App) storedAssetView(v Row, shared ...*linkContext) Row {
+	lc := &linkContext{}
+	if len(shared) > 0 {
+		lc = shared[0]
+	}
 	view := assetView(v)
-	for key, value := range a.assetLinks(a.Store, v) {
+	for key, value := range a.assetLinksWith(a.Store, v, lc) {
 		view[key] = value
 	}
 	return view
+}
+
+// serveAssetFile streams a stored file. Asset contents never change for an ID,
+// so browsers may reuse them privately; large downloads get a longer write
+// deadline than the server-wide WriteTimeout.
+func serveAssetFile(w http.ResponseWriter, r *http.Request, path string) {
+	_ = http.NewResponseController(w).SetWriteDeadline(time.Now().Add(30 * time.Minute))
+	w.Header().Set("Cache-Control", "private, max-age=86400")
+	http.ServeFile(w, r, path)
 }
 func (a *App) filePath(name string) string {
 	if name == "" || filepath.Base(name) != name || strings.ContainsAny(name, "/\\") {
@@ -71,6 +85,34 @@ func (a *App) saveAsset(uid, jobID, name, mediaType, ext string, data []byte) (R
 	}
 	err := try(func() {
 		a.Store.Exec("INSERT INTO assets(id,user_id,name,type,mime,file,size,job_id) VALUES(?,?,?,?,?,?,?,?)", assetID, uid, name, strings.Split(mediaType, "/")[0], mediaType, file, len(data), job)
+	})
+	if err != nil {
+		os.Remove(path)
+		return nil, err
+	}
+	return Row{"assetId": assetID, "url": "/api/assets/" + assetID + "/file", "type": strings.Split(mediaType, "/")[0], "name": name}, nil
+}
+
+// saveAssetFile moves an already-written temporary file into the asset store.
+func (a *App) saveAssetFile(uid, jobID, name, mediaType, ext, tempPath string, size int64) (Row, error) {
+	assetID := id()
+	file := assetID + "." + ext
+	if name == "" {
+		name = file
+	}
+	path := a.filePath(file)
+	if e := os.Chmod(tempPath, 0600); e != nil {
+		return nil, e
+	}
+	if e := os.Rename(tempPath, path); e != nil {
+		return nil, e
+	}
+	var job any
+	if jobID != "" {
+		job = jobID
+	}
+	err := try(func() {
+		a.Store.Exec("INSERT INTO assets(id,user_id,name,type,mime,file,size,job_id) VALUES(?,?,?,?,?,?,?,?)", assetID, uid, name, strings.Split(mediaType, "/")[0], mediaType, file, size, job)
 	})
 	if err != nil {
 		os.Remove(path)
@@ -123,8 +165,9 @@ func (a *App) assetRoutes(m *http.ServeMux) {
 		clause := strings.Join(where, " AND ")
 		count := a.Store.One("SELECT count(*) n FROM assets WHERE "+clause, args...)["n"]
 		items := []Row{}
+		lc := &linkContext{}
 		for _, v := range a.Store.All("SELECT * FROM assets WHERE "+clause+" ORDER BY created_at DESC,seq DESC LIMIT ? OFFSET ?", append(args, limit, (page-1)*limit)...) {
-			items = append(items, a.storedAssetView(v))
+			items = append(items, a.storedAssetView(v, lc))
 		}
 		return Row{"items": items, "total": count, "page": page, "limit": limit}
 	})
@@ -138,7 +181,7 @@ func (a *App) assetRoutes(m *http.ServeMux) {
 		if r.R.URL.Query().Get("download") != "" {
 			r.W.Header().Set("Content-Disposition", mime.FormatMediaType("attachment", map[string]string{"filename": str(v["name"])}))
 		}
-		http.ServeFile(r.W, r.R, a.filePath(str(v["file"])))
+		serveAssetFile(r.W, r.R, a.filePath(str(v["file"])))
 		return nil
 	})
 	a.route(m, "DELETE /api/assets/{id}", 1, func(r *Request) any {

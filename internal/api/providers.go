@@ -12,6 +12,7 @@ import (
 	"mime/multipart"
 	"net"
 	"net/http"
+	"net/netip"
 	"net/textproto"
 	"net/url"
 	"os"
@@ -97,8 +98,15 @@ func (p providerRequest) bytes(path string, body io.Reader, contentType string) 
 	if contentType != "" {
 		r.Header.Set("Content-Type", contentType)
 	}
-	return upstreamClient().Do(r)
+	// Synchronous image and video calls often exceed a minute; the job
+	// context (12–20 minutes) is the real bound.
+	client := upstreamClient()
+	client.Timeout = generationRequestTimeout
+	return client.Do(r)
 }
+
+const generationRequestTimeout = 10 * time.Minute
+
 func (p providerRequest) request(path string, body io.Reader, contentType string) (Row, error) {
 	res, e := p.bytes(path, body, contentType)
 	if e != nil {
@@ -147,9 +155,40 @@ func (a *App) form(fields Row, references []Row, field string) (*bytes.Buffer, s
 	}
 	return buf, w.FormDataContentType(), nil
 }
-func outputClient() *http.Client {
+
+// blockedOutputPrefixes are non-public ranges that net.IP helpers do not
+// classify as private, including carrier-grade NAT (100.64.0.0/10), which
+// hosts the Alibaba Cloud metadata service at 100.100.100.200.
+var blockedOutputPrefixes = func() []netip.Prefix {
+	out := []netip.Prefix{}
+	for _, v := range []string{"0.0.0.0/8", "100.64.0.0/10", "192.0.0.0/24", "192.0.2.0/24", "198.18.0.0/15", "198.51.100.0/24", "203.0.113.0/24", "240.0.0.0/4", "64:ff9b::/96", "64:ff9b:1::/48", "2001:db8::/32", "fc00::/7"} {
+		out = append(out, netip.MustParsePrefix(v))
+	}
+	return out
+}()
+
+func publicOutputIP(ip net.IP) bool {
+	if !ip.IsGlobalUnicast() || ip.IsPrivate() || ip.IsLoopback() || ip.IsLinkLocalUnicast() {
+		return false
+	}
+	addr, ok := netip.AddrFromSlice(ip)
+	if !ok {
+		return false
+	}
+	addr = addr.Unmap()
+	for _, prefix := range blockedOutputPrefixes {
+		if prefix.Contains(addr) {
+			return false
+		}
+	}
+	return true
+}
+
+// One shared transport keeps connections to CDNs alive between downloads.
+var outputTransport = func() http.RoundTripper {
 	transport := http.DefaultTransport.(*http.Transport).Clone()
 	transport.Proxy = nil
+	transport.ResponseHeaderTimeout = 60 * time.Second
 	transport.DialContext = func(ctx context.Context, network, address string) (net.Conn, error) {
 		host, port, e := net.SplitHostPort(address)
 		if e != nil {
@@ -163,8 +202,7 @@ func outputClient() *http.Client {
 			return nil, fmt.Errorf("供应商文件地址不可访问")
 		}
 		for _, v := range ips {
-			ip := v.IP
-			if !ip.IsGlobalUnicast() || ip.IsPrivate() || ip.IsLoopback() || ip.IsLinkLocalUnicast() {
+			if !publicOutputIP(v.IP) {
 				return nil, fmt.Errorf("供应商文件地址不可访问")
 			}
 		}
@@ -179,7 +217,15 @@ func outputClient() *http.Client {
 		}
 		return nil, last
 	}
-	return &http.Client{Transport: upstreamTransport{transport}, Timeout: 90 * time.Second, CheckRedirect: func(*http.Request, []*http.Request) error { return fmt.Errorf("供应商文件不允许重定向") }}
+	return transport
+}()
+
+// Downloads are bounded by the job context; the client timeout only guards
+// against a stalled transfer outliving it. Large videos need minutes on slow links.
+const outputDownloadTimeout = 10 * time.Minute
+
+func outputClient() *http.Client {
+	return &http.Client{Transport: upstreamTransport{outputTransport}, Timeout: outputDownloadTimeout, CheckRedirect: func(*http.Request, []*http.Request) error { return fmt.Errorf("供应商文件不允许重定向") }}
 }
 func (a *App) demo(ctx context.Context, j Row) ([]Row, error) {
 	if e := wait(ctx, 1200*time.Millisecond); e != nil {
@@ -336,18 +382,26 @@ func (a *App) upstream(ctx context.Context, j Row) ([]Row, error) {
 			if interval > 30*time.Second {
 				interval = 30 * time.Second
 			}
-			for i := 0; i < 180; i++ {
+			// Poll until the job context deadline instead of a fixed number of
+			// rounds, and ride out transient poll failures: the task keeps
+			// running (and billing) upstream whether or not one poll fails.
+			failures := 0
+			for ctx.Err() == nil {
 				state := strings.ToLower(str(first(pathValue(result, fallback(config["statusField"], "status")), pathValue(result, "data.status"))))
 				switch state {
-				case "completed", "succeeded", "success", "done":
+				case "completed", "succeeded", "success", "done", "finished":
 					complete = true
-				case "failed", "failure", "cancelled", "error":
+				case "failed", "failure", "cancelled", "canceled", "error", "expired", "rejected", "timeout", "timed_out":
 					return nil, fmt.Errorf("供应商生成失败，请检查提示词或素材后重试")
 				}
 				if complete {
 					break
 				}
-				if e = wait(ctx, interval); e != nil {
+				delay := interval
+				if failures > 0 {
+					delay = min(interval*time.Duration(1<<min(failures, 4)), 30*time.Second)
+				}
+				if e = wait(ctx, delay); e != nil {
 					return nil, e
 				}
 				path := "/tasks/{id}"
@@ -355,10 +409,14 @@ func (a *App) upstream(ctx context.Context, j Row) ([]Row, error) {
 					path = "/videos/{id}"
 				}
 				path = strings.ReplaceAll(fallback(config["statusPath"], path), "{id}", url.PathEscape(str(upID)))
-				result, e = client.request(path, nil, "")
-				if e != nil {
-					return nil, e
+				next, err := client.request(path, nil, "")
+				if err != nil {
+					if failures++; failures > 8 || ctx.Err() != nil {
+						return nil, err
+					}
+					continue
 				}
+				failures, result = 0, next
 			}
 			if !complete {
 				return nil, fmt.Errorf("供应商任务查询超时，请联系管理员核对上游任务")
@@ -369,15 +427,16 @@ func (a *App) upstream(ctx context.Context, j Row) ([]Row, error) {
 				if err != nil {
 					return nil, err
 				}
-				data, err := boundedBody(res, 100*1024*1024)
+				payload, err := a.streamBody(res, maxOutputBytes)
 				if err != nil {
 					return nil, err
 				}
-				mt, ext := detectMime(data)
+				mt, ext := detectMime(payload.sniff())
 				if !strings.HasPrefix(mt, "video/") {
+					payload.discard()
 					return nil, fmt.Errorf("供应商返回的视频类型不受支持")
 				}
-				out, err := a.saveAsset(str(j["user_id"]), str(j["id"]), "", mt, ext, data)
+				out, err := a.savePayload(str(j["user_id"]), str(j["id"]), "", mt, ext, payload)
 				return []Row{out}, err
 			}
 		}
@@ -415,18 +474,18 @@ func (a *App) saveProviderOutputs(ctx context.Context, j Row, outputs []any, tru
 			break
 		}
 		o := object(output)
-		var data []byte
+		payload := &outputPayload{}
 		var mt, ext string
 		if o["b64_json"] != nil {
 			encoded := str(o["b64_json"])
 			if len(encoded) > 42*1024*1024 {
 				return nil, fmt.Errorf("供应商生成图片过大")
 			}
-			data, e = base64.StdEncoding.DecodeString(encoded)
+			payload.data, e = base64.StdEncoding.DecodeString(encoded)
 			if e != nil {
 				return nil, fmt.Errorf("供应商图片编码无效")
 			}
-			mt, ext = detectMime(data)
+			mt, ext = detectMime(payload.data)
 			if !strings.HasPrefix(mt, "image/") {
 				return nil, fmt.Errorf("供应商图片类型无效")
 			}
@@ -447,16 +506,17 @@ func (a *App) saveProviderOutputs(ctx context.Context, j Row, outputs []any, tru
 			if err != nil || u.Host == "" || u.User != nil || (u.Scheme != "http" && u.Scheme != "https") {
 				return nil, fmt.Errorf("供应商返回了不支持的文件地址")
 			}
-			data, e = downloadVendorOutput(ctx, address, trustedBase, key)
+			payload, e = a.downloadVendorOutputFile(ctx, address, trustedBase, key, "Authorization")
 			if e != nil {
 				return nil, e
 			}
-			mt, ext = detectMime(data)
+			mt, ext = detectMime(payload.sniff())
 			if mt == "" || strings.HasPrefix(mt, "audio/") {
+				payload.discard()
 				return nil, fmt.Errorf("供应商返回的文件类型不受支持")
 			}
 		}
-		out, err := a.saveAsset(str(j["user_id"]), str(j["id"]), "", mt, ext, data)
+		out, err := a.savePayload(str(j["user_id"]), str(j["id"]), "", mt, ext, payload)
 		if err != nil {
 			return nil, err
 		}
@@ -464,10 +524,20 @@ func (a *App) saveProviderOutputs(ctx context.Context, j Row, outputs []any, tru
 	}
 	return saved, nil
 }
+
+const maxOutputBytes = 100 * 1024 * 1024
+
 func downloadVendorOutput(ctx context.Context, address, trustedBase, key string) ([]byte, error) {
-	return downloadVendorOutputAuth(ctx, address, trustedBase, key, "Authorization")
+	res, e := openVendorOutput(ctx, address, trustedBase, key, "Authorization")
+	if e != nil {
+		return nil, e
+	}
+	return boundedBody(res, maxOutputBytes)
 }
-func downloadVendorOutputAuth(ctx context.Context, address, trustedBase, key, authHeader string) ([]byte, error) {
+
+// openVendorOutput follows up to four redirects, re-checking each hop, and
+// returns the final response. Same-origin hops may carry the provider key.
+func openVendorOutput(ctx context.Context, address, trustedBase, key, authHeader string) (*http.Response, error) {
 	trusted, _ := url.Parse(trustedBase)
 	for redirects := 0; redirects <= 4; redirects++ {
 		u, e := url.Parse(address)
@@ -478,7 +548,7 @@ func downloadVendorOutputAuth(ctx context.Context, address, trustedBase, key, au
 		client := outputClient()
 		if sameOrigin {
 			client = upstreamClient()
-			client.Timeout = 90 * time.Second
+			client.Timeout = outputDownloadTimeout
 		}
 		client.CheckRedirect = func(*http.Request, []*http.Request) error { return http.ErrUseLastResponse }
 		req, e := http.NewRequestWithContext(ctx, "GET", address, nil)
@@ -494,13 +564,11 @@ func downloadVendorOutputAuth(ctx context.Context, address, trustedBase, key, au
 		}
 		res, e := client.Do(req)
 		if e != nil {
-			client.CloseIdleConnections()
 			return nil, fmt.Errorf("供应商生成文件下载失败")
 		}
 		if res.StatusCode >= 300 && res.StatusCode < 400 {
 			location := res.Header.Get("Location")
 			res.Body.Close()
-			client.CloseIdleConnections()
 			next, e := url.Parse(location)
 			if e != nil || location == "" {
 				return nil, fmt.Errorf("供应商下载跳转地址无效")
@@ -508,9 +576,81 @@ func downloadVendorOutputAuth(ctx context.Context, address, trustedBase, key, au
 			address = u.ResolveReference(next).String()
 			continue
 		}
-		data, e := boundedBody(res, 100*1024*1024)
-		client.CloseIdleConnections()
-		return data, e
+		return res, nil
 	}
 	return nil, fmt.Errorf("供应商生成文件跳转次数过多")
+}
+
+// outputPayload is a generated file held either in memory (inline base64
+// results) or in a temporary file streamed from the provider.
+type outputPayload struct {
+	data []byte
+	path string
+	size int64
+	head []byte
+}
+
+func (p *outputPayload) sniff() []byte {
+	if p.path != "" {
+		return p.head
+	}
+	return p.data
+}
+func (p *outputPayload) discard() {
+	if p != nil && p.path != "" {
+		os.Remove(p.path)
+		p.path = ""
+	}
+}
+
+// streamBody writes a provider response to a temporary file next to the asset
+// store so large videos never sit in memory.
+func (a *App) streamBody(res *http.Response, limit int64) (*outputPayload, error) {
+	defer res.Body.Close()
+	if res.StatusCode < 200 || res.StatusCode >= 300 {
+		return nil, fmt.Errorf("供应商请求失败（HTTP %d）", res.StatusCode)
+	}
+	if res.ContentLength > limit {
+		return nil, fmt.Errorf("供应商文件超过大小限制")
+	}
+	file, e := os.CreateTemp(a.Config.FilesDir, ".download-*")
+	if e != nil {
+		return nil, e
+	}
+	p := &outputPayload{path: file.Name()}
+	n, e := io.Copy(file, io.LimitReader(res.Body, limit+1))
+	if closeErr := file.Close(); e == nil {
+		e = closeErr
+	}
+	if e == nil && n > limit {
+		e = fmt.Errorf("供应商文件超过大小限制")
+	}
+	if e != nil {
+		p.discard()
+		return nil, e
+	}
+	p.size = n
+	head := make([]byte, 64)
+	if f, err := os.Open(p.path); err == nil {
+		read, _ := io.ReadFull(f, head)
+		f.Close()
+		p.head = head[:read]
+	}
+	return p, nil
+}
+
+func (a *App) downloadVendorOutputFile(ctx context.Context, address, trustedBase, key, authHeader string) (*outputPayload, error) {
+	res, e := openVendorOutput(ctx, address, trustedBase, key, authHeader)
+	if e != nil {
+		return nil, e
+	}
+	return a.streamBody(res, maxOutputBytes)
+}
+
+func (a *App) savePayload(uid, jobID, name, mediaType, ext string, p *outputPayload) (Row, error) {
+	if p.path == "" {
+		return a.saveAsset(uid, jobID, name, mediaType, ext, p.data)
+	}
+	defer p.discard()
+	return a.saveAssetFile(uid, jobID, name, mediaType, ext, p.path, p.size)
 }

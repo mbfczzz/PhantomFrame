@@ -129,7 +129,7 @@ export function JobAdmin() {
   });
   const { data, isLoading, error, refetch } = useApi<
     PageData<AdminJob> & { summary: RecordData }
-  >("/admin/jobs?" + query, { refetchInterval: 5000 });
+  >("/admin/jobs?" + query, { refetchInterval: 15000 });
   const { data: models } = useApi<Model[]>("/admin/models");
   const [detail, setDetail] = useState<string | null>(null);
   return (
@@ -285,7 +285,12 @@ export function AdminJobDetail({
     error,
     refetch,
   } = useApi<AdminJob>("/admin/jobs/" + encodeURIComponent(id), {
-    refetchInterval: 5000,
+    refetchInterval: (query: { state: { data?: AdminJob } }) =>
+      ["queued", "running", "refund_pending"].includes(
+        String(query.state.data?.status ?? "queued"),
+      )
+        ? 5000
+        : false,
   });
   const toast = useToast();
   return (

@@ -317,19 +317,17 @@ func (a *App) adminRoutes(m *http.ServeMux) {
 		return Row{"ok": true, "message": "上传成功，公网图片链接可访问", "host": u.Host}
 	})
 	a.route(m, "GET /api/admin/stats", 3, func(r *Request) any {
-		v := Row{"currency": currencyCode}
-		for _, name := range []string{"users", "models", "jobs"} {
-			v[name] = a.Store.One("SELECT count(*) n FROM " + name)["n"]
-		}
+		// Whole-table totals are cached briefly; the dashboard polls them. Live
+		// figures (active jobs, recent jobs) are cheap indexed reads.
+		v := a.cachedAdminTotals()
+		v["currency"] = currencyCode
 		v["activeJobs"] = a.Store.One("SELECT count(*) n FROM jobs WHERE status IN ('queued','running','refund_pending')")["n"]
-		v["consumed"] = credits(a.Store.One("SELECT coalesce(sum(-amount),0) n FROM transactions WHERE kind IN ('generation','refund')")["n"])
 		v["providers"] = a.Store.One("SELECT count(*) n FROM providers WHERE enabled=1")["n"]
-		v["daily"] = a.Store.All("SELECT date(created_at) date,count(*) count,sum(status='succeeded') succeeded,sum(CASE WHEN refunded=0 THEN cost ELSE 0 END)/100.0 credits FROM jobs WHERE created_at>=DATE_SUB(UTC_TIMESTAMP(),INTERVAL 14 DAY) GROUP BY date(created_at)")
-		recent := []Row{}
-		for _, j := range a.Store.All("SELECT j.*,u.username FROM jobs j JOIN users u ON u.id=j.user_id ORDER BY j.seq DESC LIMIT 8") {
-			p := a.jobView(a.Store, j)
-			p["username"] = j["username"]
-			recent = append(recent, p)
+		v["models"] = a.Store.One("SELECT count(*) n FROM models")["n"]
+		rows := a.Store.All("SELECT j.*,u.username FROM jobs j JOIN users u ON u.id=j.user_id ORDER BY j.seq DESC LIMIT 8")
+		recent := a.jobViews(a.Store, rows)
+		for i, j := range rows {
+			recent[i]["username"] = j["username"]
 		}
 		v["recent"] = recent
 		return v
@@ -469,7 +467,7 @@ func (a *App) adminRoutes(m *http.ServeMux) {
 	})
 	a.route(m, "GET /api/admin/users", 3, func(r *Request) any {
 		v := []Row{}
-		for _, u := range a.Store.All("SELECT * FROM users ORDER BY created_at DESC") {
+		for _, u := range a.Store.All("SELECT id,username,display_name,role,balance,status,parent_id,created_at FROM users ORDER BY created_at DESC") {
 			v = append(v, publicUser(u))
 		}
 		return v

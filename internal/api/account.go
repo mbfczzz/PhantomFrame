@@ -1,10 +1,14 @@
 package api
 
 import (
+	"fmt"
 	"net/http"
 	"strings"
 	"time"
 )
+
+// maxSubAccounts bounds how many accounts one user can create without registration.
+const maxSubAccounts = 50
 
 func (a *App) accountRoutes(m *http.ServeMux) {
 	a.route(m, "GET /api/money-operations/{id}", 2, func(r *Request) any {
@@ -59,7 +63,8 @@ func (a *App) accountRoutes(m *http.ServeMux) {
 			if integer(s.One("SELECT count(*) n FROM api_keys WHERE user_id=?", r.UID())["n"]) >= 20 {
 				fail(400, "最多创建 20 个 API Key")
 			}
-			s.Exec("INSERT INTO api_keys(id,user_id,name,prefix,token) VALUES(?,?,?,?,?)", keyID, r.UID(), name, t[:12], hash(t))
+			version := s.One("SELECT auth_version FROM users WHERE id=?", r.UID())["auth_version"]
+			s.Exec("INSERT INTO api_keys(id,user_id,name,prefix,token,auth_version) VALUES(?,?,?,?,?,?)", keyID, r.UID(), name, t[:12], hash(t), version)
 		})
 		r.Status = 201
 		return Row{"id": keyID, "name": name, "token": t}
@@ -81,7 +86,13 @@ func (a *App) accountRoutes(m *http.ServeMux) {
 		}
 		p := r.Body()
 		name, pass, uid := validUsername(p), passwordHash(validPassword(p)), id()
-		a.Store.Exec("INSERT INTO users(id,username,display_name,password,parent_id) VALUES(?,?,?,?,?)", uid, name, name, pass, r.UID())
+		a.Tx(func(s Store) {
+			s.One("SELECT id FROM users WHERE id=? FOR UPDATE", r.UID())
+			if integer(s.One("SELECT count(*) n FROM users WHERE parent_id=?", r.UID())["n"]) >= maxSubAccounts {
+				fail(400, fmt.Sprintf("最多创建 %d 个子账户", maxSubAccounts))
+			}
+			s.Exec("INSERT INTO users(id,username,display_name,password,parent_id) VALUES(?,?,?,?,?)", uid, name, name, pass, r.UID())
+		})
 		r.Status = 201
 		return publicUser(a.Store.One("SELECT * FROM users WHERE id=?", uid))
 	})

@@ -2,7 +2,6 @@ package api
 
 import (
 	"mime"
-	"net/http"
 	"net/url"
 	"strings"
 	"time"
@@ -124,7 +123,7 @@ func (a *App) adminJobOutput(r *Request) any {
 	if r.R.URL.Query().Get("download") != "" {
 		r.W.Header().Set("Content-Disposition", mime.FormatMediaType("attachment", map[string]string{"filename": str(asset["name"])}))
 	}
-	http.ServeFile(r.W, r.R, a.filePath(str(asset["file"])))
+	serveAssetFile(r.W, r.R, a.filePath(str(asset["file"])))
 	return nil
 }
 func (a *App) listAdminCodes(r *Request) any {

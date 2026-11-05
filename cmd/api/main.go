@@ -45,7 +45,11 @@ func main() {
 		}
 	}()
 	<-ctx.Done()
-	shutdown, cancel := context.WithTimeout(context.Background(), 20*time.Second)
+	// The worker lets in-flight jobs run for WORKER_SHUTDOWN_GRACE, then
+	// cancels and refunds (or re-queues) what is left. Keep the process alive
+	// long enough for that to be recorded; the container stop timeout must be
+	// longer than this (deploy/docker-compose.yml uses 30s).
+	shutdown, cancel := context.WithTimeout(context.Background(), config.WorkerShutdownGrace+8*time.Second)
 	defer cancel()
 	_ = server.Shutdown(shutdown)
 	select {

@@ -146,7 +146,10 @@ export default function ProviderModels({
                 );
                 refreshModels();
                 toast(
-                  `已读取 ${result.received} 个模型，新增 ${result.added} 个待发布条目`,
+                  `已读取 ${result.received} 个模型，新增 ${result.added} 个待发布条目` +
+                    (result.refreshed
+                      ? `，更新 ${result.refreshed} 个未编辑条目`
+                      : ""),
                 );
               })
             }

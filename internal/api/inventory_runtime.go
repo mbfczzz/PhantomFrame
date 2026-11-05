@@ -450,6 +450,7 @@ func (a *App) inventorySave(ctx context.Context, j Row, outputs []any, base, key
 		}
 		output := object(raw)
 		var data []byte
+		var payload *outputPayload
 		var e error
 		if blob, ok := output["bytes"].([]byte); ok {
 			data = blob
@@ -485,21 +486,25 @@ func (a *App) inventorySave(ctx context.Context, j Row, outputs []any, base, key
 					}
 					address = origin.ResolveReference(relative).String()
 				}
-				data, e = downloadVendorOutputAuth(ctx, address, base, key, inventoryProviderAuth(object(j["provider_snapshot"])))
+				payload, e = a.downloadVendorOutputFile(ctx, address, base, key, inventoryProviderAuth(object(j["provider_snapshot"])))
 			}
 		}
 		if e != nil {
 			return nil, e
 		}
-		mt, ext := detectMime(data)
+		if payload == nil {
+			payload = &outputPayload{data: data}
+		}
+		mt, ext := detectMime(payload.sniff())
 		expected := kind
 		if kind == "upscale" {
 			expected = "video"
 		}
 		if mt == "" || !strings.HasPrefix(mt, expected+"/") {
+			payload.discard()
 			return nil, fmt.Errorf("供应商结果文件类型与任务不一致")
 		}
-		asset, e := a.saveAsset(str(j["user_id"]), str(j["id"]), "", mt, ext, data)
+		asset, e := a.savePayload(str(j["user_id"]), str(j["id"]), "", mt, ext, payload)
 		if e != nil {
 			return nil, e
 		}

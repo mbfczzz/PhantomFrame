@@ -31,9 +31,18 @@ func (a *App) authenticate(r *Request) {
 		if r.User == nil || r.User["status"] != "active" {
 			fail(401, "API Key 所属账户不可用")
 		}
+		// Password and role changes bump auth_version; keys minted before that
+		// are revoked together with web sessions.
+		if k["auth_version"] != nil && integer(k["auth_version"]) != integer(r.User["auth_version"]) {
+			fail(401, "API Key 无效或已撤销")
+		}
 		r.APIKey = true
-		a.Store.Exec("UPDATE api_keys SET last_used_at=CURRENT_TIMESTAMP(3) WHERE id=?", k["id"])
-	} else if c, e := r.R.Cookie("pf_session"); e == nil {
+		// Record usage at most once a minute per key instead of writing (and
+		// locking the key row) on every request.
+		if last := parseTime(k["last_used_at"]); last.IsZero() || time.Since(last) > time.Minute {
+			a.Store.Exec("UPDATE api_keys SET last_used_at=CURRENT_TIMESTAMP(3) WHERE id=?", k["id"])
+		}
+	} else if c, e := r.R.Cookie(a.sessionCookie()); e == nil {
 		value, e := a.Redis.Get(r.R.Context(), a.Config.RedisPrefix+"session:"+hash(c.Value)).Result()
 		if e != nil && e != redis.Nil {
 			fail(503, "会话服务暂不可用，请稍后重试")
@@ -49,14 +58,38 @@ func (a *App) authenticate(r *Request) {
 	if r.User == nil || r.User["status"] != "active" {
 		fail(401, "请先登录")
 	}
+	// A sub-account is only usable while its parent account is active, so
+	// disabling an account also stops the sub-accounts it controls.
+	if parent := r.User["parent_id"]; parent != nil {
+		if p := a.Store.One("SELECT status FROM users WHERE id=?", parent); p == nil || p["status"] != "active" {
+			fail(401, "主账户已停用，子账户不可用")
+		}
+	}
 }
+
+// sessionCookie uses the __Host- prefix whenever cookies are Secure, so a
+// sibling subdomain cannot plant or shadow the session cookie.
+func (a *App) sessionCookie() string {
+	if a.Config.CookieSecure {
+		return "__Host-pf_session"
+	}
+	return "pf_session"
+}
+
+// dummyPasswordHash keeps failed logins for unknown users as slow as for real
+// ones, so response timing does not reveal which usernames exist.
+var dummyPasswordHash = func() []byte {
+	h, _ := bcrypt.GenerateFromPassword([]byte("phantomframe-timing-equalizer"), 12)
+	return h
+}()
+
 func (a *App) login(r *Request, u Row) any {
 	t := token()
 	e := a.Redis.Set(r.R.Context(), a.Config.RedisPrefix+"session:"+hash(t), jsonText(Row{"userId": u["id"], "version": u["auth_version"]}), 7*24*time.Hour).Err()
 	if e != nil {
 		fail(503, "会话服务暂不可用，请稍后重试")
 	}
-	http.SetCookie(r.W, &http.Cookie{Name: "pf_session", Value: t, Path: "/", HttpOnly: true, Secure: a.Config.CookieSecure, SameSite: http.SameSiteLaxMode, MaxAge: 7 * 86400})
+	http.SetCookie(r.W, &http.Cookie{Name: a.sessionCookie(), Value: t, Path: "/", HttpOnly: true, Secure: a.Config.CookieSecure, SameSite: http.SameSiteLaxMode, MaxAge: 7 * 86400})
 	return publicUser(u)
 }
 func (s Store) Settings() Row {
@@ -81,7 +114,11 @@ func (a *App) authRoutes(m *http.ServeMux) {
 		p := r.Body()
 		u := a.Store.One("SELECT * FROM users WHERE username=?", textField(p, "username", 1, 40))
 		pass := textField(p, "password", 0, 128)
-		if u == nil || u["status"] != "active" || bcrypt.CompareHashAndPassword([]byte(str(u["password"])), []byte(pass)) != nil {
+		if u == nil {
+			_ = bcrypt.CompareHashAndPassword(dummyPasswordHash, []byte(pass))
+			fail(401, "账号或密码不正确")
+		}
+		if bcrypt.CompareHashAndPassword([]byte(str(u["password"])), []byte(pass)) != nil || u["status"] != "active" {
 			fail(401, "账号或密码不正确")
 		}
 		return a.login(r, u)
@@ -116,12 +153,12 @@ func (a *App) authRoutes(m *http.ServeMux) {
 		return a.login(r, a.Store.One("SELECT * FROM users WHERE id=?", uid))
 	})
 	a.route(m, "POST /api/auth/logout", 0, func(r *Request) any {
-		if c, e := r.R.Cookie("pf_session"); e == nil {
+		if c, e := r.R.Cookie(a.sessionCookie()); e == nil {
 			if a.Redis.Del(r.R.Context(), a.Config.RedisPrefix+"session:"+hash(c.Value)).Err() != nil {
 				fail(503, "会话服务暂不可用，请稍后重试")
 			}
 		}
-		http.SetCookie(r.W, &http.Cookie{Name: "pf_session", Value: "", Path: "/", HttpOnly: true, Secure: a.Config.CookieSecure, SameSite: http.SameSiteLaxMode, MaxAge: -1})
+		http.SetCookie(r.W, &http.Cookie{Name: a.sessionCookie(), Value: "", Path: "/", HttpOnly: true, Secure: a.Config.CookieSecure, SameSite: http.SameSiteLaxMode, MaxAge: -1})
 		return Row{"ok": true}
 	})
 	a.route(m, "GET /api/me", 1, func(r *Request) any { return publicUser(r.User) })

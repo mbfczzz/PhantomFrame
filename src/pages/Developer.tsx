@@ -35,6 +35,7 @@ import {
   type RecordData,
   type PageData,
   type Job,
+  jobListInterval,
 } from "../lib";
 import { Stat, JobsTable, UsageChart } from "./Account";
 
@@ -253,10 +254,10 @@ export default function Developer() {
     isLoading,
     error: keyError,
     refetch: refetchKeys,
-  } = useApi<RecordData[]>("/keys", { refetchInterval: 10000 });
+  } = useApi<RecordData[]>("/keys", { refetchInterval: 30000 });
   const { data: usage, error: usageError } = useApi<RecordData>(
     "/usage?source=api",
-    { refetchInterval: 5000 },
+    { refetchInterval: 30000 },
   );
   const { data: config } = useApi<RecordData>("/config");
   const [tab, setTab] = useState("keys");
@@ -269,7 +270,7 @@ export default function Developer() {
     refetch: refetchJobs,
   } = useApi<PageData<Job>>(
     `/jobs?source=api&status=${status}&page=${page}&limit=20`,
-    { enabled: tab === "records", refetchInterval: 5000 },
+    { enabled: tab === "records", refetchInterval: jobListInterval(5000) },
   );
   const [create, setCreate] = useState(false);
   const [name, setName] = useState("");

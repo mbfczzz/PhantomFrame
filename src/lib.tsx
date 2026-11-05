@@ -176,6 +176,19 @@ export function useApi<T = any>(path: string, options: RecordData = {}) {
     ...options,
   });
 }
+const activeJobStatuses = ["queued", "running", "refund_pending"];
+/**
+ * Poll a job list quickly only while something is still in progress; idle
+ * lists refresh slowly to pick up jobs submitted elsewhere (API, other tabs).
+ */
+export const jobListInterval =
+  (activeMs: number, idleMs = 30000) =>
+  (query: { state: { data?: { items?: { status: string }[] } } }) =>
+    query.state.data?.items?.some((job) =>
+      activeJobStatuses.includes(job.status),
+    )
+      ? activeMs
+      : idleMs;
 export function useRefresh() {
   const client = useQueryClient();
   return useCallback(

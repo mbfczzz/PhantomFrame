@@ -140,9 +140,12 @@ func enumField(m Row, k string, values ...string) string {
 	fail(400, k+" 值不正确")
 	return ""
 }
+
+var usernamePattern = regexp.MustCompile(`^[a-zA-Z0-9_.-]+$`)
+
 func validUsername(m Row) string {
 	s := trimField(m, "username", 3, 40)
-	if !regexp.MustCompile(`^[a-zA-Z0-9_.-]+$`).MatchString(s) {
+	if !usernamePattern.MatchString(s) {
 		fail(400, "用户名只能包含字母、数字、点、下划线和横线")
 	}
 	return s
@@ -196,9 +199,18 @@ func (a *App) route(mux *http.ServeMux, pattern string, access int, fn func(*Req
 				a.limit(r, "register", 10, time.Hour)
 			case "/api/jobs":
 				a.limitIdentity(r, "jobs", "user:"+req.UID(), 30, time.Minute)
+			case "/api/me/password":
+				a.limitIdentity(r, "password", "user:"+req.UID(), 10, 15*time.Minute)
+			case "/api/sub-users":
+				a.limitIdentity(r, "sub-users", "user:"+req.UID(), 20, time.Hour)
 			}
 		}
-		if result := fn(req); result != nil {
+		result := fn(req)
+		if r.Method != "GET" && strings.HasPrefix(r.URL.Path, "/api/admin/") {
+			// Any admin write may change models, prices or providers.
+			a.bumpCatalogVersion()
+		}
+		if result != nil {
 			send(w, req.Status, result)
 		}
 	})
@@ -307,13 +319,30 @@ func (a *App) Handler() http.Handler {
 			return
 		}
 		if info, e := os.Stat(path); e == nil && !info.IsDir() {
+			switch {
+			case strings.HasPrefix(r.URL.Path, "/assets/"):
+				// Vite emits content-hashed file names under /assets/.
+				w.Header().Set("Cache-Control", "public, max-age=31536000, immutable")
+			case filepath.Base(path) == "index.html":
+				w.Header().Set("Cache-Control", "no-cache")
+			default:
+				w.Header().Set("Cache-Control", "public, max-age=86400")
+			}
 			fs.ServeHTTP(w, r)
+			return
+		}
+		if strings.HasPrefix(r.URL.Path, "/assets/") {
+			// A missing hashed asset must not fall back to index.html: an old
+			// cached page would then load HTML as JavaScript and render blank.
+			http.NotFound(w, r)
 			return
 		}
 		if _, e := os.Stat(filepath.Join(root, "index.html")); e != nil {
 			http.NotFound(w, r)
 			return
 		}
+		// The SPA shell must be revalidated so deploys take effect immediately.
+		w.Header().Set("Cache-Control", "no-cache")
 		http.ServeFile(w, r, filepath.Join(root, "index.html"))
 	})
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {

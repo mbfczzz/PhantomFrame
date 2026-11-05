@@ -9,114 +9,258 @@ import (
 	"time"
 )
 
-// Redis elects one dispatcher; MySQL is the durable job ledger and claim authority.
-// Never resubmit an uncertain running request after losing the dispatcher lease.
+// Execution and maintenance are separate:
+//   - Every instance runs job consumers. MySQL is the claim authority
+//     (FOR UPDATE SKIP LOCKED), and each running job carries a lease that its
+//     worker renews. Losing Redis leadership never interrupts a job.
+//   - One Redis-elected leader runs maintenance: reclaiming jobs whose lease
+//     expired (their worker died), refund retries and output cleanup.
+//
+// Never resubmit an uncertain running request: a reclaimed job is refunded,
+// unless the worker proved no provider request was ever started.
+const (
+	jobLeaseDuration = 90 * time.Second
+	jobLeaseRenewal  = 15 * time.Second
+	leaderTTL        = 30 * time.Second
+	leaderRenewal    = 8 * time.Second
+)
+
+type workerSlots struct {
+	mu          sync.Mutex
+	perProvider int
+	running     map[string]int
+}
+
+func (w *workerSlots) acquire(provider string) bool {
+	w.mu.Lock()
+	defer w.mu.Unlock()
+	if w.running[provider] >= w.perProvider {
+		return false
+	}
+	w.running[provider]++
+	return true
+}
+func (w *workerSlots) release(provider string) {
+	w.mu.Lock()
+	defer w.mu.Unlock()
+	if w.running[provider]--; w.running[provider] <= 0 {
+		delete(w.running, provider)
+	}
+}
+
+func (a *App) workerSettings() (int, int, time.Duration) {
+	concurrency := a.Config.WorkerConcurrency
+	if concurrency <= 0 {
+		concurrency = 8
+	}
+	perProvider := a.Config.WorkerProviderConcurrency
+	if perProvider <= 0 {
+		// One slow provider may use at most half of the slots, so other
+		// providers' image and text jobs keep moving.
+		perProvider = max(1, (concurrency+1)/2)
+	}
+	return concurrency, min(perProvider, concurrency), a.Config.WorkerShutdownGrace
+}
+
 func (a *App) StartWorker(ctx context.Context) <-chan struct{} {
 	done := make(chan struct{})
+	worker := id()
+	concurrency, perProvider, grace := a.workerSettings()
+	slots := &workerSlots{perProvider: perProvider, running: map[string]int{}}
+	// Jobs outlive the shutdown signal for the grace period, then are cancelled.
+	jobs, cancelJobs := context.WithCancel(context.WithoutCancel(ctx))
 	go func() {
 		defer close(done)
-		for ctx.Err() == nil {
-			owner := id()
-			key := a.Config.RedisPrefix + "worker:leader"
-			ok, e := a.Redis.SetNX(ctx, key, owner, 30*time.Second).Result()
-			if e != nil || !ok {
-				if wait(ctx, 2*time.Second) != nil {
+		defer cancelJobs()
+		var consumers sync.WaitGroup
+		for i := 0; i < concurrency; i++ {
+			consumers.Add(1)
+			go func() { defer consumers.Done(); a.consume(ctx, jobs, worker, slots) }()
+		}
+		leaseDone := make(chan struct{})
+		go func() {
+			defer close(leaseDone)
+			for wait(jobs, jobLeaseRenewal) == nil {
+				a.renewJobLeases(worker)
+			}
+		}()
+		maintenanceDone := make(chan struct{})
+		go func() { defer close(maintenanceDone); a.leaderMaintenance(ctx) }()
+		consumersDone := make(chan struct{})
+		go func() { consumers.Wait(); close(consumersDone) }()
+		<-ctx.Done()
+		if grace > 0 {
+			timer := time.NewTimer(grace)
+			select {
+			case <-consumersDone:
+			case <-timer.C:
+			}
+			timer.Stop()
+		}
+		cancelJobs()
+		<-consumersDone
+		<-leaseDone
+		<-maintenanceDone
+	}()
+	return done
+}
+
+func (a *App) renewJobLeases(worker string) {
+	if err := try(func() {
+		a.Store.Exec("UPDATE jobs SET lease_until=DATE_ADD(CURRENT_TIMESTAMP(3),INTERVAL ? SECOND) WHERE worker_id=? AND status='running'", int(jobLeaseDuration/time.Second), worker)
+	}); err != nil {
+		log.Printf("job lease renewal deferred type=%T", err)
+	}
+}
+
+func (a *App) leaderMaintenance(ctx context.Context) {
+	key := a.Config.RedisPrefix + "worker:leader"
+	for ctx.Err() == nil {
+		owner := id()
+		ok, e := a.Redis.SetNX(ctx, key, owner, leaderTTL).Result()
+		if e != nil || !ok {
+			if wait(ctx, 2*time.Second) != nil {
+				return
+			}
+			continue
+		}
+		leader, cancel := context.WithCancel(ctx)
+		heartbeatDone := make(chan struct{})
+		go func() {
+			defer close(heartbeatDone)
+			renewed := time.Now()
+			for wait(leader, leaderRenewal) == nil {
+				renewCtx, stop := context.WithTimeout(leader, 3*time.Second)
+				n, e := a.Redis.Eval(renewCtx, `if redis.call('GET',KEYS[1])==ARGV[1] then return redis.call('PEXPIRE',KEYS[1],ARGV[2]) else return 0 end`, []string{key}, owner, leaderTTL.Milliseconds()).Int()
+				stop()
+				if e == nil && n == 1 {
+					renewed = time.Now()
+					continue
+				}
+				// Step down only when the lease is provably gone or could have
+				// expired; a single slow Redis call is retried on the next tick.
+				if (e == nil && n == 0) || time.Since(renewed) >= leaderTTL-leaderRenewal {
+					cancel()
 					return
 				}
-				continue
 			}
-			leader, cancel := context.WithCancel(ctx)
-			heartbeatDone := make(chan struct{})
+		}()
+		var wg sync.WaitGroup
+		for _, task := range []func(){
+			func() { a.reclaimExpiredJobs(leader) },
+			a.retryRefunds,
+			func() { a.retryCleanups(leader) },
+		} {
+			wg.Add(1)
 			go func() {
-				defer close(heartbeatDone)
-				for wait(leader, 8*time.Second) == nil {
-					renewCtx, stop := context.WithTimeout(leader, 3*time.Second)
-					n, e := a.Redis.Eval(renewCtx, `if redis.call('GET',KEYS[1])==ARGV[1] then return redis.call('PEXPIRE',KEYS[1],ARGV[2]) else return 0 end`, []string{key}, owner, 30000).Int()
-					stop()
-					if e != nil || n != 1 {
-						cancel()
+				defer wg.Done()
+				for leader.Err() == nil {
+					task()
+					if wait(leader, 2*time.Second) != nil {
 						return
 					}
 				}
 			}()
-			err := try(func() {
-				for _, j := range a.Store.All("SELECT id FROM jobs WHERE status='running'") {
-					a.refund(str(j["id"]), "服务重启或调度连接中断，费用已退回，请联系管理员核对上游任务")
-				}
-				var wg sync.WaitGroup
-				wg.Add(1)
-				go func() {
-					defer wg.Done()
-					for leader.Err() == nil {
-						a.retryRefunds()
-						if wait(leader, 2*time.Second) != nil {
-							return
-						}
-					}
-				}()
-				wg.Add(1)
-				go func() {
-					defer wg.Done()
-					for leader.Err() == nil {
-						a.retryCleanups(leader)
-						if wait(leader, 2*time.Second) != nil {
-							return
-						}
-					}
-				}()
-				for i := 0; i < 2; i++ {
-					wg.Add(1)
-					go func() { defer wg.Done(); a.consume(leader) }()
-				}
-				wg.Wait()
-			})
-			if err != nil {
-				log.Printf("worker coordinator interrupted type=%T", err)
-			}
-			cancel()
-			<-heartbeatDone
-			release, stop := context.WithTimeout(context.Background(), 3*time.Second)
-			_ = a.Redis.Eval(release, `if redis.call('GET',KEYS[1])==ARGV[1] then return redis.call('DEL',KEYS[1]) else return 0 end`, []string{key}, owner).Err()
-			stop()
-			if wait(ctx, time.Second) != nil {
+		}
+		wg.Wait()
+		cancel()
+		<-heartbeatDone
+		release, stop := context.WithTimeout(context.Background(), 3*time.Second)
+		_ = a.Redis.Eval(release, `if redis.call('GET',KEYS[1])==ARGV[1] then return redis.call('DEL',KEYS[1]) else return 0 end`, []string{key}, owner).Err()
+		stop()
+		if wait(ctx, time.Second) != nil {
+			return
+		}
+	}
+}
+
+// reclaimExpiredJobs refunds running jobs whose worker stopped renewing the
+// lease (crash, kill, lost database). Jobs from releases without leases have
+// no lease_until and are reclaimed the same way.
+func (a *App) reclaimExpiredJobs(ctx context.Context) {
+	if err := try(func() {
+		for _, j := range a.Store.All("SELECT id FROM jobs WHERE status='running' AND (lease_until IS NULL OR lease_until<CURRENT_TIMESTAMP(3)) ORDER BY seq LIMIT 100") {
+			if ctx.Err() != nil {
 				return
 			}
+			jid := str(j["id"])
+			if err := try(func() {
+				a.refund(jid, "服务重启或调度连接中断，费用已退回，请联系管理员核对上游任务")
+			}); err != nil {
+				log.Printf("expired job recovery deferred id=%s type=%T", jid, err)
+				continue
+			}
+			a.cleanupFailedJob(jid)
 		}
-	}()
-	return done
+	}); err != nil {
+		log.Printf("expired job scan deferred type=%T", err)
+	}
 }
-func (a *App) consume(ctx context.Context) {
-	for ctx.Err() == nil {
+
+func (a *App) consume(claims, jobs context.Context, worker string, slots *workerSlots) {
+	for claims.Err() == nil {
 		var j Row
+		var provider string
 		err := try(func() {
 			a.Tx(func(s Store) {
-				j = s.One("SELECT * FROM jobs WHERE status='queued' ORDER BY seq LIMIT 1 FOR UPDATE SKIP LOCKED")
-				if j != nil {
-					if ctx.Err() != nil {
+				for _, candidate := range s.All("SELECT * FROM jobs WHERE status='queued' ORDER BY seq LIMIT 100 FOR UPDATE SKIP LOCKED") {
+					if claims.Err() != nil {
 						return
 					}
-					s.Exec("UPDATE jobs SET status='running' WHERE id=? AND status='queued'", j["id"])
-					j["status"] = "running"
+					key := str(first(object(candidate["provider_snapshot"])["id"], object(candidate["provider_snapshot"])["protocol"]))
+					if !slots.acquire(key) {
+						continue
+					}
+					if s.Exec("UPDATE jobs SET status='running',worker_id=?,lease_until=DATE_ADD(CURRENT_TIMESTAMP(3),INTERVAL ? SECOND) WHERE id=? AND status='queued'", worker, int(jobLeaseDuration/time.Second), candidate["id"]) == 0 {
+						slots.release(key)
+						continue
+					}
+					j, provider = candidate, key
+					j["status"], j["worker_id"] = "running", worker
+					return
 				}
 			})
 		})
 		if err != nil {
+			if provider != "" {
+				// The claim transaction rolled back; the job is still queued.
+				slots.release(provider)
+				j = nil
+			}
 			log.Printf("job claim interrupted type=%T", err)
-			if wait(ctx, time.Second) != nil {
+			if wait(claims, time.Second) != nil {
 				return
 			}
 			continue
 		}
-		if ctx.Err() != nil {
-			return
-		}
 		if j == nil {
-			_, _ = a.Redis.BLPop(ctx, time.Second, a.Config.RedisPrefix+"jobs:wake").Result()
+			_, _ = a.Redis.BLPop(claims, time.Second, a.Config.RedisPrefix+"jobs:wake").Result()
 			continue
 		}
-		a.processJob(ctx, j)
+		if claims.Err() != nil {
+			// Shutdown began right after the claim: nothing was sent upstream.
+			a.requeueJob(str(j["id"]), worker)
+			slots.release(provider)
+			return
+		}
+		a.processJob(jobs, j)
+		slots.release(provider)
 	}
 }
+
+// requeueJob returns a claimed job to the queue. Only valid when no provider
+// request was started for it.
+func (a *App) requeueJob(jid, worker string) bool {
+	var changed int64
+	err := try(func() {
+		changed = a.Store.Exec("UPDATE jobs SET status='queued',worker_id=NULL,lease_until=NULL WHERE id=? AND status='running' AND worker_id=?", jid, worker)
+		if changed > 0 {
+			a.updateUpstreamCall("UPDATE upstream_calls SET status='queued',phase='queued',updated_at=UTC_TIMESTAMP(3) WHERE id=? AND status='running'", jid)
+		}
+	})
+	return err == nil && changed > 0
+}
+
 func (a *App) processJob(parent context.Context, j Row) {
 	a.beginUpstreamCall(j)
 	timeout := 12 * time.Minute
@@ -129,6 +273,7 @@ func (a *App) processJob(parent context.Context, j Row) {
 	ctx, cancel := context.WithTimeout(parent, timeout)
 	defer cancel()
 	ctx = upstreamContext(ctx, a, str(j["id"]))
+	worker := str(j["worker_id"])
 	err := try(func() {
 		var out []Row
 		var e error
@@ -143,18 +288,44 @@ func (a *App) processJob(parent context.Context, j Row) {
 		if ctx.Err() != nil {
 			panic(ctx.Err())
 		}
+		// The provider has delivered a paid result. Storing it gets its own
+		// budget and retries, so a job that finishes near its deadline, or a
+		// transient OSS error, does not throw the result away.
 		upstreamPhase(ctx, "storing")
-		out, e = a.storeGeneratedOutputs(ctx, j, out)
-		must(e)
-		if ctx.Err() != nil {
-			panic(ctx.Err())
+		storeCtx, stopStore := context.WithTimeout(context.WithoutCancel(ctx), 5*time.Minute)
+		defer stopStore()
+		for attempt := 0; ; attempt++ {
+			var stored []Row
+			if stored, e = a.storeGeneratedOutputs(storeCtx, j, out); e == nil {
+				out = stored
+				break
+			}
+			if attempt >= 2 || wait(storeCtx, time.Duration(attempt+1)*2*time.Second) != nil {
+				break
+			}
 		}
-		if a.Store.Exec("UPDATE jobs SET status='succeeded',outputs=?,finished_at=CURRENT_TIMESTAMP(3) WHERE id=? AND status='running'", jsonText(out), j["id"]) == 0 {
+		must(e)
+		var changed int64
+		for attempt := 0; ; attempt++ {
+			e = try(func() {
+				changed = a.Store.Exec("UPDATE jobs SET status='succeeded',outputs=?,finished_at=CURRENT_TIMESTAMP(3),lease_until=NULL WHERE id=? AND status='running' AND (worker_id=? OR worker_id IS NULL)", jsonText(out), j["id"], worker)
+			})
+			if e == nil || attempt >= 4 || wait(storeCtx, time.Duration(attempt+1)*time.Second) != nil {
+				break
+			}
+		}
+		must(e)
+		if changed == 0 {
 			panic(apiError{409, "任务已经结束"})
 		}
 	})
 	if err == nil {
 		a.syncUpstreamCall(str(j["id"]))
+		return
+	}
+	// Cancelled by shutdown before any provider request started: put it back in
+	// the queue instead of failing a job that never ran.
+	if parent.Err() != nil && upstreamAttempts(ctx) == 0 && object(j["provider_snapshot"])["protocol"] != "demo" && a.requeueJob(str(j["id"]), worker) {
 		return
 	}
 	message := "生成失败，费用已退还，请联系管理员检查通道配置"
@@ -168,7 +339,8 @@ func (a *App) processJob(parent context.Context, j Row) {
 	}
 	a.noteUpstreamFailure(j, message)
 	// If the database itself is temporarily offline, keep trying to durably record
-	// the obligation. On shutdown the next dispatcher recovers remaining running jobs.
+	// the obligation. If this worker stops, its lease expires and the leader
+	// recovers the job.
 	for {
 		e := try(func() { a.refund(str(j["id"]), message) })
 		if e == nil {

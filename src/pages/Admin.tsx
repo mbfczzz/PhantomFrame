@@ -165,7 +165,7 @@ export default function Admin() {
 function Overview() {
   const { data, isLoading, error, refetch } = useApi<RecordData>(
     "/admin/stats",
-    { refetchInterval: 5000 },
+    { refetchInterval: 30000 },
   );
   if (isLoading) return <Loading />;
   if (error) return <ErrorState error={error} retry={refetch} />;

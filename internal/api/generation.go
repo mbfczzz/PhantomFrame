@@ -237,6 +237,15 @@ func (a *App) submit(r *Request) any {
 	}
 	var result Row
 	fingerprint := hash(jsonText(Row{"modelId": mid, "prompt": prompt, "params": params}))
+	// Quote once before taking row locks. Reference media may need ffprobe (up
+	// to 10s per new video); doing it here fills the duration cache so the
+	// locked quote below is fast. Errors are re-raised inside the transaction.
+	_ = try(func() {
+		q := a.quote(a.Store, mid, r.UID(), params)
+		if q.Provider["protocol"] == "inventory" || q.Provider["protocol"] == "opencrow" {
+			a.validateInventoryQuote(a.Store, q.Model, q.Provider, q.Params, r.UID(), prompt)
+		}
+	})
 	a.Tx(func(s Store) {
 		u := s.One("SELECT id,status,auth_version FROM users WHERE id=? FOR UPDATE", r.UID())
 		if u == nil || u["status"] != "active" || integer(u["auth_version"]) != integer(r.User["auth_version"]) {
@@ -264,7 +273,9 @@ func (a *App) submit(r *Request) any {
 		if integer(s.One("SELECT count(*) n FROM jobs WHERE user_id=? AND status IN ('queued','running')", r.UID())["n"]) >= 10 {
 			fail(429, "同时最多提交 10 个任务")
 		}
-		s.One("SELECT id FROM models WHERE id=? FOR UPDATE", mid)
+		// A shared lock keeps the model and its prices stable for this charge
+		// without serializing every user's submissions to the same model.
+		s.One("SELECT id FROM models WHERE id=? FOR SHARE", mid)
 		q := a.quote(s, mid, r.UID(), params)
 		if q.Provider["protocol"] == "inventory" || q.Provider["protocol"] == "opencrow" {
 			a.validateInventoryQuote(s, q.Model, q.Provider, q.Params, r.UID(), prompt)
@@ -370,11 +381,13 @@ func jobSource(r *Request) string {
 func (a *App) creationRoutes(m *http.ServeMux) {
 	a.route(m, "GET /api/models/status", 1, a.modelStatus)
 	a.route(m, "GET /api/models", 1, func(r *Request) any {
-		q := "SELECT m.* FROM models m JOIN providers p ON p.id=m.provider_id WHERE m.enabled=1 AND p.enabled=1"
-		if !a.Config.Demo {
-			q += " AND p.protocol!='demo'"
-		}
-		return a.Store.ModelViews(a.Store.All(q + " ORDER BY m.sort_order,m.name"))
+		return a.cachedCatalog(func() any {
+			q := "SELECT m.* FROM models m JOIN providers p ON p.id=m.provider_id WHERE m.enabled=1 AND p.enabled=1"
+			if !a.Config.Demo {
+				q += " AND p.protocol!='demo'"
+			}
+			return a.Store.ModelViews(a.Store.All(q + " ORDER BY m.sort_order,m.name"))
+		})
 	})
 	a.route(m, "POST /api/pricing/quote", 1, func(r *Request) any {
 		p := r.Body()
@@ -419,9 +432,7 @@ func (a *App) creationRoutes(m *http.ServeMux) {
 		clause := strings.Join(where, " AND ")
 		total := a.Store.One("SELECT count(*) n FROM jobs j LEFT JOIN models m ON m.id=j.model_id WHERE "+clause, args...)["n"]
 		v := []Row{}
-		for _, j := range a.Store.All("SELECT j.* FROM jobs j LEFT JOIN models m ON m.id=j.model_id WHERE "+clause+" ORDER BY j.created_at DESC,j.seq DESC LIMIT ? OFFSET ?", append(args, limit, (page-1)*limit)...) {
-			v = append(v, a.jobView(a.Store, j))
-		}
+		v = append(v, a.jobViews(a.Store, a.Store.All("SELECT j.* FROM jobs j LEFT JOIN models m ON m.id=j.model_id WHERE "+clause+" ORDER BY j.created_at DESC,j.seq DESC LIMIT ? OFFSET ?", append(args, limit, (page-1)*limit)...))...)
 		return Row{"items": v, "total": total, "page": page, "limit": limit}
 	})
 	a.route(m, "GET /api/jobs/{id}", 1, func(r *Request) any {

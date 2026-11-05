@@ -11,7 +11,6 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
-	"time"
 )
 
 type inventoryCall struct {
@@ -119,7 +118,7 @@ func (a *App) inventoryHTTP(ctx context.Context, p Row, key string, call invento
 	}
 	req.Header.Set("Idempotency-Key", str(object(p["config"])["jobID"]))
 	client := upstreamClient()
-	client.Timeout = 90 * time.Second
+	client.Timeout = generationRequestTimeout
 	res, e := client.Do(req)
 	if e != nil {
 		if ctx.Err() != nil {

@@ -35,6 +35,11 @@
 }
 
 @media (max-width: 1100px) {
+  /* Admin tables scroll sideways on tablets; give their columns enough room
+     that user names and IDs do not break mid-word. */
+  .admin-page .table-wrap table {
+    min-width: 960px;
+  }
   .horizontal-shell .studio-page.creation-page {
     padding-top: 23px;
     padding-left: 24px;

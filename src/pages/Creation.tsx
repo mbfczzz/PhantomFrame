@@ -926,13 +926,17 @@ export function Models() {
             <span className="muted">
               按所选规格计费，提交前可查看实际消耗。
             </span>
-            <Link
-              className="button primary"
-              to={"/generate?model=" + encodeURIComponent(selected.id)}
-            >
-              <Rocket size={16} />
-              立即使用
-            </Link>
+            {!selected.prices.some((price) => price.enabled) ? (
+              <span className="muted">价格待配置，暂不可用</span>
+            ) : (
+              <Link
+                className="button primary"
+                to={"/generate?model=" + encodeURIComponent(selected.id)}
+              >
+                <Rocket size={16} />
+                立即使用
+              </Link>
+            )}
           </div>
         </Modal>
       )}

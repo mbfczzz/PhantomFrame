@@ -42,8 +42,15 @@ export const billingLabel = (model: Model) => {
         .join(" / ")
     : "待配置";
 };
-// Raw option values (e.g. "high", "2k") are shown with the shared readable labels.
-export const specLabel = (value: unknown) => readableValue(value);
+export const specLabel = (value: unknown) =>
+  String(value).replace(/^(\d+)k$/i, "$1K");
+/** Price-line text for an option: its own label, else a readable raw value. */
+export const specOptionLabel = (option: unknown, value?: unknown): string => {
+  const o = option as { l?: unknown; v?: unknown } | undefined;
+  if (o && typeof o === "object" && o.l != null && o.l !== "")
+    return specLabel(o.l);
+  return readableValue(o && typeof o === "object" ? o.v : (option ?? value));
+};
 export const pricingDimensions = (model: Model): Parameter[] =>
   model.parameters.filter(
     (p) =>
@@ -79,7 +86,7 @@ export function specificationRates(model: Model) {
               ? value
                 ? "开启"
                 : "关闭"
-              : specLabel(option?.l ?? value);
+              : specOptionLabel(option, value);
           return dimensions.some((parameter) => parameter.name === name)
             ? label
             : `${name === "faceEnabled" ? "人脸处理" : p?.label || name} ${label}`;

@@ -234,6 +234,12 @@ export default function Studio() {
   const dragDepth = useRef(0);
   const serials = useRef<Record<string, number>>({});
   const initialized = useRef(false);
+  // Becomes true once any model has been selected; from then on the page never
+  // picks a model on the user's behalf.
+  const everSelected = useRef(false);
+  // The last model selected, kept so it can be named if it disappears from
+  // the catalogue (the derived `model` is already gone by then).
+  const lastSelected = useRef<Model | null>(null);
   const definition = useRef({ id: "", schema: "" });
   const uploadController = useRef<AbortController | null>(null);
   const uploadLock = useRef(false);
@@ -288,12 +294,19 @@ export default function Studio() {
     };
     setUnavailable(requested);
     setKind(requested.type);
+    // A billing mode the type actually offers, so the model menu stays usable.
+    setBilling(billingUnit(requested) || "request");
     setModelId("");
     setParams({});
     setCreationMode("text");
+    const dropped = latest.current.refs;
+    if (dropped.length)
+      setPrompt((value) => removeReferenceTokens(value, dropped));
     setRefs([]);
   };
   const selectModel = (next: Model, updateURL = true) => {
+    everSelected.current = true;
+    lastSelected.current = next;
     setUnavailable(null);
     definition.current = {
       id: next.id,
@@ -330,37 +343,46 @@ export default function Studio() {
     requestIdentity.current = null;
     if (updateURL) setSearch({ model: next.id }, { replace: true });
   };
-  // Runs on every catalogue load (including refetches after an admin adds
-  // models or prices) until a usable model is selected. Only models with an
-  // enabled price are usable; the model menu lists only those.
+  // Runs on every catalogue load, including refetches after an admin edits
+  // models or prices. Only models with an enabled price are usable (the model
+  // menu lists only those). A model the user chose is never swapped for
+  // another one: if it stops being usable, the page says so instead.
   useEffect(() => {
     if (!models) return;
-    const current = models.find((item) => item.id === modelId);
-    if (initialized.current && current && usableModel(current)) return;
     if (unavailable) {
-      // The requested model got a price since: use it now.
-      const priced = models.find((item) => item.id === unavailable.id);
-      if (priced && usableModel(priced)) {
-        selectModel(priced, false);
-        return;
-      }
-      if (initialized.current) return;
-    }
-    if (current) {
-      // The model asked for in the link: use it if it has a price, otherwise
-      // say so instead of switching to another model.
-      if (usableModel(current)) selectModel(current, false);
-      else showUnavailable(current);
+      // The model asked for became usable again: use it now.
+      const again = models.find((item) => item.id === unavailable.id);
+      if (again && usableModel(again)) selectModel(again, false);
       initialized.current = true;
       return;
     }
-    const usable = models.filter(usableModel);
-    const next =
-      usable.find((item) => item.type === kind) ||
-      usable.find((item) => item.type === "image") ||
-      usable[0];
-    if (next) selectModel(next, false);
-    else setModelId("");
+    const current = models.find((item) => item.id === modelId);
+    if (current) {
+      if (!usableModel(current)) showUnavailable(current);
+      else if (!initialized.current) selectModel(current, false);
+      initialized.current = true;
+      return;
+    }
+    if (modelId) {
+      // The selected (or linked) model is no longer offered at all.
+      const previous = lastSelected.current;
+      if (previous && previous.id === modelId) showUnavailable(previous);
+      else if (!initialized.current) setModelId("");
+      if (initialized.current || previous?.id === modelId) {
+        initialized.current = true;
+        return;
+      }
+    }
+    // Nothing selected yet: pick a default only until something has been
+    // selected once, so a new site starts working as soon as models exist.
+    if (!everSelected.current) {
+      const usable = models.filter(usableModel);
+      const next =
+        usable.find((item) => item.type === kind) ||
+        usable.find((item) => item.type === "image") ||
+        usable[0];
+      if (next) selectModel(next, false);
+    }
     initialized.current = true;
   }, [models]);
   useEffect(() => {
@@ -1043,7 +1065,7 @@ export default function Studio() {
                     value={modelId}
                     disabled={uploading || !options.length}
                     searchable
-                    placeholder="暂无可用模型"
+                    placeholder={options.length ? "请选择模型" : "暂无可用模型"}
                     options={options}
                     onChange={(value) => {
                       const next = models?.find((item) => item.id === value);
@@ -1130,7 +1152,8 @@ export default function Studio() {
           )}
           {unavailable && !model && (
             <div className="inline-error" role="alert">
-              「{unavailable.name}」尚未配置价格，暂不可用，请选择其他模型。
+              「{unavailable.name}
+              」暂不可用（未配置价格或已停用），请选择其他模型。
             </div>
           )}
           {quoteError && !modeError && (

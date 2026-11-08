@@ -16,7 +16,7 @@ import {
   billingUnit,
   matchingSpecification,
   pricingDimensions,
-  specLabel,
+  specOptionLabel,
 } from "../pricing";
 
 function combinations(model: Model) {
@@ -27,9 +27,7 @@ function combinations(model: Model) {
     if (rows.length * (parameter.options?.length || 0) > 200) return null;
     rows = rows.flatMap((row) =>
       (parameter.options || []).map((option) => ({
-        label: [row.label, specLabel(option.l ?? option)]
-          .filter(Boolean)
-          .join(" · "),
+        label: [row.label, specOptionLabel(option)].filter(Boolean).join(" · "),
         conditions: { ...row.conditions, [parameter.name]: option.v ?? option },
       })),
     );

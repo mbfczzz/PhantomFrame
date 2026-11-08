@@ -1,5 +1,5 @@
 import type { Model, Parameter, Price } from "./lib";
-import { money } from "./lib";
+import { money, readableValue } from "./lib";
 export function priceExtraLabels(price: Pick<Price, "extras">): string[] {
   const extras = price.extras || {};
   const lines = [];
@@ -42,8 +42,8 @@ export const billingLabel = (model: Model) => {
         .join(" / ")
     : "待配置";
 };
-export const specLabel = (value: unknown) =>
-  String(value).replace(/^(\d+)k$/i, "$1K");
+// Raw option values (e.g. "high", "2k") are shown with the shared readable labels.
+export const specLabel = (value: unknown) => readableValue(value);
 export const pricingDimensions = (model: Model): Parameter[] =>
   model.parameters.filter(
     (p) =>

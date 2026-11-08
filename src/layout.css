@@ -29,9 +29,11 @@
   align-items: center;
   gap: 35px;
   height: 72px;
-  max-width: 1680px;
+  /* Same box as .page and .workspace-subbar so the logo, breadcrumbs and page
+     content share one left and right edge at every desktop width. */
+  max-width: 1520px;
   margin: auto;
-  padding: 0 32px;
+  padding: 0 40px;
 }
 .app-topbar > .brand {
   flex-shrink: 0;

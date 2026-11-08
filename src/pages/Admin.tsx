@@ -71,6 +71,7 @@ import {
   type User,
   type Job,
   type PageData,
+  optionLabel,
 } from "../lib";
 import { Stat, JobsTable, UsageChart } from "./Account";
 import { JobAdmin, TransactionsAdmin, AuditAdmin } from "./AdminRecords";
@@ -1073,7 +1074,9 @@ function ModelPricing({
                                 ? v
                                   ? "是"
                                   : "否"
-                                : String(option?.l ?? v)}
+                                : option
+                                  ? optionLabel(option)
+                                  : String(v)}
                             </code>
                           );
                         })
@@ -1372,7 +1375,7 @@ function PriceForm({
                     : p.options || []
                   ).map((o, i) => (
                     <option value={String(o.v ?? o)} key={i}>
-                      {String(o.l ?? o)}
+                      {optionLabel(o)}
                     </option>
                   ))}
                 </select>
@@ -2344,10 +2347,15 @@ function SettingsAdmin() {
   if (!form) return <Loading />;
   const set = (k: string, v: string) => setForm((f) => ({ ...f, [k]: v }));
   return (
-    <>
+    <div className="settings-layout">
       <section className="panel settings-panel">
-        <h2>站点设置</h2>
-        <p className="muted">更改将同步到登录页面、导航和账户中心。</p>
+        {/* Same heading structure as the storage panel beside it. */}
+        <div className="section-header">
+          <div>
+            <h2>站点设置</h2>
+            <p className="muted">更改将同步到登录页面、导航和账户中心。</p>
+          </div>
+        </div>
         <Form
           onSubmit={() =>
             act(async () => {
@@ -2417,6 +2425,6 @@ function SettingsAdmin() {
         </Form>
       </section>
       <StorageSettings />
-    </>
+    </div>
   );
 }

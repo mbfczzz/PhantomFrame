@@ -178,6 +178,9 @@ function modelOption(model: Model): SelectOption {
   };
 }
 
+// A model can be used once it has at least one enabled price.
+const usableModel = (model: Model) =>
+  model.prices.some((price) => price.enabled);
 // Results are shown under the composer by default; collapsing them is
 // remembered, so returning users see their recent work without an extra click.
 const resultsPreferenceKey = "phantomframe-studio-results";
@@ -194,6 +197,9 @@ export default function Studio() {
   const [modelId, setModelId] = useState(search.get("model") || "");
   const [kind, setKind] = useState("image");
   const [billing, setBilling] = useState("request");
+  // A model the user asked for (link, "再次创作") that has no price yet. It is
+  // shown as unavailable instead of silently switching to another model.
+  const [unavailable, setUnavailable] = useState<Model | null>(null);
   const [prompt, setPrompt] = useState(search.get("prompt") || "");
   const [params, setParams] = useState<RecordData>({});
   const [creationMode, setCreationMode] = useState<StudioMode>("text");
@@ -275,7 +281,20 @@ export default function Studio() {
     };
   }, []);
 
+  const showUnavailable = (requested: Model) => {
+    definition.current = {
+      id: requested.id,
+      schema: JSON.stringify(requested.parameters),
+    };
+    setUnavailable(requested);
+    setKind(requested.type);
+    setModelId("");
+    setParams({});
+    setCreationMode("text");
+    setRefs([]);
+  };
   const selectModel = (next: Model, updateURL = true) => {
+    setUnavailable(null);
     definition.current = {
       id: next.id,
       schema: JSON.stringify(next.parameters),
@@ -311,19 +330,43 @@ export default function Studio() {
     requestIdentity.current = null;
     if (updateURL) setSearch({ model: next.id }, { replace: true });
   };
+  // Runs on every catalogue load (including refetches after an admin adds
+  // models or prices) until a usable model is selected. Only models with an
+  // enabled price are usable; the model menu lists only those.
   useEffect(() => {
-    if (models?.length && !initialized.current) {
-      selectModel(
-        models.find((item) => item.id === modelId) ||
-          models.find((item) => item.type === "image") ||
-          models[0],
-        false,
-      );
-      initialized.current = true;
+    if (!models) return;
+    const current = models.find((item) => item.id === modelId);
+    if (initialized.current && current && usableModel(current)) return;
+    if (unavailable) {
+      // The requested model got a price since: use it now.
+      const priced = models.find((item) => item.id === unavailable.id);
+      if (priced && usableModel(priced)) {
+        selectModel(priced, false);
+        return;
+      }
+      if (initialized.current) return;
     }
+    if (current) {
+      // The model asked for in the link: use it if it has a price, otherwise
+      // say so instead of switching to another model.
+      if (usableModel(current)) selectModel(current, false);
+      else showUnavailable(current);
+      initialized.current = true;
+      return;
+    }
+    const usable = models.filter(usableModel);
+    const next =
+      usable.find((item) => item.type === kind) ||
+      usable.find((item) => item.type === "image") ||
+      usable[0];
+    if (next) selectModel(next, false);
+    else setModelId("");
+    initialized.current = true;
   }, [models]);
   useEffect(() => {
-    if (!model || !initialized.current) return;
+    // An unpriced model is never kept selected (see showUnavailable); it can
+    // still be the derived model for one render while that state settles.
+    if (!model || !initialized.current || !usableModel(model)) return;
     const schema = JSON.stringify(model.parameters);
     if (
       definition.current.id === model.id &&
@@ -388,7 +431,8 @@ export default function Studio() {
     const requested = search.get("model");
     if (initialized.current && requested && requested !== modelId) {
       const next = models?.find((item) => item.id === requested);
-      if (next) selectModel(next, false);
+      if (next && usableModel(next)) selectModel(next, false);
+      else if (next) showUnavailable(next);
     }
     const requestedPrompt = search.get("prompt");
     if (requestedPrompt) setPrompt(requestedPrompt);
@@ -400,6 +444,7 @@ export default function Studio() {
         item.prices.some((price) => price.enabled && price.unit === mode),
     ) || [];
   const changeFilter = (type: string, mode: string) => {
+    setUnavailable(null);
     const options = available(type, mode);
     const next = options.find((item) => item.id === modelId) || options[0];
     if (next) selectModel(next);
@@ -503,7 +548,15 @@ export default function Studio() {
   const submitBlocker = busy
     ? ""
     : !model
-      ? "请先选择模型"
+      ? unavailable
+        ? "所选模型暂不可用，请选择其他模型"
+        : available(kind, billing).length
+          ? "请先选择模型"
+          : models?.some(usableModel)
+            ? "当前类型暂无可用模型，请切换生成类型"
+            : user?.role === "admin"
+              ? "暂无可用模型，请先在管理后台配置模型与价格"
+              : "暂无可用模型，请联系管理员"
       : !prompt.trim()
         ? "输入描述后即可生成"
         : uploading
@@ -1073,6 +1126,11 @@ export default function Studio() {
           {modeError && (
             <div className="composer-mode-message" role="status">
               {modeError}
+            </div>
+          )}
+          {unavailable && !model && (
+            <div className="inline-error" role="alert">
+              「{unavailable.name}」尚未配置价格，暂不可用，请选择其他模型。
             </div>
           )}
           {quoteError && !modeError && (

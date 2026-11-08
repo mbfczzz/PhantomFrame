@@ -1,0 +1,110 @@
+/*
+ * Shared spacing, loaded last. Earlier stylesheets set these values per page
+ * and drifted apart; this file pins them so every page lines up:
+ *   page padding   desktop 28/40 · tablet (≤1100) 23/24 · phone (≤767) 20/16
+ *   section gap    24 · stat cards 20 (phone 12)
+ * The top bar uses the same side padding as the page at every width.
+ */
+
+/* The creation page uses the same frame as every other page, so its title
+   does not jump when switching tabs. */
+.horizontal-shell .studio-page.creation-page {
+  padding-top: 28px;
+  padding-left: 40px;
+  padding-right: 40px;
+}
+.horizontal-shell .creation-page .creation-heading {
+  margin-bottom: 26px;
+}
+
+/* Stat card rows. */
+.main-content .stats-grid {
+  gap: 20px;
+}
+
+/* Tab bar → its content, endpoint bar → stats, filter bar → list. */
+.main-content .platform-tabs {
+  margin-bottom: 24px;
+}
+.main-content .platform-endpoint {
+  margin-bottom: 24px;
+}
+.main-content .page > :is(.filter-bar, .ticket-filters),
+.main-content .assets-page > .toolbar.divider {
+  margin-bottom: 24px;
+}
+
+@media (max-width: 1100px) {
+  .horizontal-shell .studio-page.creation-page {
+    padding-top: 23px;
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+}
+
+@media (max-width: 767px) {
+  .app-topbar {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+  .horizontal-shell .studio-page.creation-page {
+    /* 1px less than .page: the creation heading's controls are 1px taller. */
+    padding-top: 19px;
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+  .horizontal-shell .creation-page .creation-heading {
+    margin-bottom: 20px;
+  }
+  .main-content .stats-grid {
+    gap: 12px;
+  }
+  /* Same 20px under the page header as other phone pages. */
+  .main-content .page > .page-header + .ticket-filters {
+    margin-top: 0;
+  }
+  .main-content .page > .page-header:has(+ .ticket-filters) {
+    margin-bottom: 20px;
+  }
+  .main-content .recharge-layout {
+    margin-bottom: 24px;
+  }
+  /* History filters on phones: a 2-column grid. Type and status side by side,
+     the date range and search each on a full row, controls filling their cell. */
+  .history-page .filter-bar {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+  .history-page .filter-bar > label {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 6px;
+    min-width: 0;
+  }
+  .history-page .filter-bar > .filter-date-range,
+  .history-page .filter-bar > .searchbox {
+    grid-column: 1 / -1;
+  }
+  .history-page .filter-date-inputs {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    align-items: center;
+    gap: 8px;
+  }
+  .history-page .filter-bar input[type="date"] {
+    width: 100%;
+    max-width: none;
+    font-size: 12px;
+  }
+  .history-page .filter-bar > .searchbox {
+    min-width: 0;
+  }
+}
+
+/* The date range wrapper keeps the desktop layout: inputs in one row. */
+.filter-date-inputs {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}

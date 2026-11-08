@@ -309,3 +309,18 @@ input[type="checkbox"]:focus-visible {
     transition: none;
   }
 }
+
+/* Filter bars: every control is 40px tall, the same as search boxes and tab
+   groups, so dropdowns and date pickers line up within and across pages. */
+.main-content
+  :is(.filter-bar, .ledger-filters, .ticket-filters, .admin-filter-grid)
+  .ui-select-trigger,
+.main-content
+  :is(.filter-bar, .ledger-filters, .ticket-filters, .admin-filter-grid)
+  input[type="date"] {
+  box-sizing: border-box;
+  height: 40px;
+  min-height: 40px;
+  padding-top: 0;
+  padding-bottom: 0;
+}

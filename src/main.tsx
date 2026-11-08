@@ -18,6 +18,7 @@ import "./workspace.css";
 import "./admin.css";
 import "./catalog.css";
 import "./studio-input.css";
+import "./spacing.css";
 import { preferredTheme } from "./theme";
 document.documentElement.dataset.theme = preferredTheme();
 // After a deploy, an open tab may request page chunks that no longer exist.

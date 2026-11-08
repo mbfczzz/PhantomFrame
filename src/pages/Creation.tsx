@@ -71,6 +71,7 @@ import {
   type Parameter,
   jobListInterval,
   fileSize,
+  optionLabel,
 } from "../lib";
 
 const types = [
@@ -325,7 +326,7 @@ export function ParameterFields({
                 }}
                 options={(p.options || []).map((option) => ({
                   value: String(option.v ?? option),
-                  label: String(option.l ?? option),
+                  label: optionLabel(option),
                 }))}
               />
             ) : p.type === "boolean" ? (
@@ -609,7 +610,7 @@ export function Models() {
         title="模型与价格"
         description="直接比较素材上限、生成规格与价格，选择适合的模型。"
       >
-        <span className="muted">{filtered.length} 个模型</span>
+        <span className="count-badge">{filtered.length} 个模型</span>
       </PageHeader>
       <div className="toolbar divider">
         <SearchBox
@@ -731,12 +732,18 @@ export function Models() {
                     完整参数 <ChevronRight size={13} />
                   </button>
                 </div>
-                <Link
-                  className="catalog-use"
-                  to={"/generate?model=" + encodeURIComponent(m.id)}
-                >
-                  使用这个模型 <ArrowUp size={14} />
-                </Link>
+                {m.prices.some((price) => price.enabled) ? (
+                  <Link
+                    className="catalog-use"
+                    to={"/generate?model=" + encodeURIComponent(m.id)}
+                  >
+                    使用这个模型 <ArrowUp size={14} />
+                  </Link>
+                ) : (
+                  <span className="catalog-use muted">
+                    价格待配置，暂不可用
+                  </span>
+                )}
               </article>
             );
           })}
@@ -805,7 +812,9 @@ export function Models() {
                                 return (
                                   <span key={name}>
                                     {parameter?.label || name}：
-                                    {String(option?.l ?? value)}
+                                    {option
+                                      ? optionLabel(option)
+                                      : String(value)}
                                   </span>
                                 );
                               },
@@ -844,23 +853,21 @@ export function Models() {
                           : "关闭"
                         : p.type === "assets"
                           ? "未添加"
-                          : String(
-                              p.options?.find(
-                                (option) =>
-                                  String(option.v ?? option) ===
-                                  String(p.default),
-                              )?.l ??
-                                p.default ??
-                                "—",
-                            )}
+                          : (() => {
+                              const option = p.options?.find(
+                                (item) =>
+                                  String(item.v ?? item) === String(p.default),
+                              );
+                              return option
+                                ? optionLabel(option)
+                                : String(p.default ?? "—");
+                            })()}
                     </td>
                     <td>
                       {p.options?.length ? (
                         <div className="parameter-option-tags">
                           {p.options.map((option, index) => (
-                            <span key={index}>
-                              {String(option.l ?? option)}
-                            </span>
+                            <span key={index}>{optionLabel(option)}</span>
                           ))}
                         </div>
                       ) : p.type === "boolean" ? (
@@ -998,21 +1005,23 @@ export function HistoryPage() {
             ]}
           />
         </label>
-        <label>
+        <label className="filter-date-range">
           时间
-          <input
-            aria-label="开始时间"
-            type="date"
-            value={from}
-            onChange={(e) => setFrom(e.target.value)}
-          />
-          <span>—</span>
-          <input
-            aria-label="结束时间"
-            type="date"
-            value={to}
-            onChange={(e) => setTo(e.target.value)}
-          />
+          <span className="filter-date-inputs">
+            <input
+              aria-label="开始时间"
+              type="date"
+              value={from}
+              onChange={(e) => setFrom(e.target.value)}
+            />
+            <span>—</span>
+            <input
+              aria-label="结束时间"
+              type="date"
+              value={to}
+              onChange={(e) => setTo(e.target.value)}
+            />
+          </span>
         </label>
         <SearchBox
           value={search}

@@ -227,6 +227,33 @@ export const transactionDescription = (value: string) =>
       父账户分配积分: "主账户转入",
     }) as Record<string, string>
   )[value] || value;
+const optionValueLabels: Record<string, string> = {
+  low: "低",
+  medium: "中",
+  high: "高",
+  xhigh: "超高",
+  max: "最高",
+  auto: "自动",
+  adaptive: "自适应",
+  standard: "标准",
+  hd: "高清",
+};
+/** Readable text for a raw option value from a provider catalogue. */
+export const readableValue = (value: unknown): string => {
+  const text = String(value);
+  return (
+    optionValueLabels[text.toLowerCase()] ?? text.replace(/^(\d+)k$/i, "$1K")
+  );
+};
+/** Display text for a parameter option: its label, else a readable value. */
+export const optionLabel = (option: unknown): string => {
+  if (option && typeof option === "object") {
+    const o = option as { l?: unknown; v?: unknown };
+    if (o.l != null && o.l !== "") return String(o.l);
+    return readableValue(o.v);
+  }
+  return readableValue(option);
+};
 export const date = (v?: string) =>
   v
     ? new Date(v.includes("T") ? v : v.replace(" ", "T") + "Z").toLocaleString(

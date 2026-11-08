@@ -181,6 +181,10 @@
   font-size: 12px;
   color: var(--secondary);
 }
+/* Errors (price quote failures, unavailable model) must read as errors. */
+.composer-settings .inline-error {
+  color: var(--pink);
+}
 .creation-page .composer-settings .surface-footer {
   position: static;
   margin: 0;
